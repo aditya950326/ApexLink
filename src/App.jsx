@@ -3109,7 +3109,33 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                 </button>
               </h1>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <EHBadge label={`UNIT-${ws.id.slice(0,4)}`} color={EH_PRIMARY} />
+                <div 
+                  onClick={() => {
+                    navigator.clipboard.writeText(ws.id);
+                    setCopiedText("id");
+                    setTimeout(() => setCopiedText(""), 2000);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: copiedText === "id" ? "#22c55e" : EH_PRIMARY,
+                    background: copiedText === "id" ? "rgba(34,197,94,0.15)" : `${EH_PRIMARY}22`,
+                    padding: "2px 9px",
+                    borderRadius: 20,
+                    transition: "0.2s",
+                    border: copiedText === "id" ? "1px solid rgba(34,197,94,0.4)" : "1px solid transparent"
+                  }}
+                  title="Click to copy workspace ID"
+                  onMouseEnter={e => { if (copiedText !== "id") e.currentTarget.style.background = `${EH_PRIMARY}44`; }}
+                  onMouseLeave={e => { if (copiedText !== "id") e.currentTarget.style.background = `${EH_PRIMARY}22`; }}
+                >
+                  <span>ID: {ws.id}</span>
+                  <span>{copiedText === "id" ? "✓" : "📋"}</span>
+                </div>
                 <div 
                   onClick={() => {
                     navigator.clipboard.writeText(ws.accessCode);
@@ -3137,7 +3163,8 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                   <span>CODE: {ws.accessCode}</span>
                   <span>{copiedText === "code" ? "✓" : "📋"}</span>
                 </div>
-                {copiedText === "code" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>COPIED!</span>}
+                {copiedText === "id" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>ID COPIED!</span>}
+                {copiedText === "code" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>CODE COPIED!</span>}
                 {copiedText === "name" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>NAME COPIED!</span>}
               </div>
             </div>
