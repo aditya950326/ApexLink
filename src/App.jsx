@@ -1755,7 +1755,7 @@ const parseBold = (text) => {
       parts.push(text.substring(lastIndex, match.index));
     }
     parts.push(
-      <strong key={match.index} style={{ color: "#a78bfa", fontWeight: 700 }}>
+      <strong key={match.index} style={{ color: "#f1f5f9", fontWeight: 700 }}>
         {match[1]}
       </strong>
     );
@@ -1785,21 +1785,21 @@ function EHMarkdown({ text }) {
 
         if (trimmed.startsWith("###")) {
           return (
-            <div key={idx} style={{ fontSize: 14, fontWeight: 800, color: "#a78bfa", marginTop: 10, marginBottom: 4, fontFamily: "Orbitron" }}>
+            <div key={idx} style={{ fontSize: 13.5, fontWeight: 800, color: "#38bdf8", marginTop: 12, marginBottom: 4, fontFamily: "Orbitron", letterSpacing: 0.5 }}>
               {trimmed.replace(/^###\s*/, "")}
             </div>
           );
         }
         if (trimmed.startsWith("##")) {
           return (
-            <div key={idx} style={{ fontSize: 15, fontWeight: 900, color: "#c084fc", marginTop: 14, marginBottom: 6, fontFamily: "Orbitron" }}>
+            <div key={idx} style={{ fontSize: 14.5, fontWeight: 900, color: "#a78bfa", marginTop: 16, marginBottom: 6, fontFamily: "Orbitron", letterSpacing: 0.5, borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 4 }}>
               {trimmed.replace(/^##\s*/, "")}
             </div>
           );
         }
         if (trimmed.startsWith("#")) {
           return (
-            <div key={idx} style={{ fontSize: 17, fontWeight: 900, color: "#e9d5ff", marginTop: 18, marginBottom: 8, fontFamily: "Orbitron" }}>
+            <div key={idx} style={{ fontSize: 16, fontWeight: 900, color: "#f1f5f9", marginTop: 20, marginBottom: 8, fontFamily: "Orbitron", letterSpacing: 0.5 }}>
               {trimmed.replace(/^#\s*/, "")}
             </div>
           );
@@ -1816,8 +1816,8 @@ function EHMarkdown({ text }) {
           const parts = parseBold(content);
 
           return (
-            <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 8, paddingLeft: isBullet ? 12 : 6, fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.6 }}>
-              <span style={{ color: "#a78bfa", fontWeight: 900, userSelect: "none" }}>{isBullet ? "•" : trimmed.match(/^\d+/)[0] + "."}</span>
+            <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 10, paddingLeft: isBullet ? 14 : 6, fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.7, margin: "4px 0" }}>
+              <span style={{ color: "#38bdf8", fontWeight: 900, userSelect: "none", marginTop: 1 }}>{isBullet ? "✦" : trimmed.match(/^\d+/)[0] + "."}</span>
               <span style={{ flex: 1 }}>{parts}</span>
             </div>
           );
@@ -1825,17 +1825,20 @@ function EHMarkdown({ text }) {
 
         const parts = parseBold(trimmed);
         
-        const isHeadingObs = trimmed.startsWith("**") && trimmed.endsWith("**");
+        const isHeadingObs = (trimmed.startsWith("**") && trimmed.endsWith("**")) || 
+                             (trimmed.startsWith("**") && trimmed.endsWith(":**")) ||
+                             (trimmed.startsWith("**") && trimmed.endsWith("**:") && trimmed.length > 4);
+                             
         if (isHeadingObs) {
           return (
-            <div key={idx} style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f0", marginTop: 12, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>
+            <div key={idx} style={{ fontSize: 13, fontWeight: 800, color: "#38bdf8", marginTop: 18, marginBottom: 6, textTransform: "uppercase", letterSpacing: 1.5, fontFamily: "Orbitron", borderLeft: "3px solid #38bdf8", paddingLeft: 8 }}>
               {trimmed.replace(/\*\*/g, "")}
             </div>
           );
         }
 
         return (
-          <div key={idx} style={{ fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.6 }}>
+          <div key={idx} style={{ fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.7 }}>
             {parts}
           </div>
         );
@@ -2217,7 +2220,22 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
           )}
           {activeChat?.messages?.map(m => (
             <div key={m.id} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-              <div style={{ maxWidth: "75%", background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "rgba(255,255,255,0.05)", border: m.role === "user" ? "none" : "1px solid rgba(255,255,255,0.08)", borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", padding: "12px 16px", color: "#f1f5f9", fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <div style={{ 
+                maxWidth: "75%", 
+                background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "rgba(255, 255, 255, 0.01)", 
+                backdropFilter: m.role === "user" ? "none" : "blur(16px)",
+                border: m.role === "user" ? "none" : "1px solid rgba(255, 255, 255, 0.04)", 
+                borderLeft: m.role === "user" ? "none" : "4px solid #38bdf8",
+                borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "4px 16px 16px 16px", 
+                padding: m.role === "user" ? "12px 18px" : "18px 22px", 
+                color: m.role === "user" ? "#fff" : "#cbd5e1", 
+                fontSize: 14, 
+                lineHeight: 1.6, 
+                whiteSpace: "pre-wrap", 
+                wordBreak: "break-word",
+                boxShadow: m.role === "user" ? "0 4px 16px rgba(108,99,255,0.25)" : "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
+                animation: "slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards"
+              }}>
                 {m.role === "user" ? m.content : <EHMarkdown text={m.content} />}
               </div>
             </div>
@@ -2248,7 +2266,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         <Field label="Gemini API Key"><Inp value={apiKey} onChange={setApiKey} type="password" placeholder="AIzaSy..." /></Field>
         <Btn onClick={() => setShowKeyModal(false)} style={{ width: "100%" }}>Save Key</Btn>
       </Modal>
-      <style>{`@keyframes bounce{to{transform:translateY(-4px)}}`}</style>
+      <style>{`@keyframes bounce{to{transform:translateY(-4px)}} @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
   );
 }
