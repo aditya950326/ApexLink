@@ -1751,7 +1751,7 @@ function VedAI({ user }) {
   const [activeChatId, setActiveChatId] = useState(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [apiKey, setApiKey] = useLS("apx_openai_key", "");
+  const [apiKey, setApiKey] = useLS("apx_gemini_key", "");
   const [showKeyModal, setShowKeyModal] = useState(false);
   const bottomRef = useRef(null);
 
@@ -1867,92 +1867,95 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
 
       const tools = [
         {
-          type: "function",
-          function: {
-            name: "update_user_timetable",
-            description: "Automatically updates or generates the user's study timetable tasks and constraints in the Timetable Builder based on study habits and optimization criteria.",
-            parameters: {
-              type: "object",
-              properties: {
-                tasks: {
-                  type: "array",
-                  description: "A complete list of study tasks/subjects to schedule.",
-                  items: {
-                    type: "object",
-                    properties: {
-                      title: { type: "string", description: "Subject or task title (e.g. Physics Revision, Math Homework)" },
-                      priority: { type: "number", minimum: 1, maximum: 5, description: "Priority level from 1 (lowest) to 5 (highest)" },
-                      duration: { type: "number", description: "Duration of each session in minutes (e.g. 90, 120, 60)" },
-                      energy: { type: "number", minimum: 1, maximum: 5, description: "Energy required from 1 to 5" },
-                      taskType: { 
-                        type: "string", 
-                        enum: ["Deep Work","Revision","Practice","Reading","Exercise","Meeting","Leisure","Other"],
-                        description: "Category of the study slot" 
+          functionDeclarations: [
+            {
+              name: "update_user_timetable",
+              description: "Automatically updates or generates the user's study timetable tasks and constraints in the Timetable Builder based on study habits and optimization criteria.",
+              parameters: {
+                type: "OBJECT",
+                properties: {
+                  tasks: {
+                    type: "ARRAY",
+                    description: "A complete list of study tasks/subjects to schedule.",
+                    items: {
+                      type: "OBJECT",
+                      properties: {
+                        title: { type: "STRING", description: "Subject or task title (e.g. Physics Revision, Math Homework)" },
+                        priority: { type: "NUMBER", description: "Priority level from 1 (lowest) to 5 (highest)" },
+                        duration: { type: "NUMBER", description: "Duration of each session in minutes (e.g. 90, 120, 60)" },
+                        energy: { type: "NUMBER", description: "Energy required from 1 to 5" },
+                        taskType: { 
+                          type: "STRING", 
+                          description: "Category of the study slot (e.g. Deep Work, Revision, Practice, Reading, Exercise, Meeting, Leisure, Other)" 
+                        },
+                        type: { type: "STRING", description: "Whether task repeats daily or specific days (daily or specific)" },
+                        days: { 
+                          type: "ARRAY", 
+                          items: { type: "STRING" },
+                          description: "If type is specific, define which days this task should run (e.g., ['Mon', 'Wed'])"
+                        },
+                        preferStart: { type: "STRING", description: "Preferred start time in 24h format" },
+                        preferEnd: { type: "STRING", description: "Preferred end time in 24h format" }
                       },
-                      type: { type: "string", enum: ["daily","specific"], description: "Whether task repeats daily or on specific days" },
-                      days: { 
-                        type: "array", 
-                        items: { type: "string", enum: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
-                        description: "If type is specific, define which days this task should run"
-                      },
-                      preferStart: { type: "string", description: "Preferred start time in 24h format (e.g. '09:00', '15:30')" },
-                      preferEnd: { type: "string", description: "Preferred end time in 24h format (e.g. '11:00', '17:00')" }
-                    },
-                    required: ["title", "priority", "duration", "energy", "taskType", "type"]
-                  }
-                },
-                constraints: {
-                  type: "object",
-                  description: "User schedule boundary limits and wake/sleep cycles.",
-                  properties: {
-                    wake: { type: "string", description: "Wake up time (e.g. '07:00')" },
-                    sleep: { type: "string", description: "Sleep time (e.g. '23:00')" },
-                    maxHours: { type: "number", description: "Max study hours per day (e.g. 6, 8)" },
-                    breakMin: { type: "number", description: "Break duration in minutes between tasks (e.g. 15)" },
-                    noWork: { 
-                      type: "array", 
-                      items: { type: "string", enum: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
-                      description: "Days of the week the student does not want to study" 
+                      required: ["title", "priority", "duration", "energy", "taskType", "type"]
                     }
                   },
-                  required: ["wake", "sleep", "maxHours", "breakMin"]
-                }
-              },
-              required: ["tasks", "constraints"]
+                  constraints: {
+                    type: "OBJECT",
+                    description: "User schedule boundary limits and wake/sleep cycles.",
+                    properties: {
+                      wake: { type: "STRING", description: "Wake up time (e.g. '07:00')" },
+                      sleep: { type: "STRING", description: "Sleep time (e.g. '23:00')" },
+                      maxHours: { type: "NUMBER", description: "Max study hours per day (e.g. 6, 8)" },
+                      breakMin: { type: "NUMBER", description: "Break duration in minutes between tasks (e.g. 15)" },
+                      noWork: { 
+                        type: "ARRAY", 
+                        items: { type: "STRING" },
+                        description: "Days of the week the student does not want to study (e.g., ['Sat', 'Sun'])" 
+                      }
+                    },
+                    required: ["wake", "sleep", "maxHours", "breakMin"]
+                  }
+                },
+                required: ["tasks", "constraints"]
+              }
             }
-          }
+          ]
         }
       ];
 
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const geminiContents = updatedMessages.map(m => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: m.content }]
+      }));
+
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}` 
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "gpt-4o",
-          messages: [
-            { role: "system", content: systemPrompt },
-            ...updatedMessages.map(m => ({ role: m.role, content: m.content }))
-          ],
+          contents: geminiContents,
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
           tools,
-          tool_choice: "auto",
-          temperature: 0.7
+          generationConfig: {
+            temperature: 0.7
+          }
         })
       });
 
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
 
-      const choice = data.choices?.[0];
-      const assistantMessage = choice?.message;
-      let reply = assistantMessage?.content || "";
+      const candidate = data.candidates?.[0];
+      const modelContent = candidate?.content;
+      const modelPart = modelContent?.parts?.[0];
+      let reply = modelPart?.text || "";
 
-      if (assistantMessage?.tool_calls && assistantMessage.tool_calls.length > 0) {
-        const toolCall = assistantMessage.tool_calls[0];
-        if (toolCall.function.name === "update_user_timetable") {
-          const args = JSON.parse(toolCall.function.arguments);
+      if (modelPart?.functionCall) {
+        const functionCall = modelPart.functionCall;
+        if (functionCall.name === "update_user_timetable") {
+          const args = functionCall.args;
           const calculatedTable = generateTimetableLocally(args.tasks, args.constraints);
           
           localStorage.setItem(`apx_tt_tasks_${user.id}`, JSON.stringify(args.tasks));
@@ -1961,41 +1964,44 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
 
           window.dispatchEvent(new Event("storage"));
 
-          const toolResult = {
-            role: "tool",
-            tool_call_id: toolCall.id,
-            name: "update_user_timetable",
-            content: "Timetable generated and saved to LocalStorage database successfully."
-          };
-
-          const followUpRes = await fetch("https://api.openai.com/v1/chat/completions", {
+          const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${apiKey}` 
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              model: "gpt-4o",
-              messages: [
-                { role: "system", content: systemPrompt },
-                ...updatedMessages.map(m => ({ role: m.role, content: m.content })),
-                assistantMessage,
-                toolResult
-              ]
+              contents: [
+                ...geminiContents,
+                modelContent,
+                {
+                  role: "function",
+                  parts: [{
+                    functionResponse: {
+                      name: "update_user_timetable",
+                      response: { output: "Timetable generated and saved to LocalStorage database successfully." }
+                    }
+                  }]
+                }
+              ],
+              systemInstruction: {
+                parts: [{ text: systemPrompt }]
+              },
+              generationConfig: {
+                temperature: 0.7
+              }
             })
           });
 
           const followUpData = await followUpRes.json();
           if (followUpData.error) throw new Error(followUpData.error.message);
           
-          reply = followUpData.choices?.[0]?.message?.content || "Your timetable has been successfully optimized! Open the Timetable tab to view it.";
+          const followUpCandidate = followUpData.candidates?.[0];
+          reply = followUpCandidate?.content?.parts?.[0]?.text || "Your timetable has been successfully optimized! Open the Timetable tab to view it.";
         }
       }
 
       const aiMsg = { role: "assistant", content: reply || "Successfully processed request.", id: uid() };
       setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: [...updatedMessages, aiMsg] } : c));
     } catch (e) {
-      const errMsg = { role: "assistant", content: `Error: ${e.message}. Please check your OpenAI balance and key settings.`, id: uid() };
+      const errMsg = { role: "assistant", content: `Error: ${e.message}. Please check your Gemini API key and connection settings.`, id: uid() };
       setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: [...updatedMessages, errMsg] } : c));
     }
     setLoading(false);
@@ -2024,7 +2030,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         </div>
         <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <button onClick={() => setShowKeyModal(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 12 }}>
-            🔑 {apiKey ? "API Key Set ✓" : "Set API Key"}
+            🔑 {apiKey ? "Gemini API Key Set ✓" : "Set Gemini API Key"}
           </button>
         </div>
       </div>
@@ -2086,9 +2092,9 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
           </div>
         </div>
       </div>
-      <Modal open={showKeyModal} onClose={() => setShowKeyModal(false)} title="Set OpenAI / API Key" width={420}>
-        <p style={{ color: "#888", fontSize: 14, marginTop: 0 }}>Enter your OpenAI API key to enable VedAI. It's stored locally in your browser.</p>
-        <Field label="API Key"><Inp value={apiKey} onChange={setApiKey} type="password" placeholder="sk-..." /></Field>
+      <Modal open={showKeyModal} onClose={() => setShowKeyModal(false)} title="Set Gemini API Key" width={420}>
+        <p style={{ color: "#888", fontSize: 14, marginTop: 0 }}>Enter your Gemini API key to enable VedAI. You can obtain a free key from Google AI Studio. It's stored locally in your browser.</p>
+        <Field label="Gemini API Key"><Inp value={apiKey} onChange={setApiKey} type="password" placeholder="AIzaSy..." /></Field>
         <Btn onClick={() => setShowKeyModal(false)} style={{ width: "100%" }}>Save Key</Btn>
       </Modal>
       <style>{`@keyframes bounce{to{transform:translateY(-4px)}}`}</style>
