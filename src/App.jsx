@@ -3050,6 +3050,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
   const [tab, setTab] = useState("pipeline");
   const [selectedTask, setSelectedTask] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [copiedText, setCopiedText] = useState("");
 
   const tasks   = (eh.tasks||[]).filter(t=>t.workspaceId===ws.id);
   const members = (eh.members||[]).filter(m=>m.workspaceId===ws.id&&m.status==="Approved");
@@ -3079,10 +3080,65 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 900, fontFamily: 'Orbitron', letterSpacing: -1, color: "#fff", textShadow: `0 0 20px ${EH_PRIMARY}33` }}>{ws.name}</h1>
-              <div style={{ display: "flex", gap: 8 }}>
+              <h1 style={{ margin: 0, fontSize: 28, fontWeight: 900, fontFamily: 'Orbitron', letterSpacing: -1, color: "#fff", textShadow: `0 0 20px ${EH_PRIMARY}33`, display: "flex", alignItems: "center", gap: 12 }}>
+                {ws.name}
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(ws.name);
+                    setCopiedText("name");
+                    setTimeout(() => setCopiedText(""), 2000);
+                  }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: copiedText === "name" ? "#22c55e" : "#475569",
+                    cursor: "pointer",
+                    fontSize: 16,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "0.2s",
+                    padding: 4,
+                    borderRadius: 4
+                  }}
+                  title="Copy Workspace Name"
+                  onMouseEnter={e => { if (copiedText !== "name") e.currentTarget.style.color = "#fff"; }}
+                  onMouseLeave={e => { if (copiedText !== "name") e.currentTarget.style.color = "#475569"; }}
+                >
+                  {copiedText === "name" ? "✓" : "📋"}
+                </button>
+              </h1>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <EHBadge label={`UNIT-${ws.id.slice(0,4)}`} color={EH_PRIMARY} />
-                <EHBadge label={`CODE: ${ws.accessCode}`} color="#f59e0b" />
+                <div 
+                  onClick={() => {
+                    navigator.clipboard.writeText(ws.accessCode);
+                    setCopiedText("code");
+                    setTimeout(() => setCopiedText(""), 2000);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: copiedText === "code" ? "#22c55e" : "#f59e0b",
+                    background: copiedText === "code" ? "rgba(34,197,94,0.15)" : "rgba(245,158,11,0.15)",
+                    padding: "2px 9px",
+                    borderRadius: 20,
+                    transition: "0.2s",
+                    border: copiedText === "code" ? "1px solid rgba(34,197,94,0.4)" : "1px solid transparent"
+                  }}
+                  title="Click to copy invite code"
+                  onMouseEnter={e => { if (copiedText !== "code") e.currentTarget.style.background = "rgba(245,158,11,0.25)"; }}
+                  onMouseLeave={e => { if (copiedText !== "code") e.currentTarget.style.background = "rgba(245,158,11,0.15)"; }}
+                >
+                  <span>CODE: {ws.accessCode}</span>
+                  <span>{copiedText === "code" ? "✓" : "📋"}</span>
+                </div>
+                {copiedText === "code" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>COPIED!</span>}
+                {copiedText === "name" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>NAME COPIED!</span>}
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
