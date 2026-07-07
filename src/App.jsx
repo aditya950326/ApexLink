@@ -1743,9 +1743,108 @@ function TimetableBuilder({ user }) {
 
 
 
+// ─── AI MARKDOWN RENDERER ────────────────────────────────────────────────────
+const parseBold = (text) => {
+  const parts = [];
+  const regex = /\*\*([^*]+)\*\*/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    parts.push(
+      <strong key={match.index} style={{ color: "#a78bfa", fontWeight: 700 }}>
+        {match[1]}
+      </strong>
+    );
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+};
+
+function EHMarkdown({ text }) {
+  if (!text) return null;
+  if (text.startsWith("Debug Info:")) {
+    return <pre style={{ margin: 0, fontSize: 11, background: "rgba(0,0,0,0.3)", padding: 10, borderRadius: 8, overflowX: "auto", fontFamily: "monospace", color: "#f87171" }}>{text}</pre>;
+  }
+
+  const lines = text.split("\n");
+  
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {lines.map((line, idx) => {
+        let trimmed = line.trim();
+        if (!trimmed) return <div key={idx} style={{ height: 6 }} />;
+
+        if (trimmed.startsWith("###")) {
+          return (
+            <div key={idx} style={{ fontSize: 14, fontWeight: 800, color: "#a78bfa", marginTop: 10, marginBottom: 4, fontFamily: "Orbitron" }}>
+              {trimmed.replace(/^###\s*/, "")}
+            </div>
+          );
+        }
+        if (trimmed.startsWith("##")) {
+          return (
+            <div key={idx} style={{ fontSize: 15, fontWeight: 900, color: "#c084fc", marginTop: 14, marginBottom: 6, fontFamily: "Orbitron" }}>
+              {trimmed.replace(/^##\s*/, "")}
+            </div>
+          );
+        }
+        if (trimmed.startsWith("#")) {
+          return (
+            <div key={idx} style={{ fontSize: 17, fontWeight: 900, color: "#e9d5ff", marginTop: 18, marginBottom: 8, fontFamily: "Orbitron" }}>
+              {trimmed.replace(/^#\s*/, "")}
+            </div>
+          );
+        }
+
+        const isBullet = trimmed.startsWith("* ") || trimmed.startsWith("- ");
+        const isNumbered = /^\d+\.\s/.test(trimmed);
+
+        if (isBullet || isNumbered) {
+          let content = isBullet 
+            ? trimmed.replace(/^[\*\-]\s*/, "") 
+            : trimmed.replace(/^\d+\.\s*/, "");
+            
+          const parts = parseBold(content);
+
+          return (
+            <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 8, paddingLeft: isBullet ? 12 : 6, fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.6 }}>
+              <span style={{ color: "#a78bfa", fontWeight: 900, userSelect: "none" }}>{isBullet ? "•" : trimmed.match(/^\d+/)[0] + "."}</span>
+              <span style={{ flex: 1 }}>{parts}</span>
+            </div>
+          );
+        }
+
+        const parts = parseBold(trimmed);
+        
+        const isHeadingObs = trimmed.startsWith("**") && trimmed.endsWith("**");
+        if (isHeadingObs) {
+          return (
+            <div key={idx} style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f0", marginTop: 12, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>
+              {trimmed.replace(/\*\*/g, "")}
+            </div>
+          );
+        }
+
+        return (
+          <div key={idx} style={{ fontSize: 13.5, color: "#cbd5e1", lineHeight: 1.6 }}>
+            {parts}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── VEDAI ────────────────────────────────────────────────────────────────────
-
-
 function VedAI({ user }) {
   const [chats, setChats] = useLS(`apx_chats_${user.id}`, []);
   const [activeChatId, setActiveChatId] = useState(null);
@@ -2119,7 +2218,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
           {activeChat?.messages?.map(m => (
             <div key={m.id} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
               <div style={{ maxWidth: "75%", background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "rgba(255,255,255,0.05)", border: m.role === "user" ? "none" : "1px solid rgba(255,255,255,0.08)", borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", padding: "12px 16px", color: "#f1f5f9", fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                {m.content}
+                {m.role === "user" ? m.content : <EHMarkdown text={m.content} />}
               </div>
             </div>
           ))}
