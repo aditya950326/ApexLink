@@ -3049,7 +3049,6 @@ function EHCreateWorkspace({ user, eh, setEH, onDone, onCancel }) {
 function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
   const [tab, setTab] = useState("pipeline");
   const [selectedTask, setSelectedTask] = useState(null);
-  const [isSidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   const tasks   = (eh.tasks||[]).filter(t=>t.workspaceId===ws.id);
@@ -3067,35 +3066,8 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
 
   return (
     <div style={{ display:"flex", background: "#08090a", height:"100vh", color: "#f1f5f9", overflow: "hidden", fontFamily: "'Inter', sans-serif" }}>
-      {/* 1. Technical Sidebar */}
-      <div style={{ 
-        width: isSidebarCollapsed ? 64 : 240, 
-        background: "#0d0f11", 
-        borderRight: `1px solid ${EH_BORDER}`, 
-        transition: "width 0.4s cubic-bezier(0.19, 1, 0.22, 1)",
-        display: "flex", flexDirection: "column", flexShrink: 0,
-        boxShadow: "10px 0 30px rgba(0,0,0,0.4)"
-      }}>
-        <div style={{ padding: "24px 0", textAlign: "center", borderBottom: `1px solid ${EH_BORDER}`, marginBottom: 20 }}>
-          <div onClick={() => setSidebarCollapsed(!isSidebarCollapsed)} style={{ cursor: "pointer", fontSize: 24, transition: "0.3s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#fff"}>
-            {isSidebarCollapsed ? "⌬" : "✕"}
-          </div>
-        </div>
-        <div style={{ flex: 1, padding: "0 12px" }}>
-          {WORKSPACE_TABS.map(([id, lbl]) => (
-            <div key={id} onClick={() => setTab(id)} style={{ 
-              display: "flex", alignItems: "center", gap: 16, padding: "14px 12px", borderRadius: 10, 
-              cursor: "pointer", background: tab === id ? "rgba(0,184,217,0.12)" : "transparent",
-              color: tab === id ? EH_PRIMARY : "#555", marginBottom: 8, transition: "0.2s"
-            }}>
-              <span style={{ fontSize: 20 }}>{id === "pipeline" ? "⚛" : id === "timeline" ? "⎙" : id === "chat" ? "⌨" : id === "team" ? "⧉" : "⌬"}</span>
-              {!isSidebarCollapsed && <span style={{ fontWeight: 800, fontSize: 13, letterSpacing: 0.5 }}>{lbl.toUpperCase()}</span>}
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* 2. Main High-Definition Workspace */}
+      {/* Main High-Definition Workspace */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
         
         {/* Superior Top Header */}
@@ -3120,6 +3092,32 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
               <button style={{ padding: "10px 24px", background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, fontSize: 12, cursor: "pointer", boxShadow: `0 10px 20px ${EH_PRIMARY}33` }}>INITIALIZE</button>
             </div>
           </div>
+        </div>
+
+        {/* Horizontal Navigation Tabs */}
+        <div style={{ 
+          display: "flex", 
+          alignItems: "center", 
+          gap: 6, 
+          padding: "0 40px", 
+          background: "#0d0f11", 
+          borderBottom: `1px solid ${EH_BORDER}`,
+          flexShrink: 0
+        }}>
+          {WORKSPACE_TABS.map(([id, lbl]) => (
+            <div key={id} onClick={() => setTab(id)} style={{ 
+              display: "flex", alignItems: "center", gap: 10, padding: "14px 20px", 
+              cursor: "pointer", borderBottom: tab === id ? `3px solid ${EH_PRIMARY}` : "3px solid transparent",
+              color: tab === id ? EH_PRIMARY : "#94a3b8", transition: "0.2s",
+              fontWeight: 800, fontSize: 12, letterSpacing: 1
+            }}
+            onMouseEnter={e => { if (tab !== id) e.currentTarget.style.color = "#fff"; }}
+            onMouseLeave={e => { if (tab !== id) e.currentTarget.style.color = "#94a3b8"; }}
+            >
+              <span style={{ fontSize: 18 }}>{id === "pipeline" ? "⚛" : id === "timeline" ? "⎙" : id === "chat" ? "⌨" : id === "team" ? "⧉" : "⌬"}</span>
+              <span>{lbl.toUpperCase()}</span>
+            </div>
+          ))}
         </div>
 
         {/* Tab Body with depth */}
