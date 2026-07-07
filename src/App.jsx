@@ -2956,9 +2956,30 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
               const pct       = wsTasks.length ? Math.round((done/wsTasks.length)*100) : 0;
               const myRole    = ws.createdBy===user.id?"Admin":(wsMembers.find(m=>m.userId===user.id)?.role||"Member");
               return (
-                <div key={ws.id} onClick={()=>openWs(ws.id)} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:14, padding:"20px", cursor:"pointer", transition:"border-color 0.15s" }}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(59,130,246,0.4)"}
-                  onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
+                <div 
+                  key={ws.id} 
+                  onClick={()=>openWs(ws.id)} 
+                  style={{ 
+                    background:"rgba(255,255,255,0.01)", 
+                    backdropFilter: "blur(16px)",
+                    border:"1px solid rgba(255,255,255,0.06)", 
+                    borderRadius:16, 
+                    padding:"22px", 
+                    cursor:"pointer", 
+                    transition:"all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)"
+                  }}
+                  onMouseEnter={e=>{
+                    e.currentTarget.style.borderColor = "rgba(0,184,217,0.4)";
+                    e.currentTarget.style.transform = "translateY(-6px)";
+                    e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,184,217,0.15)";
+                  }}
+                  onMouseLeave={e=>{
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.2)";
+                  }}
+                >
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                     <div style={{ fontWeight:800, fontSize:15, color:"#f1f5f9" }}>{ws.name}</div>
                     <EHBadge label={myRole} color={EH_ROLE_C[myRole]||"#6c63ff"} />
@@ -2967,10 +2988,23 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
                   <div style={{ height:4, background:"rgba(255,255,255,0.07)", borderRadius:2, overflow:"hidden", marginBottom:10 }}>
                     <div style={{ height:"100%", width:`${pct}%`, background:pct>=80?"#22c55e":pct>=40?"#f59e0b":"#3b82f6", borderRadius:2, transition:"width 0.4s" }} />
                   </div>
-                  <div style={{ display:"flex", gap:14, fontSize:12, color:"#64748b" }}>
-                    <span>📋 {wsTasks.length} tasks</span>
-                    <span>👥 {wsMembers.length+1} members</span>
-                    <span style={{ marginLeft:"auto", fontWeight:700, color:pct>=80?"#22c55e":pct>=40?"#f59e0b":"#3b82f6" }}>{pct}%</span>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:16, borderTop:"1px solid rgba(255,255,255,0.03)", paddingTop:12 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+                      <span style={{ fontSize:12, color:"#64748b", fontWeight:700 }}>📋 {wsTasks.length} tasks</span>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {[ws.createdByName, ...wsMembers.map(m=>m.name)].slice(0, 4).map((name, idx) => (
+                          <div key={idx} style={{ marginLeft: idx === 0 ? 0 : -8, border: "2px solid #08090a", borderRadius: "50%", overflow: "hidden" }} title={name}>
+                            <EHAvatar name={name} size={22} />
+                          </div>
+                        ))}
+                        {[ws.createdByName, ...wsMembers.map(m=>m.name)].length > 4 && (
+                          <span style={{ fontSize: 10, color: "#64748b", marginLeft: 6, fontWeight: 800 }}>
+                            +{[ws.createdByName, ...wsMembers.map(m=>m.name)].length - 4}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span style={{ fontWeight:800, fontSize:13, color:pct>=80?"#22c55e":pct>=40?"#f59e0b":"#3b82f6" }}>{pct}%</span>
                   </div>
                 </div>
               );
@@ -3037,6 +3071,91 @@ function EHCreateWorkspace({ user, eh, setEH, onDone, onCancel }) {
           <div style={{ display:"flex", gap:10 }}>
             <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
             <button onClick={create} style={{ flex:2, padding:"11px 0", background:"linear-gradient(135deg,#3b82f6,#6c63ff)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Create Workspace</button>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ═══ JOIN WORKSPACE ══════════════════════════════════════════════════════════
+function EHJoinWorkspace({ user, eh, setEH, onDone, onCancel }) {
+  const [form, setForm] = useState({ id: "", accessCode: "" });
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const join = () => {
+    if (!form.id.trim()) return setErr("Workspace ID is required.");
+    if (!form.accessCode.trim()) return setErr("Access Code is required.");
+    setErr("");
+
+    const targetWs = (eh.workspaces || []).find(w => w.id === form.id.trim());
+    if (!targetWs) return setErr("Workspace not found. Check the ID.");
+
+    if (targetWs.accessCode !== form.accessCode.trim()) {
+      return setErr("Incorrect Access Code.");
+    }
+
+    if (targetWs.createdBy === user.id) {
+      return setErr("You are the creator of this workspace.");
+    }
+
+    const isApprovedMember = (eh.members || []).some(
+      m => m.workspaceId === targetWs.id && m.userId === user.id && m.status === "Approved"
+    );
+    if (isApprovedMember) {
+      return setErr("You are already an approved member of this workspace.");
+    }
+
+    const hasPendingRequest = (eh.joinRequests || []).some(
+      r => r.workspaceId === targetWs.id && r.userId === user.id && r.status === "Pending"
+    );
+    if (hasPendingRequest) {
+      return setErr("A join request is already pending approval from the admin.");
+    }
+
+    // Create new join request
+    const reqId = uid();
+    const newRequest = {
+      id: reqId,
+      workspaceId: targetWs.id,
+      userId: user.id,
+      userName: user.name,
+      userEmail: user.email || "",
+      status: "Pending",
+      createdAt: new Date().toISOString()
+    };
+
+    setEH(prev => ({
+      ...prev,
+      joinRequests: [...(prev.joinRequests || []), newRequest]
+    }));
+
+    setSuccess(`Successfully requested to join "${targetWs.name}". Waiting for Admin approval.`);
+    setTimeout(() => {
+      onDone();
+    }, 2000);
+  };
+
+  return (
+    <div>
+      <PageHeader title="Join Workspace" subtitle="Access an existing Execution Hub workspace" actions={<Btn variant="secondary" onClick={onCancel}>← Cancel</Btn>} />
+      <div style={{ padding:"28px 32px", maxWidth:560 }}>
+        <Card>
+          <div style={{ fontWeight:700, fontSize:15, color:"#f1f5f9", marginBottom:18 }}>Join Workspace Details</div>
+          {err && <div style={{ background:"rgba(239,68,68,0.1)", border:"1px solid #ef444433", borderRadius:8, padding:"8px 12px", color:"#f87171", fontSize:13, marginBottom:14 }}>{err}</div>}
+          {success && <div style={{ background:"rgba(34,197,94,0.1)", border:"1px solid #22c55e33", borderRadius:8, padding:"8px 12px", color:"#4ade80", fontSize:13, marginBottom:14 }}>{success}</div>}
+          
+          <Field label="Workspace ID *">
+            <Inp value={form.id} onChange={v=>setForm({...form,id:v})} placeholder="e.g. k8s9p2w1" />
+          </Field>
+          <Field label="Access Code *">
+            <Inp value={form.accessCode} onChange={v=>setForm({...form,accessCode:v})} placeholder="e.g. A3FG79" />
+          </Field>
+
+          <div style={{ display:"flex", gap:10, marginTop:20 }}>
+            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
+            <button onClick={join} style={{ flex:2, padding:"11px 0", background:"linear-gradient(135deg,#00B8D9,#008AA1)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Submit Request</button>
           </div>
         </Card>
       </div>
@@ -3207,7 +3326,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
         <div style={{ flex: 1, overflow: "hidden", position: "relative", background: "radial-gradient(circle at 50% 50%, #0d0f11 0%, #08090a 100%)" }}>
           {tab==="pipeline"  && <EHPipeline  user={user} ws={ws} tasks={tasks.filter(t=>t.title.toLowerCase().includes(searchQuery.toLowerCase()))} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} onSelectTask={setSelectedTask} selectedTaskId={liveTask?.id} />}
           {tab==="timeline"  && <EHTimeline  tasks={tasks} ws={ws} members={members} />}
-          {tab==="chat"      && <EHIntelligence user={user} ws={ws} eh={eh} setEH={setEH} members={members} />}
+          {tab==="chat"      && <EHChat user={user} ws={ws} eh={eh} setEH={setEH} addLog={addLog} />}
           {tab==="team"      && <EHTeam      user={user} ws={ws} eh={eh} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} />}
           {tab==="insights"  && <EHInsights  tasks={tasks} members={members} ws={ws} eh={eh} />}
         </div>
@@ -3239,6 +3358,25 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
     setShowCreate(false);
   };
 
+  const handleDrop = (e, statusKey) => {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData("text/plain");
+    if (!taskId) return;
+    
+    setEH(prev => {
+      const updatedTasks = (prev.tasks || []).map(t => {
+        if (t.id === taskId) {
+          if (t.status !== statusKey) {
+            addLog(`Moved task "${t.title}" to ${EH_STATUS[statusKey].label}`);
+            return { ...t, status: statusKey, updatedAt: new Date().toISOString() };
+          }
+        }
+        return t;
+      });
+      return { ...prev, tasks: updatedTasks };
+    });
+  };
+
   return (
     <div style={{ height: "100%", display: "flex", gap: 24, padding: "24px 40px", overflowX: "auto", scrollbarWidth: "none" }}>
       {Object.keys(EH_STATUS).map(statusKey => {
@@ -3247,11 +3385,16 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
         const isOverWIP = colTasks.length > meta.wip;
 
         return (
-          <div key={statusKey} style={{ 
-            width: 320, minWidth: 320, background: "rgba(255,255,255,0.02)", borderRadius: 16, display: "flex", flexDirection: "column",
-            border: `1px solid ${isOverWIP ? "#ef4444" : EH_BORDER}`, transition: "0.3s",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
-          }}>
+          <div 
+            key={statusKey} 
+            onDragOver={e => e.preventDefault()}
+            onDrop={e => handleDrop(e, statusKey)}
+            style={{ 
+              width: 320, minWidth: 320, background: "rgba(255,255,255,0.02)", borderRadius: 16, display: "flex", flexDirection: "column",
+              border: `1px solid ${isOverWIP ? "#ef4444" : EH_BORDER}`, transition: "0.3s",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+            }}
+          >
             <div style={{ padding: "18px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 13, fontWeight: 900, color: meta.color, letterSpacing: 1.5, fontFamily: 'Orbitron' }}>{meta.label.toUpperCase()}</span>
@@ -3261,7 +3404,14 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
             </div>
             <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: 14 }}>
               {colTasks.map(t => (
-                <EHCard key={t.id} task={t} members={members} onSelect={() => onSelectTask(t)} active={selectedTaskId === t.id} />
+                <EHCard 
+                  key={t.id} 
+                  task={t} 
+                  members={members} 
+                  onSelect={() => onSelectTask(t)} 
+                  active={selectedTaskId === t.id} 
+                  onDragStart={e => e.dataTransfer.setData("text/plain", t.id)}
+                />
               ))}
               {isAdmin && statusKey === "Backlog" && (
                  <button onClick={() => setShowCreate(true)} style={{ background: "rgba(255,255,255,0.02)", border: `1px dashed ${EH_BORDER}`, color: "#475569", padding: "14px", borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 900, letterSpacing: 1, transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.borderColor=EH_PRIMARY}>+ CREATE ISSUE</button>
@@ -3300,12 +3450,14 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
   );
 }
 
-function EHCard({ task, members, onSelect, active }) {
+function EHCard({ task, members, onSelect, active, onDragStart }) {
   const p = EH_PRIORITY[task.priority] || EH_PRIORITY.Medium;
   const assignee = members.find(m=>m.userId===task.assignedTo);
 
   return (
     <div 
+      draggable
+      onDragStart={onDragStart}
       onClick={onSelect}
       style={{ 
         padding: "16px", background: active ? "linear-gradient(135deg, #1c2126, #111316)" : "#0d0f11", border: `1px solid ${active ? EH_PRIMARY : EH_BORDER}`,
