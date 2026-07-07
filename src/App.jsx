@@ -1929,23 +1929,57 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         parts: [{ text: m.content }]
       }));
 
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: geminiContents,
-          systemInstruction: {
-            parts: [{ text: systemPrompt }]
-          },
-          tools,
-          generationConfig: {
-            temperature: 0.7
+      const modelFallbacks = [
+        "gemini-2.0-flash",
+        "gemini-1.5-flash",
+        "gemini-1.5-flash-latest",
+        "gemini-2.0-flash-exp"
+      ];
+      
+      let res = null;
+      let data = null;
+      let modelUsed = "";
+      
+      for (const modelName of modelFallbacks) {
+        try {
+          res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: geminiContents,
+              systemInstruction: {
+                parts: [{ text: systemPrompt }]
+              },
+              tools,
+              generationConfig: {
+                temperature: 0.7
+              }
+            })
+          });
+          data = await res.json();
+          
+          if (data.error) {
+            if (data.error.message.includes("not found") || data.error.message.includes("not supported")) {
+              console.warn(`Model ${modelName} not found, trying fallback...`);
+              continue;
+            } else {
+              throw new Error(data.error.message);
+            }
           }
-        })
-      });
-
-      const data = await res.json();
-      if (data.error) throw new Error(data.error.message);
+          
+          modelUsed = modelName;
+          break;
+        } catch (err) {
+          console.error(`Error with model ${modelName}:`, err);
+          if (modelName === modelFallbacks[modelFallbacks.length - 1]) {
+            throw err;
+          }
+        }
+      }
+      
+      if (!res || !data) {
+        throw new Error("All Gemini models failed to generate content.");
+      }
 
       const candidate = data.candidates?.[0];
       const modelContent = candidate?.content;
@@ -1964,7 +1998,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
 
           window.dispatchEvent(new Event("storage"));
 
-          const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelUsed}:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
