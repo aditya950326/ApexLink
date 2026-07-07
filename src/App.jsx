@@ -1930,10 +1930,12 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
       }));
 
       const modelFallbacks = [
+        "gemini-2.5-flash",
+        "gemini-3.5-flash",
+        "gemini-3.1-flash-lite",
         "gemini-2.0-flash",
         "gemini-1.5-flash",
-        "gemini-1.5-flash-latest",
-        "gemini-2.0-flash-exp"
+        "gemini-1.5-flash-latest"
       ];
       
       let res = null;
@@ -1944,7 +1946,10 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         try {
           res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey
+            },
             body: JSON.stringify({
               contents: geminiContents,
               systemInstruction: {
@@ -1959,11 +1964,18 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
           data = await res.json();
           
           if (data.error) {
-            if (data.error.message.includes("not found") || data.error.message.includes("not supported")) {
-              console.warn(`Model ${modelName} not found, trying fallback...`);
+            const errMsg = data.error.message || "";
+            if (
+              errMsg.includes("not found") || 
+              errMsg.includes("not supported") || 
+              errMsg.includes("Quota") || 
+              errMsg.includes("quota") ||
+              errMsg.includes("limit")
+            ) {
+              console.warn(`Model ${modelName} failed (quota/not found), trying fallback...`);
               continue;
             } else {
-              throw new Error(data.error.message);
+              throw new Error(errMsg);
             }
           }
           
@@ -1977,9 +1989,11 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         }
       }
       
-      if (!res || !data) {
+      if (!res || !data || data.error) {
         throw new Error("All Gemini models failed to generate content.");
       }
+
+      console.log("Gemini API Response:", data);
 
       const candidate = data.candidates?.[0];
       const modelContent = candidate?.content;
@@ -2030,6 +2044,10 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
           const followUpCandidate = followUpData.candidates?.[0];
           reply = followUpCandidate?.content?.parts?.[0]?.text || "Your timetable has been successfully optimized! Open the Timetable tab to view it.";
         }
+      }
+
+      if (!reply && !modelPart?.functionCall) {
+        reply = `Debug Info: ${JSON.stringify(data)}`;
       }
 
       const aiMsg = { role: "assistant", content: reply || "Successfully processed request.", id: uid() };
