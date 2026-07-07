@@ -237,6 +237,69 @@ function useLS(key, init) {
 
   return [v, setV];
 }
+
+// ─── AI PRODUCTIVITY LOG PARSER ─────────────────────────────────────────────
+const parseProductivityLogs = (userId) => {
+  const habitsData = localStorage.getItem(`apx_habits_${userId}`);
+  const habitsList = localStorage.getItem(`apx_custom_habits_${userId}`);
+  const ehData = localStorage.getItem("apx_eh_v1");
+
+  let habits = [];
+  try { habits = habitsList ? JSON.parse(habitsList) : []; } catch (e) { habits = []; }
+  let habitLogs = {};
+  try { habitLogs = habitsData ? JSON.parse(habitsData) : {}; } catch (e) { habitLogs = {}; }
+  let ehTasks = [];
+  try {
+    const parsedEH = ehData ? JSON.parse(ehData) : {};
+    ehTasks = parsedEH.tasks || [];
+  } catch (e) { ehTasks = []; }
+
+  // Day-of-week counters (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+  const habitCompletionsByDay = Array(7).fill(0);
+  const habitPossibleByDay = Array(7).fill(0);
+  const taskCompletionsByDay = Array(7).fill(0);
+
+  // Parse Habit logs
+  Object.keys(habitLogs).forEach(dateStr => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return;
+    const dayOfWeek = date.getDay();
+    
+    const dayHabits = habitLogs[dateStr] || {};
+    habits.forEach(h => {
+      habitPossibleByDay[dayOfWeek]++;
+      const val = dayHabits[h.id];
+      if (val === "yes" || (typeof val === "number" && val >= h.target)) {
+        habitCompletionsByDay[dayOfWeek]++;
+      }
+    });
+  });
+
+  // Parse Execution Hub tasks
+  ehTasks.forEach(t => {
+    if (t.status === "Completed" && t.updatedAt) {
+      const date = new Date(t.updatedAt);
+      if (!isNaN(date.getTime())) {
+        const dayOfWeek = date.getDay();
+        taskCompletionsByDay[dayOfWeek]++;
+      }
+    }
+  });
+
+  const DAYS_ENG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  let report = "=== SQUAD & PERSONAL PRODUCTIVITY STATS ===\n";
+  for (let i = 0; i < 7; i++) {
+    const habitRatio = habitPossibleByDay[i] > 0 ? Math.round((habitCompletionsByDay[i] / habitPossibleByDay[i]) * 100) : 0;
+    const tasksDone = taskCompletionsByDay[i];
+    report += `- ${DAYS_ENG[i]}: Habit Completion Rate = ${habitRatio}%, Collaborative Tasks Completed = ${tasksDone}\n`;
+  }
+  
+  const expVal = localStorage.getItem(`apx_warrior_exp_${userId}`) || "0";
+  report += `Current Gamified Warrior EXP: ${expVal} points.\n`;
+
+  return report;
+};
+
 // ─── LOG HELPERS (FIX 1 – structured log schema) ─────────────────────────────
 const makeLog = (minutes, note = "") => ({ minutesSpent: Number(minutes), note, editHistory: [], ts: new Date().toISOString() });
 const editLog = (existing, minutes, note) => ({ ...existing, minutesSpent: Number(minutes), note: note !== undefined ? note : existing.note, editHistory: [...(existing.editHistory || []), { val: existing.minutesSpent, ts: existing.ts }], ts: new Date().toISOString() });
@@ -1265,13 +1328,16 @@ function Dashboard({ user }) {
 }
 // ─── TIMETABLE BUILDER ────────────────────────────────────────────────────────
 function TimetableBuilder({ user }) {
-  const [subtab, setSubtab] = useState("setup");
+  const [timetable, setTimetable] = useLS(`apx_timetable_${user.id}`, null);
+  const [subtab, setSubtab] = useState(() => {
+    const stored = localStorage.getItem(`apx_timetable_${user.id}`);
+    return (stored && stored !== "undefined" && stored !== "null") ? "timetable" : "setup";
+  });
   const [tasks, setTasks] = useLS(`apx_tt_tasks_${user.id}`, []);
   const [constraints, setConstraints] = useLS(`apx_tt_con_${user.id}`, {
     wake: "07:00", sleep: "23:00", maxHours: 8, breakMin: 15, noWork: [],
     blocks: [] // [{id, start, end, label}]
   });
-  const [timetable, setTimetable] = useState(null);
   const [form, setForm] = useState({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
   const [newBlock, setNewBlock] = useState({ start:"", end:"", label:"" });
   const exportRef = useRef(null);
@@ -1702,6 +1768,75 @@ function VedAI({ user }) {
     if (activeChatId === id) setActiveChatId(null);
   };
 
+  const generateTimetableLocally = (tasks, constraints) => {
+    const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    const [wH, wM] = constraints.wake.split(":").map(Number);
+    const [sH, sM] = constraints.sleep.split(":").map(Number);
+    const wakeMin = wH*60+wM;
+    const sleepMin = sH*60+sM;
+    const maxMin = Math.min(constraints.maxHours * 60, sleepMin - wakeMin);
+
+    const sorted = [...tasks].sort((a,b) => {
+      const score = t => t.priority*3 + t.energy;
+      return score(b) - score(a);
+    });
+
+    const isBlocked = (startMin, endMin, blocks = []) => {
+      return blocks.some(b => {
+        const [bh, bm] = b.start.split(":").map(Number);
+        const [eh, em] = b.end.split(":").map(Number);
+        const bs = bh*60+bm, be = eh*60+em;
+        return startMin < be && endMin > bs;
+      });
+    };
+
+    const table = {};
+    DAYS.forEach((day, dayIdx) => {
+      if ((constraints.noWork || []).includes(day)) { table[day] = []; return; }
+      let cursor = wakeMin;
+      let usedMin = 0;
+      const slots = [];
+
+      sorted.forEach(task => {
+        if (task.type === "specific" && !(task.days || []).includes(day)) return;
+        if (usedMin + task.duration > maxMin) return;
+
+        let start = cursor;
+        if (task.preferStart) {
+          const [ph, pm] = task.preferStart.split(":").map(Number);
+          const preferred = ph*60+pm;
+          if (preferred > cursor && preferred + task.duration <= sleepMin) start = preferred;
+        }
+
+        let attempts = 0;
+        const blocks = constraints.blocks || [];
+        while (attempts < 40 && (isBlocked(start, start + task.duration, blocks) || start + task.duration > sleepMin)) {
+          start += 15;
+          attempts++;
+        }
+        if (start + task.duration > sleepMin) return;
+        if (isBlocked(start, start + task.duration, blocks)) return;
+
+        const sh = Math.floor(start/60), sm = start%60;
+        const eh = Math.floor((start+task.duration)/60), em = (start+task.duration)%60;
+        
+        slots.push({
+          ...task,
+          id: task.id || uid(),
+          start: `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")}`,
+          end: `${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`,
+          startMin: start
+        });
+        cursor = start + task.duration + (constraints.breakMin || 15);
+        usedMin += task.duration + (constraints.breakMin || 15);
+      });
+
+      table[day] = slots.sort((a,b) => a.startMin - b.startMin);
+    });
+
+    return table;
+  };
+
   const send = async (overrideMsg) => {
     const msg = overrideMsg || input.trim();
     if (!msg || loading) return;
@@ -1715,13 +1850,80 @@ function VedAI({ user }) {
     }
 
     const userMsg = { role: "user", content: msg, id: uid() };
-    const updatedMessages = [...(chat.messages || []), userMsg];
+    let updatedMessages = [...(chat.messages || []), userMsg];
     setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: updatedMessages, title: c.title === "New Chat" ? msg.slice(0, 30) : c.title } : c));
     setInput("");
     setLoading(true);
 
     try {
-      // 🛡️ FIX: Points to OpenAI and uses Bearer Token
+      const stats = parseProductivityLogs(user.id);
+      const systemPrompt = `You are VedAI, a productivity and study assistant for students and professionals. Help with scheduling, motivation, habit building, and productivity analysis. Be concise, actionable, and analytical.
+Here are the user's actual productivity stats computed from their habit logs and collaborative workspace tasks:
+${stats}
+
+Use this data to give custom recommendations (e.g. noting if they have a weekend slump, or suggesting optimizations).
+
+You also have a custom tool: update_user_timetable. You can call this tool to automatically create or update the user's timetable builder (slots and constraints) based on their study requirements or your optimization suggestions. Ensure you explain why you are updating their schedule before calling the tool.`;
+
+      const tools = [
+        {
+          type: "function",
+          function: {
+            name: "update_user_timetable",
+            description: "Automatically updates or generates the user's study timetable tasks and constraints in the Timetable Builder based on study habits and optimization criteria.",
+            parameters: {
+              type: "object",
+              properties: {
+                tasks: {
+                  type: "array",
+                  description: "A complete list of study tasks/subjects to schedule.",
+                  items: {
+                    type: "object",
+                    properties: {
+                      title: { type: "string", description: "Subject or task title (e.g. Physics Revision, Math Homework)" },
+                      priority: { type: "number", minimum: 1, maximum: 5, description: "Priority level from 1 (lowest) to 5 (highest)" },
+                      duration: { type: "number", description: "Duration of each session in minutes (e.g. 90, 120, 60)" },
+                      energy: { type: "number", minimum: 1, maximum: 5, description: "Energy required from 1 to 5" },
+                      taskType: { 
+                        type: "string", 
+                        enum: ["Deep Work","Revision","Practice","Reading","Exercise","Meeting","Leisure","Other"],
+                        description: "Category of the study slot" 
+                      },
+                      type: { type: "string", enum: ["daily","specific"], description: "Whether task repeats daily or on specific days" },
+                      days: { 
+                        type: "array", 
+                        items: { type: "string", enum: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
+                        description: "If type is specific, define which days this task should run"
+                      },
+                      preferStart: { type: "string", description: "Preferred start time in 24h format (e.g. '09:00', '15:30')" },
+                      preferEnd: { type: "string", description: "Preferred end time in 24h format (e.g. '11:00', '17:00')" }
+                    },
+                    required: ["title", "priority", "duration", "energy", "taskType", "type"]
+                  }
+                },
+                constraints: {
+                  type: "object",
+                  description: "User schedule boundary limits and wake/sleep cycles.",
+                  properties: {
+                    wake: { type: "string", description: "Wake up time (e.g. '07:00')" },
+                    sleep: { type: "string", description: "Sleep time (e.g. '23:00')" },
+                    maxHours: { type: "number", description: "Max study hours per day (e.g. 6, 8)" },
+                    breakMin: { type: "number", description: "Break duration in minutes between tasks (e.g. 15)" },
+                    noWork: { 
+                      type: "array", 
+                      items: { type: "string", enum: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
+                      description: "Days of the week the student does not want to study" 
+                    }
+                  },
+                  required: ["wake", "sleep", "maxHours", "breakMin"]
+                }
+              },
+              required: ["tasks", "constraints"]
+            }
+          }
+        }
+      ];
+
       const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: { 
@@ -1729,22 +1931,68 @@ function VedAI({ user }) {
           "Authorization": `Bearer ${apiKey}` 
         },
         body: JSON.stringify({
-          model: "gpt-4o", // Most powerful model
+          model: "gpt-4o",
           messages: [
-            { role: "system", content: "You are VedAI, a productivity and study assistant for students and professionals. Help with scheduling, motivation, habit building, and productivity analysis. Be concise and actionable." },
+            { role: "system", content: systemPrompt },
             ...updatedMessages.map(m => ({ role: m.role, content: m.content }))
           ],
+          tools,
+          tool_choice: "auto",
           temperature: 0.7
         })
       });
 
       const data = await res.json();
-      
-      // Handle API errors (like invalid key or zero balance)
       if (data.error) throw new Error(data.error.message);
 
-      const reply = data.choices?.[0]?.message?.content || "Sorry, I couldn't get a response.";
-      const aiMsg = { role: "assistant", content: reply, id: uid() };
+      const choice = data.choices?.[0];
+      const assistantMessage = choice?.message;
+      let reply = assistantMessage?.content || "";
+
+      if (assistantMessage?.tool_calls && assistantMessage.tool_calls.length > 0) {
+        const toolCall = assistantMessage.tool_calls[0];
+        if (toolCall.function.name === "update_user_timetable") {
+          const args = JSON.parse(toolCall.function.arguments);
+          const calculatedTable = generateTimetableLocally(args.tasks, args.constraints);
+          
+          localStorage.setItem(`apx_tt_tasks_${user.id}`, JSON.stringify(args.tasks));
+          localStorage.setItem(`apx_tt_con_${user.id}`, JSON.stringify(args.constraints));
+          localStorage.setItem(`apx_timetable_${user.id}`, JSON.stringify(calculatedTable));
+
+          window.dispatchEvent(new Event("storage"));
+
+          const toolResult = {
+            role: "tool",
+            tool_call_id: toolCall.id,
+            name: "update_user_timetable",
+            content: "Timetable generated and saved to LocalStorage database successfully."
+          };
+
+          const followUpRes = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${apiKey}` 
+            },
+            body: JSON.stringify({
+              model: "gpt-4o",
+              messages: [
+                { role: "system", content: systemPrompt },
+                ...updatedMessages.map(m => ({ role: m.role, content: m.content })),
+                assistantMessage,
+                toolResult
+              ]
+            })
+          });
+
+          const followUpData = await followUpRes.json();
+          if (followUpData.error) throw new Error(followUpData.error.message);
+          
+          reply = followUpData.choices?.[0]?.message?.content || "Your timetable has been successfully optimized! Open the Timetable tab to view it.";
+        }
+      }
+
+      const aiMsg = { role: "assistant", content: reply || "Successfully processed request.", id: uid() };
       setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: [...updatedMessages, aiMsg] } : c));
     } catch (e) {
       const errMsg = { role: "assistant", content: `Error: ${e.message}. Please check your OpenAI balance and key settings.`, id: uid() };
@@ -1790,13 +2038,23 @@ function VedAI({ user }) {
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
           {!activeChat && (
-            <div style={{ textAlign: "center", paddingTop: 60 }}>
+            <div style={{ textAlign: "center", paddingTop: 40 }}>
               <div style={{ fontSize: 40, marginBottom: 16 }}>🤖</div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#a78bfa", marginBottom: 8 }}>VedAI</div>
-              <div style={{ color: "#666", fontSize: 14, marginBottom: 24 }}>Your AI productivity assistant. Ask me anything!</div>
-              {["How can I improve my study schedule?","Give me anti-procrastination tips","Help me plan a productive week"].map(p => (
+              <div style={{ fontSize: 20, fontWeight: 700, color: "#a78bfa", marginBottom: 8 }}>VedAI Productivity Coach</div>
+              <div style={{ color: "#666", fontSize: 14, marginBottom: 24 }}>Analyzing your logs & sync-updating your Timetable in real-time.</div>
+              {[
+                "📊 Analyze Weekend Slump & Streaks",
+                "✨ Auto-Optimize Study Timetable",
+                "💡 Review Habits & Collaboration Logs",
+                "🎯 Prioritize Exam Deadlines in Timetable"
+              ].map(p => (
                 <button key={p} onClick={() => { newChat(); setTimeout(() => send(p), 100); }}
-                  style={{ display: "block", width: "100%", maxWidth: 400, margin: "0 auto 10px", padding: "12px 16px", background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)", borderRadius: 10, color: "#a78bfa", cursor: "pointer", fontSize: 14, textAlign: "left" }}>{p}</button>
+                  style={{ display: "block", width: "100%", maxWidth: 420, margin: "0 auto 10px", padding: "12px 16px", background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)", borderRadius: 10, color: "#a78bfa", cursor: "pointer", fontSize: 14, textAlign: "left", transition: "0.2s" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "rgba(108,99,255,0.2)"}
+                  onMouseLeave={e => e.currentTarget.style.background = "rgba(108,99,255,0.1)"}
+                >
+                  {p}
+                </button>
               ))}
             </div>
           )}
