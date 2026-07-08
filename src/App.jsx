@@ -1873,7 +1873,6 @@ function TimetableBuilder({ user }) {
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <div style={{ fontSize:16, fontWeight:700, color:"#111" }}>Weekly Schedule</div>
-                  <div style={{ fontSize:12, color:"#888" }}>Week of {new Date().toISOString().slice(0,10)}</div>
                 </div>
               </div>
               <table style={{ width:"100%", borderCollapse:"collapse" }}>
@@ -1883,7 +1882,6 @@ function TimetableBuilder({ user }) {
                     {DAYS.map(d=>(
                       <th key={d} style={{ border:"1px solid #ddd", padding:"10px 12px", fontSize:13, fontWeight:700, color:"#333", textAlign:"center", background:"#f8f8f8" }}>
                         <div>{d==="Mon"?"Monday":d==="Tue"?"Tuesday":d==="Wed"?"Wednesday":d==="Thu"?"Thursday":d==="Fri"?"Friday":d==="Sat"?"Saturday":"Sunday"}</div>
-                        {timetable && <div style={{ fontSize:11, color:"#888", fontWeight:400 }}>{new Date(Date.now() - (new Date().getDay()-1-(DAYS.indexOf(d)))*86400000).toISOString().slice(0,10)}</div>}
                       </th>
                     ))}
                   </tr>
@@ -1927,9 +1925,26 @@ function TimetableBuilder({ user }) {
             <style>{`
               @media print {
                 @page { size: A4 landscape; margin: 0.3in; }
+                html, body, #root, #root > div, .App, .app-container, .main-content {
+                  height: auto !important;
+                  overflow: visible !important;
+                  display: block !important;
+                  background: #fff !important;
+                  color: #000 !important;
+                }
                 body * { visibility: hidden; }
                 #tt-print, #tt-print * { visibility: visible; }
-                #tt-print { position: absolute; left: 0; top: 0; width: 100%; background: #fff; box-sizing: border-box; }
+                #tt-print { 
+                  position: absolute !important; 
+                  left: 0 !important; 
+                  top: 0 !important; 
+                  width: 100% !important; 
+                  height: auto !important;
+                  overflow: visible !important;
+                  background: #fff !important; 
+                  box-sizing: border-box !important; 
+                  display: block !important;
+                }
               }
             `}</style>
           </div>
