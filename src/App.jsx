@@ -1340,7 +1340,6 @@ function TimetableBuilder({ user }) {
   });
   const [history, setHistory] = useLS(`apx_tt_history_${user.id}`, []);
   const [form, setForm] = useState({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
-  const [newBlock, setNewBlock] = useState({ start:"", end:"", label:"" });
   const exportRef = useRef(null);
 
   const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -1389,24 +1388,7 @@ function TimetableBuilder({ user }) {
     setForm({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
   };
 
-  const addBlock = () => {
-    if (!newBlock.start || !newBlock.end || !newBlock.label.trim()) return;
-    const blocks = [...(constraints.blocks || []), { ...newBlock, id: uid() }];
-    setConstraints({ ...constraints, blocks });
-    setNewBlock({ start:"", end:"", label:"" });
-  };
 
-  const removeBlock = (id) => setConstraints({ ...constraints, blocks: (constraints.blocks||[]).filter(b=>b.id!==id) });
-
-  // Check if a time slot [startMin, endMin) overlaps any blocked range
-  const isBlocked = (startMin, endMin) => {
-    return (constraints.blocks || []).some(b => {
-      const [bh, bm] = b.start.split(":").map(Number);
-      const [eh, em] = b.end.split(":").map(Number);
-      const bs = bh*60+bm, be = eh*60+em;
-      return startMin < be && endMin > bs;
-    });
-  };
 
   const generate = () => {
     const [wH, wM] = constraints.wake.split(":").map(Number);
@@ -1439,12 +1421,11 @@ function TimetableBuilder({ user }) {
         }
 
         let attempts = 0;
-        while (attempts < 40 && (isBlocked(start, start + task.duration) || start + task.duration > sleepMin)) {
+        while (attempts < 40 && start + task.duration > sleepMin) {
           start += 15;
           attempts++;
         }
         if (start + task.duration > sleepMin) return;
-        if (isBlocked(start, start + task.duration)) return;
 
         const sh = Math.floor(start/60), sm = start%60;
         const eh = Math.floor((start+task.duration)/60), em = (start+task.duration)%60;
@@ -1456,24 +1437,6 @@ function TimetableBuilder({ user }) {
         });
         cursor = start + task.duration + constraints.breakMin;
         usedMin += task.duration + constraints.breakMin;
-      });
-
-      // Inject blocked constraints (rendered in red #ef4444)
-      (constraints.blocks || []).forEach(b => {
-        const [sh, sm] = b.start.split(":").map(Number);
-        const [eh, em] = b.end.split(":").map(Number);
-        slots.push({
-          id: b.id,
-          title: b.label,
-          taskType: "Blocked",
-          start: b.start,
-          end: b.end,
-          startMin: sh*60+sm,
-          duration: (eh*60+em) - (sh*60+sm),
-          priority: 5,
-          energy: 1,
-          isBlockSlot: true
-        });
       });
 
       // Sort by start time for display
@@ -1690,24 +1653,7 @@ function TimetableBuilder({ user }) {
                 </div>
               </Field>
 
-              {/* Block time slots */}
-              <div style={{ marginTop:16, paddingTop:16, borderTop:"1px solid rgba(255,255,255,0.07)" }}>
-                <div style={{ fontSize:13, fontWeight:700, color:"#aaa", marginBottom:12, textTransform:"uppercase", letterSpacing:0.5 }}>Block Time Slots</div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr auto", gap:8, alignItems:"flex-end", marginBottom:10 }}>
-                  <Field label="From"><Inp type="time" value={newBlock.start} onChange={v=>setNewBlock({...newBlock,start:v})} /></Field>
-                  <Field label="To"><Inp type="time" value={newBlock.end} onChange={v=>setNewBlock({...newBlock,end:v})} /></Field>
-                  <Field label="Label"><Inp value={newBlock.label} onChange={v=>setNewBlock({...newBlock,label:v})} placeholder="College" /></Field>
-                  <Btn small onClick={addBlock} style={{ marginBottom:16 }}>Add</Btn>
-                </div>
-                {(constraints.blocks||[]).map(b=>(
-                  <div key={b.id} style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(239,68,68,0.1)", border:"1px solid rgba(239,68,68,0.2)", borderRadius:8, padding:"7px 12px", marginBottom:6 }}>
-                    <span style={{ fontSize:13, color:"#f87171", flex:1 }}>🚫 {b.start}–{b.end} · {b.label}</span>
-                    <button onClick={()=>removeBlock(b.id)} style={{ background:"none", border:"none", color:"#f87171", cursor:"pointer", fontSize:16 }}>×</button>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ marginTop:16, display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ marginTop:24, display:"flex", flexDirection:"column", gap:10 }}>
                 <button onClick={generate} style={{ padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:14, cursor:"pointer", boxShadow:"0 4px 16px rgba(139,92,246,0.25)" }}>
                   ✨ Generate Timetable
                 </button>
@@ -1836,11 +1782,10 @@ function TimetableBuilder({ user }) {
               <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Schedule Analytics</div>
               {timetable ? (
                 <>
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:20 }}>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:20 }}>
                     {[
                       ["Total Tasks", tasks.length, "#6c63ff"],
                       ["Work Days", DAYS.filter(d=>!constraints.noWork.includes(d)).length, "#22c55e"],
-                      ["Blocked Slots", (constraints.blocks||[]).length, "#ef4444"],
                       ["Daily Avg", tasks.length ? Math.round(tasks.reduce((s,t)=>s+t.duration,0)/60*10)/10+"h" : "0h", "#f59e0b"],
                     ].map(([l,v,c])=>(
                       <div key={l} style={{ background:c+"11", border:`1px solid ${c}33`, borderRadius:12, padding:"16px 14px" }}>
