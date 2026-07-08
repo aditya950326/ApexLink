@@ -1504,7 +1504,88 @@ function TimetableBuilder({ user }) {
       const html2canvas = (await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.js")).default;
       const canvas = await html2canvas(exportRef.current, { backgroundColor:"#0a0a0f", scale:2 });
       const a = document.createElement("a"); a.download="timetable.png"; a.href=canvas.toDataURL(); a.click();
-    } catch { window.print(); }
+    } catch { printTimetableCleanly(); }
+  };
+
+  const printTimetableCleanly = () => {
+    const printContent = document.getElementById("tt-print");
+    if (!printContent) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <html>
+        <head>
+          <title>Weekly Schedule</title>
+          <style>
+            @page { size: A4 landscape; margin: 8mm; }
+            body { 
+              font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; 
+              margin: 0; 
+              padding: 0; 
+              background: #fff; 
+              color: #111; 
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #tt-print {
+              width: 100% !important;
+              max-width: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              box-shadow: none !important;
+              background: #fff !important;
+              color: #111 !important;
+            }
+            table { 
+              width: 100%; 
+              border-collapse: collapse; 
+              margin-top: 10px;
+            }
+            th, td { 
+              border: 1px solid #d1d5db !important; 
+              padding: 6px 8px !important; 
+              font-size: 11px !important; 
+              vertical-align: top !important;
+              height: 38px !important;
+              box-sizing: border-box !important;
+            }
+            th { 
+              background: #f3f4f6 !important; 
+              font-weight: 700 !important; 
+              color: #1f2937 !important;
+              text-align: center !important;
+            }
+            /* Explicit color-adjust guarantees backgrounds render */
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent.outerHTML}
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+    }, 500);
   };
 
   return (
@@ -1512,7 +1593,7 @@ function TimetableBuilder({ user }) {
       <PageHeader title="Timetable Planner" subtitle="Constraint-based intelligent scheduling"
         actions={subtab==="timetable" && timetable ? (
           <div style={{display:"flex",gap:8}}>
-            <Btn variant="secondary" onClick={()=>window.print()}>🖨 Print Timetable</Btn>
+            <Btn variant="secondary" onClick={printTimetableCleanly}>🖨 Print Timetable</Btn>
             <Btn onClick={downloadImage}>⬇ Download Image</Btn>
           </div>
         ) : null}
@@ -1854,7 +1935,7 @@ function TimetableBuilder({ user }) {
         {subtab === "printable" && (
           <div>
             <div style={{ display:"flex", gap:10, marginBottom:20 }}>
-              <Btn onClick={()=>window.print()}>🖨 Print Timetable</Btn>
+              <Btn onClick={printTimetableCleanly}>🖨 Print Timetable</Btn>
               <Btn variant="secondary" onClick={downloadImage}>⬇ Download Image</Btn>
             </div>
             {/* White print-friendly layout */}
