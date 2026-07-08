@@ -1338,13 +1338,50 @@ function TimetableBuilder({ user }) {
     wake: "07:00", sleep: "23:00", maxHours: 8, breakMin: 15, noWork: [],
     blocks: [] // [{id, start, end, label}]
   });
+  const [history, setHistory] = useLS(`apx_tt_history_${user.id}`, []);
   const [form, setForm] = useState({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
   const [newBlock, setNewBlock] = useState({ start:"", end:"", label:"" });
   const exportRef = useRef(null);
 
   const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   const TASK_TYPES = ["Deep Work","Revision","Practice","Reading","Exercise","Meeting","Leisure","Other"];
-  const COLOR_MAP = { "Deep Work":"#6c63ff","Revision":"#3b82f6","Practice":"#22c55e","Reading":"#f59e0b","Exercise":"#ef4444","Meeting":"#ec4899","Leisure":"#8b5cf6","Other":"#64748b" };
+  const COLOR_MAP = { "Deep Work":"#6c63ff","Revision":"#3b82f6","Practice":"#22c55e","Reading":"#f59e0b","Exercise":"#ef4444","Meeting":"#ec4899","Leisure":"#8b5cf6","Other":"#64748b","Blocked":"#ef4444" };
+
+  const PRESETS = [
+    {
+      name: "🎓 Exam Cram",
+      tasks: [
+        { id: "1", title: "Math Deep Practice", priority: 5, duration: 120, energy: 5, type: "daily", days: [], preferStart: "08:30", preferEnd: "10:30", taskType: "Practice", recurrence: "daily" },
+        { id: "2", title: "Physics Revision", priority: 4, duration: 90, energy: 4, type: "daily", days: [], preferStart: "11:00", preferEnd: "12:30", taskType: "Revision", recurrence: "daily" },
+        { id: "3", title: "Chemistry Mock Paper", priority: 4, duration: 120, energy: 4, type: "daily", days: [], preferStart: "14:00", preferEnd: "16:00", taskType: "Practice", recurrence: "daily" },
+        { id: "4", title: "Formula Active Recall", priority: 3, duration: 60, energy: 3, type: "daily", days: [], preferStart: "17:00", preferEnd: "18:00", taskType: "Reading", recurrence: "daily" }
+      ],
+      constraints: { wake: "07:00", sleep: "23:00", maxHours: 10, breakMin: 15, noWork: [], blocks: [] }
+    },
+    {
+      name: "⚖️ Balanced Plan",
+      tasks: [
+        { id: "1", title: "Deep Work coding", priority: 4, duration: 150, energy: 5, type: "daily", days: [], preferStart: "09:00", preferEnd: "11:30", taskType: "Deep Work", recurrence: "daily" },
+        { id: "2", title: "Literature Reading", priority: 3, duration: 60, energy: 2, type: "daily", days: [], preferStart: "13:30", preferEnd: "14:30", taskType: "Reading", recurrence: "daily" },
+        { id: "3", title: "Topic Revision", priority: 3, duration: 90, energy: 3, type: "daily", days: [], preferStart: "15:30", preferEnd: "17:00", taskType: "Revision", recurrence: "daily" },
+        { id: "4", title: "Cardio Exercise", priority: 3, duration: 45, energy: 4, type: "daily", days: [], preferStart: "18:00", preferEnd: "18:45", taskType: "Exercise", recurrence: "daily" }
+      ],
+      constraints: { wake: "07:30", sleep: "22:30", maxHours: 7, breakMin: 20, noWork: ["Sun"], blocks: [] }
+    },
+    {
+      name: "🏃 Light Review",
+      tasks: [
+        { id: "1", title: "Java revision", priority: 4, duration: 90, energy: 3, type: "daily", days: [], preferStart: "10:00", preferEnd: "11:30", taskType: "Revision", recurrence: "daily" },
+        { id: "2", title: "History reading", priority: 2, duration: 60, energy: 2, type: "daily", days: [], preferStart: "15:00", preferEnd: "16:00", taskType: "Reading", recurrence: "daily" }
+      ],
+      constraints: { wake: "08:00", sleep: "23:00", maxHours: 5, breakMin: 15, noWork: ["Sat", "Sun"], blocks: [] }
+    }
+  ];
+
+  const loadPreset = (preset) => {
+    setTasks(preset.tasks);
+    setConstraints(preset.constraints);
+  };
 
   const addTask = () => {
     if (!form.title.trim()) return;
@@ -1385,18 +1422,15 @@ function TimetableBuilder({ user }) {
 
     const table = {};
     DAYS.forEach((day, dayIdx) => {
-      const dayNum = dayIdx + 1; // 1=Mon...7=Sun
       if (constraints.noWork.includes(day)) { table[day] = []; return; }
       let cursor = wakeMin;
       let usedMin = 0;
       const slots = [];
 
       sorted.forEach(task => {
-        // Filter by day
         if (task.type === "specific" && !task.days.includes(day)) return;
         if (usedMin + task.duration > maxMin) return;
 
-        // Apply preferred time slot
         let start = cursor;
         if (task.preferStart) {
           const [ph, pm] = task.preferStart.split(":").map(Number);
@@ -1404,7 +1438,6 @@ function TimetableBuilder({ user }) {
           if (preferred > cursor && preferred + task.duration <= sleepMin) start = preferred;
         }
 
-        // Skip blocked slots - find next free window
         let attempts = 0;
         while (attempts < 40 && (isBlocked(start, start + task.duration) || start + task.duration > sleepMin)) {
           start += 15;
@@ -1418,17 +1451,48 @@ function TimetableBuilder({ user }) {
         slots.push({ ...task,
           start: `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")}`,
           end: `${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`,
-          startMin: start
+          startMin: start,
+          isBlockSlot: false
         });
         cursor = start + task.duration + constraints.breakMin;
         usedMin += task.duration + constraints.breakMin;
       });
 
+      // Inject blocked constraints (rendered in red #ef4444)
+      (constraints.blocks || []).forEach(b => {
+        const [sh, sm] = b.start.split(":").map(Number);
+        const [eh, em] = b.end.split(":").map(Number);
+        slots.push({
+          id: b.id,
+          title: b.label,
+          taskType: "Blocked",
+          start: b.start,
+          end: b.end,
+          startMin: sh*60+sm,
+          duration: (eh*60+em) - (sh*60+sm),
+          priority: 5,
+          energy: 1,
+          isBlockSlot: true
+        });
+      });
+
       // Sort by start time for display
       table[day] = slots.sort((a,b) => a.startMin - b.startMin);
     });
+
     setTimetable(table);
     setSubtab("timetable");
+
+    // Snapshot current timetable configuration to history
+    const newHistoryItem = {
+      id: uid(),
+      name: `Schedule generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+      createdAt: new Date().toISOString(),
+      tasks: [...tasks],
+      constraints: { ...constraints },
+      timetable: table
+    };
+    setHistory([newHistoryItem, ...history]);
   };
 
   // Build hour rows for time-grid view (5:00–22:00)
@@ -1464,6 +1528,25 @@ function TimetableBuilder({ user }) {
         {/* ── SETUP TAB ── */}
         {subtab === "setup" && (
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
+            {/* Quick presets row */}
+            <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}>✨ LOAD STUDY PRESETS:</span>
+              {PRESETS.map(p => (
+                <button 
+                  key={p.name} 
+                  onClick={() => { loadPreset(p); }} 
+                  style={{ 
+                    padding: "8px 16px", background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.2)", 
+                    borderRadius: 10, color: "#a78bfa", fontWeight: 700, fontSize: 12, cursor: "pointer", transition: "0.2s" 
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.18)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.08)"; }}
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+
             {/* Create task form */}
             <Card>
               <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Create New Task</div>
@@ -1544,11 +1627,8 @@ function TimetableBuilder({ user }) {
               </div>
 
               <div style={{ marginTop:16, display:"flex", flexDirection:"column", gap:10 }}>
-                <button onClick={()=>setTasks(t=>t)} style={{ padding:"11px 0", background:"rgba(34,197,94,0.15)", border:"1px solid rgba(34,197,94,0.3)", borderRadius:10, color:"#22c55e", fontWeight:700, fontSize:14, cursor:"pointer" }}>
-                  ✓ Save Constraints
-                </button>
-                <button onClick={generate} style={{ padding:"11px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, fontSize:14, cursor:"pointer" }}>
-                  ✨ Next: Generate Timetable
+                <button onClick={generate} style={{ padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:14, cursor:"pointer", boxShadow:"0 4px 16px rgba(139,92,246,0.25)" }}>
+                  ✨ Generate Timetable
                 </button>
               </div>
             </Card>
@@ -1557,7 +1637,30 @@ function TimetableBuilder({ user }) {
             {tasks.length > 0 && (
               <div style={{ gridColumn:"1/-1" }}>
                 <Card>
-                  <div style={{ fontSize:14, fontWeight:700, color:"#aaa", marginBottom:12 }}>TASKS ({tasks.length})</div>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+                    <div style={{ fontSize:14, fontWeight:800, color:"#aaa", letterSpacing:0.5 }}>ACTIVE TASKS ({tasks.length})</div>
+                    {/* Visual Category Bar Mix */}
+                    {tasks.length > 0 && (() => {
+                      const counts = {};
+                      tasks.forEach(t => { counts[t.taskType] = (counts[t.taskType] || 0) + t.duration; });
+                      const totalDuration = tasks.reduce((s,t) => s + t.duration, 0);
+                      
+                      return (
+                        <div style={{ display:"flex", gap:3, width:260, height:8, borderRadius:4, overflow:"hidden", background:"rgba(255,255,255,0.05)" }}>
+                          {Object.keys(counts).map(type => {
+                            const pct = Math.round((counts[type] / totalDuration) * 100);
+                            return (
+                              <div 
+                                key={type} 
+                                style={{ width: `${pct}%`, background: COLOR_MAP[type] || "#6c63ff", height: "100%" }} 
+                                title={`${type}: ${pct}% (${Math.round(counts[type]/60*10)/10}h)`}
+                              />
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
                   <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
                     {tasks.map(t=>(
                       <div key={t.id} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:10, padding:"12px 14px", display:"flex", flexDirection:"column", gap:6 }}>
@@ -1601,14 +1704,29 @@ function TimetableBuilder({ user }) {
                         <tr key={h}>
                           <td style={{ padding:"8px 12px", border:"1px solid rgba(255,255,255,0.05)", color:"#64748b", fontSize:12, verticalAlign:"top", whiteSpace:"nowrap" }}>{hourStr}</td>
                           {DAYS.map(d=>{
-                            const slot = (timetable[d]||[]).find(s=>s.start.startsWith(String(h).padStart(2,"0")));
+                            const slot = (timetable[d]||[]).find(s => {
+                              const [sh] = s.start.split(":").map(Number);
+                              const [eh, em] = s.end.split(":").map(Number);
+                              const endHourFloat = eh + (em > 0 ? 0.5 : 0);
+                              return h >= sh && h < Math.max(sh + 1, endHourFloat);
+                            });
                             const color = slot ? (COLOR_MAP[slot.taskType]||"#6c63ff") : null;
                             return (
-                              <td key={d} style={{ padding:"4px 6px", border:"1px solid rgba(255,255,255,0.05)", verticalAlign:"top", minWidth:90, height:44 }}>
+                              <td key={d} style={{ padding:"4px 6px", border:"1px solid rgba(255,255,255,0.05)", verticalAlign:"top", minWidth:110, height:48 }}>
                                 {slot && (
-                                  <div style={{ background:color+"25", borderLeft:`3px solid ${color}`, borderRadius:5, padding:"4px 7px" }}>
-                                    <div style={{ fontSize:12, fontWeight:700, color:"#f1f5f9", lineHeight:1.2 }}>{slot.title}</div>
-                                    <div style={{ fontSize:10, color:"#888" }}>{slot.start}–{slot.end}</div>
+                                  <div style={{ 
+                                    background: color+"15", 
+                                    borderLeft:`3px solid ${color}`, 
+                                    borderRadius:8, 
+                                    padding:"6px 10px",
+                                    border:`1px solid ${color}33`,
+                                    boxShadow:`0 4px 12px ${color}11`
+                                  }}>
+                                    <div style={{ fontSize:12, fontWeight:800, color:"#f1f5f9", lineHeight:1.2 }}>{slot.title}</div>
+                                    <div style={{ fontSize:10, color:"#888", marginTop:3, display:"flex", justifyContent:"space-between" }}>
+                                      <span>{slot.start}–{slot.end}</span>
+                                      {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}>⚡{slot.energy}</span>}
+                                    </div>
                                   </div>
                                 )}
                               </td>
@@ -1632,42 +1750,104 @@ function TimetableBuilder({ user }) {
 
         {/* ── ANALYTICS & ADAPTATION TAB ── */}
         {subtab === "analytics" && (
-          <Card>
-            <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Schedule Analytics</div>
-            {timetable ? (
-              <>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:20 }}>
-                  {[
-                    ["Total Tasks", tasks.length, "#6c63ff"],
-                    ["Work Days", DAYS.filter(d=>!constraints.noWork.includes(d)).length, "#22c55e"],
-                    ["Blocked Slots", (constraints.blocks||[]).length, "#ef4444"],
-                    ["Daily Avg", tasks.length ? Math.round(tasks.reduce((s,t)=>s+t.duration,0)/60*10)/10+"h" : "0h", "#f59e0b"],
-                  ].map(([l,v,c])=>(
-                    <div key={l} style={{ background:c+"11", border:`1px solid ${c}33`, borderRadius:12, padding:"16px 14px" }}>
-                      <div style={{ fontSize:24, fontWeight:800, color:c }}>{v}</div>
-                      <div style={{ fontSize:13, color:"#888", marginTop:4 }}>{l}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <Card>
+              <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Schedule Analytics</div>
+              {timetable ? (
+                <>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:20 }}>
+                    {[
+                      ["Total Tasks", tasks.length, "#6c63ff"],
+                      ["Work Days", DAYS.filter(d=>!constraints.noWork.includes(d)).length, "#22c55e"],
+                      ["Blocked Slots", (constraints.blocks||[]).length, "#ef4444"],
+                      ["Daily Avg", tasks.length ? Math.round(tasks.reduce((s,t)=>s+t.duration,0)/60*10)/10+"h" : "0h", "#f59e0b"],
+                    ].map(([l,v,c])=>(
+                      <div key={l} style={{ background:c+"11", border:`1px solid ${c}33`, borderRadius:12, padding:"16px 14px" }}>
+                        <div style={{ fontSize:24, fontWeight:800, color:c }}>{v}</div>
+                        <div style={{ fontSize:13, color:"#888", marginTop:4 }}>{l}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {DAYS.map(d=>(
+                    <div key={d} style={{ marginBottom:14 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, fontSize:13 }}>
+                        <span style={{ fontWeight:600, color:"#e2e8f0" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</span>
+                        <span style={{ color:"#64748b" }}>{(timetable[d]||[]).reduce((s,t)=>s+t.duration,0)} min</span>
+                      </div>
+                      <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
+                        {(timetable[d]||[]).map(s=>(
+                          <span key={s.id} style={{ fontSize:12, background:(COLOR_MAP[s.taskType]||"#6c63ff")+"33", color:COLOR_MAP[s.taskType]||"#a78bfa", padding:"2px 10px", borderRadius:20, border:`1px solid ${(COLOR_MAP[s.taskType]||"#6c63ff")}44` }}>
+                            {s.start} {s.title}
+                          </span>
+                        ))}
+                        {constraints.noWork.includes(d) && <span style={{ fontSize:12, color:"#555" }}>Rest day</span>}
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : <div style={{ color:"#555", textAlign:"center", padding:40 }}>Generate a timetable first.</div>}
+            </Card>
+
+            {/* Saved Timetables History */}
+            <Card>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontFamily: "Orbitron", letterSpacing: 0.5 }}>⏳ Saved Timetables History</span>
+                <span style={{ fontSize: 11, background: "rgba(108,99,255,0.15)", padding: "4px 10px", borderRadius: 20, color: "#a78bfa", fontWeight: 700 }}>{history.length} SAVED</span>
+              </div>
+              {history.length === 0 ? (
+                <div style={{ color: "#555", textAlign: "center", padding: "30px 0", fontSize: 13 }}>No historical timetables saved yet. Generate a schedule to auto-save it here!</div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {history.map(item => (
+                    <div 
+                      key={item.id} 
+                      style={{ 
+                        display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.02)", 
+                        border: "1px solid rgba(255,255,255,0.05)", borderRadius: 12, padding: "12px 18px", transition: "0.2s" 
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(108,99,255,0.2)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{item.name}</div>
+                        <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                          📋 {item.tasks?.length || 0} tasks · 🚫 {item.constraints?.blocks?.length || 0} blocks · Wake: {item.constraints?.wake} · Sleep: {item.constraints?.sleep}
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <button 
+                          onClick={() => {
+                            if (window.confirm("Overwrite active schedule with this historical version?")) {
+                              setTasks(item.tasks || []);
+                              setConstraints(item.constraints || {});
+                              setTimetable(item.timetable || null);
+                              setSubtab("timetable");
+                            }
+                          }} 
+                          style={{ padding: "6px 12px", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: 8, color: "#a78bfa", fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "0.2s" }}
+                          onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.25)"; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.15)"; }}
+                        >
+                          📂 Load & Edit
+                        </button>
+                        <button 
+                          onClick={() => {
+                            if (window.confirm("Delete this saved schedule?")) {
+                              setHistory(history.filter(x => x.id !== item.id));
+                            }
+                          }} 
+                          style={{ padding: "6px 10px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center" }}
+                          title="Delete history item"
+                        >
+                          🗑
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
-                {DAYS.map(d=>(
-                  <div key={d} style={{ marginBottom:14 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, fontSize:13 }}>
-                      <span style={{ fontWeight:600, color:"#e2e8f0" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</span>
-                      <span style={{ color:"#64748b" }}>{(timetable[d]||[]).reduce((s,t)=>s+t.duration,0)} min</span>
-                    </div>
-                    <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
-                      {(timetable[d]||[]).map(s=>(
-                        <span key={s.id} style={{ fontSize:12, background:(COLOR_MAP[s.taskType]||"#6c63ff")+"33", color:COLOR_MAP[s.taskType]||"#a78bfa", padding:"2px 10px", borderRadius:20, border:`1px solid ${(COLOR_MAP[s.taskType]||"#6c63ff")}44` }}>
-                          {s.start} {s.title}
-                        </span>
-                      ))}
-                      {constraints.noWork.includes(d) && <span style={{ fontSize:12, color:"#555" }}>Rest day</span>}
-                    </div>
-                  </div>
-                ))}
-              </>
-            ) : <div style={{ color:"#555", textAlign:"center", padding:40 }}>Generate a timetable first.</div>}
-          </Card>
+              )}
+            </Card>
+          </div>
         )}
 
         {/* ── PRINTABLE EXPORT TAB ── */}
@@ -1715,12 +1895,23 @@ function TimetableBuilder({ user }) {
                       <tr key={h}>
                         <td style={{ border:"1px solid #ddd", padding:"8px 12px", fontSize:12, color:"#555", fontWeight:600, whiteSpace:"nowrap" }}>{hourStr}</td>
                         {DAYS.map(d=>{
-                          const slot = timetable && (timetable[d]||[]).find(s=>s.start.startsWith(String(h).padStart(2,"0")));
+                          const slot = timetable && (timetable[d]||[]).find(s => {
+                            const [sh] = s.start.split(":").map(Number);
+                            const [eh, em] = s.end.split(":").map(Number);
+                            const endHourFloat = eh + (em > 0 ? 0.5 : 0);
+                            return h >= sh && h < Math.max(sh + 1, endHourFloat);
+                          });
+                          const color = slot ? (COLOR_MAP[slot.taskType]||"#6c63ff") : null;
                           return (
-                            <td key={d} style={{ border:"1px solid #ddd", padding:"6px 8px", verticalAlign:"top", minWidth:80, height:36 }}>
+                            <td key={d} style={{ border:"1px solid #ddd", padding:"4px 6px", verticalAlign:"top", minWidth:80, height:36 }}>
                               {slot && (
-                                <div style={{ background:"#f0f0ff", borderLeft:"3px solid #6c63ff", borderRadius:4, padding:"3px 6px" }}>
-                                  <div style={{ fontSize:11, fontWeight:700, color:"#111" }}>{slot.title}</div>
+                                <div style={{ 
+                                  background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : "#f0f0ff", 
+                                  borderLeft:`3px solid ${color}`, 
+                                  borderRadius:4, 
+                                  padding:"4px 6px" 
+                                }}>
+                                  <div style={{ fontSize:11, fontWeight:700, color: slot.isBlockSlot ? "#ef4444" : "#111" }}>{slot.title}</div>
                                   <div style={{ fontSize:10, color:"#666" }}>{slot.start}–{slot.end}</div>
                                 </div>
                               )}
@@ -1733,7 +1924,14 @@ function TimetableBuilder({ user }) {
                 </tbody>
               </table>
             </div>
-            <style>{`@media print{body *{visibility:hidden}#tt-print,#tt-print *{visibility:visible}#tt-print{position:fixed;top:0;left:0;width:100%;background:#fff}}`}</style>
+            <style>{`
+              @media print {
+                @page { size: A4 landscape; margin: 0.3in; }
+                body * { visibility: hidden; }
+                #tt-print, #tt-print * { visibility: visible; }
+                #tt-print { position: absolute; left: 0; top: 0; width: 100%; background: #fff; box-sizing: border-box; }
+              }
+            `}</style>
           </div>
         )}
       </div>
