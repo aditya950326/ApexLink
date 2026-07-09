@@ -2865,9 +2865,27 @@ function Reminders({ user }) {
   const [form, setForm] = useState({ title: "", description: "", datetime: "", urgency: "normal" });
   const [now, setNow] = useState(new Date());
   const [triggered, setTriggered] = useState(null);
+  const [editingReminderId, setEditingReminderId] = useState(null);
   
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDayMissions, setSelectedDayMissions] = useState(null);
+
+  const startEditReminder = (r) => {
+    setForm({
+      title: r.title,
+      description: r.description,
+      datetime: r.datetime,
+      urgency: r.urgency || "normal"
+    });
+    setEditingReminderId(r.id);
+    setShowAdd(true);
+  };
+
+  const closeAddModal = () => {
+    setShowAdd(false);
+    setEditingReminderId(null);
+    setForm({ title: "", description: "", datetime: "", urgency: "normal" });
+  };
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -2898,7 +2916,19 @@ function Reminders({ user }) {
   const addReminder = () => {
     if (!form.title || !form.datetime) return;
     const capTitle = form.title.charAt(0).toUpperCase() + form.title.slice(1);
-    setReminders([...reminders, { ...form, title: capTitle, id: uid(), done: false, triggered: false }]);
+    if (editingReminderId) {
+      setReminders(reminders.map(x => x.id === editingReminderId ? { 
+        ...x, 
+        title: capTitle, 
+        description: form.description, 
+        datetime: form.datetime, 
+        urgency: form.urgency,
+        triggered: false 
+      } : x));
+      setEditingReminderId(null);
+    } else {
+      setReminders([...reminders, { ...form, title: capTitle, id: uid(), done: false, triggered: false }]);
+    }
     setForm({ title: "", description: "", datetime: "", urgency: "normal" });
     setShowAdd(false);
   };
@@ -3008,9 +3038,10 @@ function Reminders({ user }) {
                       <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", letterSpacing: 1 }}>TIME_REMAINING</div>
                       <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{getCountdown(r.datetime)}</div>
                    </div>
-                   <div style={{ display: "flex", gap: 8 }}>
+                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <Btn small variant="secondary" className="click-scale" onClick={() => startEditReminder(r)}>EDIT</Btn>
                       <Btn small variant="secondary" className="click-scale" onClick={() => setReminders(reminders.map(x => x.id === r.id ? {...x, done: true} : x))}>DISMISS</Btn>
-                      <button className="click-scale" onClick={() => setReminders(reminders.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 20 }}>×</button>
+                      <button className="click-scale" onClick={() => setReminders(reminders.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 20, padding: "0 6px" }} title="Delete Reminder">🗑</button>
                    </div>
                 </div>
               </Card>
@@ -3020,12 +3051,12 @@ function Reminders({ user }) {
       </div>
 
       {/* MISSION DIALOGS */}
-      <Modal open={showAdd} onClose={() => setShowAdd(false)} title="INITIALIZE_MISSION">
+      <Modal open={showAdd} onClose={closeAddModal} title={editingReminderId ? "UPDATE_MISSION" : "INITIALIZE_MISSION"}>
         <div style={{ animation: "revealUp 0.4s ease-out" }}>
            <Field label="DESIGNATION"><Inp value={form.title} onChange={v => setForm({...form, title: v})} placeholder="Mission Name" /></Field>
            <Field label="TEMPORAL_MARK"><Inp type="datetime-local" value={form.datetime} onChange={v => setForm({...form, datetime: v})} /></Field>
            <Field label="INTEL_BRIEF"><Inp value={form.description} onChange={v => setForm({...form, description: v})} placeholder="Objective details..." /></Field>
-           <Btn className="click-scale" onClick={addReminder} style={{ width: "100%", marginTop: 15, padding: 15, fontWeight: 900 }}>DEPLOY MISSION</Btn>
+           <Btn className="click-scale" onClick={addReminder} style={{ width: "100%", marginTop: 15, padding: 15, fontWeight: 900 }}>{editingReminderId ? "UPDATE MISSION" : "DEPLOY MISSION"}</Btn>
         </div>
       </Modal>
 
