@@ -1648,11 +1648,12 @@ Instructions:
       const [sh, sm] = startingSlot.start.split(":").map(Number);
       const [eh, em] = startingSlot.end.split(":").map(Number);
       const durationMin = (eh * 60 + em) - (sh * 60 + sm);
-      const rowSpan = Math.max(1, Math.round(durationMin / 30));
+      const rowSpan = startingSlot.isBlockSlot ? 1 : Math.max(1, Math.round(durationMin / 30));
       return { render: true, slot: startingSlot, rowSpan };
     }
 
     const occupiedSlot = daySlots.find(s => {
+      if (s.isBlockSlot) return false; // do not collapse cells for blocked slots
       const [sh, sm] = s.start.split(":").map(Number);
       const [eh, em] = s.end.split(":").map(Number);
       const startMin = sh * 60 + sm;
@@ -2013,28 +2014,38 @@ Instructions:
                                     e.dataTransfer.setData("text/plain", JSON.stringify({ day: d, slotId: slot.id }));
                                   }}
                                   style={{ 
-                                    background: color+"15", 
+                                    background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : color+"15", 
                                     borderLeft:`4px solid ${color}`, 
                                     borderRadius:8, 
-                                    padding:"6px 10px",
+                                    padding: slot.isBlockSlot ? "5px 10px" : "6px 10px",
                                     border:`1px solid ${color}33`,
                                     boxShadow:`0 4px 12px ${color}11`,
                                     cursor: slot.isBlockSlot ? "not-allowed" : "grab",
                                     height: "100%",
                                     boxSizing: "border-box",
                                     display: "flex",
-                                    flexDirection: "column",
+                                    flexDirection: slot.isBlockSlot ? "row" : "column",
+                                    alignItems: slot.isBlockSlot ? "center" : "stretch",
                                     justifyContent: "space-between"
                                   }}
                                 >
-                                  <div>
-                                    <div style={{ fontSize:12, fontWeight:800, color:"#f1f5f9", lineHeight:1.2 }}>{slot.title}</div>
-                                    <div style={{ fontSize:10, color:color, fontWeight:700, marginTop:3 }}>{slot.taskType}</div>
-                                  </div>
-                                  <div style={{ fontSize:10, color:"#888", marginTop:4, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                                    <span>{slot.start}–{slot.end}</span>
-                                    {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}>⚡{slot.energy}</span>}
-                                  </div>
+                                  {slot.isBlockSlot ? (
+                                    <>
+                                      <span style={{ fontSize:11, fontWeight:800, color:"#ef4444" }}>🚫 {slot.title}</span>
+                                      <span style={{ fontSize:10, color:"#ef4444", fontWeight:700 }}>{slot.start}–{slot.end}</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div>
+                                        <div style={{ fontSize:12, fontWeight:800, color:"#f1f5f9", lineHeight:1.2 }}>{slot.title}</div>
+                                        <div style={{ fontSize:10, color:color, fontWeight:700, marginTop:3 }}>{slot.taskType}</div>
+                                      </div>
+                                      <div style={{ fontSize:10, color:"#888", marginTop:4, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                                        <span>{slot.start}–{slot.end}</span>
+                                        {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}>⚡{slot.energy}</span>}
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </td>
@@ -2227,10 +2238,23 @@ Instructions:
                                   borderRadius:4, 
                                   padding:"4px 6px",
                                   height: "100%",
-                                  boxSizing: "border-box"
+                                  boxSizing: "border-box",
+                                  display: "flex",
+                                  flexDirection: slot.isBlockSlot ? "row" : "column",
+                                  alignItems: slot.isBlockSlot ? "center" : "stretch",
+                                  justifyContent: "space-between"
                                 }}>
-                                  <div style={{ fontSize:10, fontWeight:700, color: slot.isBlockSlot ? "#ef4444" : "#111" }}>{slot.title}</div>
-                                  <div style={{ fontSize:9, color:"#666", marginTop: 2 }}>{slot.start}–{slot.end}</div>
+                                  {slot.isBlockSlot ? (
+                                    <>
+                                      <span style={{ fontSize:9, fontWeight:700, color:"#ef4444" }}>🚫 {slot.title}</span>
+                                      <span style={{ fontSize:8, color:"#ef4444", fontWeight:600 }}>{slot.start}–{slot.end}</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div style={{ fontSize:10, fontWeight:700, color:"#111" }}>{slot.title}</div>
+                                      <div style={{ fontSize:9, color:"#666", marginTop: 2 }}>{slot.start}–{slot.end}</div>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </td>
