@@ -1336,10 +1336,14 @@ function TimetableBuilder({ user }) {
   const [tasks, setTasks] = useLS(`apx_tt_tasks_${user.id}`, []);
   const [constraints, setConstraints] = useLS(`apx_tt_con_${user.id}`, {
     wake: "07:00", sleep: "23:00", maxHours: 8, breakMin: 15, noWork: [],
-    blocks: [] // [{id, start, end, label}]
+    blocks: []
   });
   const [history, setHistory] = useLS(`apx_tt_history_${user.id}`, []);
   const [form, setForm] = useState({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
+  const [blockForm, setBlockForm] = useState({ start: "09:00", end: "16:00", label: "College / Class", days: ["Mon", "Tue", "Wed", "Thu", "Fri"] });
+  const [aiOptimizing, setAiOptimizing] = useState(false);
+  const [apiKey] = useLS("apx_gemini_key", "");
+  const [showKeyModal, setShowKeyModal] = useState(false);
   const exportRef = useRef(null);
 
   const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -1388,7 +1392,23 @@ function TimetableBuilder({ user }) {
     setForm({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
   };
 
+  const addBlock = () => {
+    if (!blockForm.start || !blockForm.end || !blockForm.label.trim() || blockForm.days.length === 0) {
+      alert("Please complete all block form fields (From, To, Label, Days).");
+      return;
+    }
+    const blocks = [...(constraints.blocks || []), { ...blockForm, id: uid() }];
+    setConstraints({ ...constraints, blocks });
+  };
 
+  const removeBlock = (id) => {
+    const blocks = (constraints.blocks || []).filter(b => b.id !== id);
+    setConstraints({ ...constraints, blocks });
+  };
+
+  const overlapsAny = (startMin, endMin, existingSlots) => {
+    return existingSlots.some(s => startMin < s.startMin + s.duration && endMin > s.startMin);
+  };
 
   const generate = () => {
     const [wH, wM] = constraints.wake.split(":").map(Number);
@@ -1409,6 +1429,25 @@ function TimetableBuilder({ user }) {
       let usedMin = 0;
       const slots = [];
 
+      // Inject Blocked commitments
+      const dayBlocks = (constraints.blocks || []).filter(b => b.days.includes(day));
+      dayBlocks.forEach(b => {
+        const [sh, sm] = b.start.split(":").map(Number);
+        const [eh, em] = b.end.split(":").map(Number);
+        slots.push({
+          id: b.id,
+          title: b.label,
+          taskType: "Blocked",
+          start: b.start,
+          end: b.end,
+          startMin: sh * 60 + sm,
+          duration: (eh*60+em) - (sh*60+sm),
+          priority: 5,
+          energy: 1,
+          isBlockSlot: true
+        });
+      });
+
       sorted.forEach(task => {
         if (task.type === "specific" && !task.days.includes(day)) return;
         if (usedMin + task.duration > maxMin) return;
@@ -1417,15 +1456,18 @@ function TimetableBuilder({ user }) {
         if (task.preferStart) {
           const [ph, pm] = task.preferStart.split(":").map(Number);
           const preferred = ph*60+pm;
-          if (preferred > cursor && preferred + task.duration <= sleepMin) start = preferred;
+          if (preferred >= wakeMin && preferred + task.duration <= sleepMin && !overlapsAny(preferred, preferred + task.duration, slots)) {
+            start = preferred;
+          }
         }
 
         let attempts = 0;
-        while (attempts < 40 && start + task.duration > sleepMin) {
-          start += 15;
+        while (attempts < 60 && (overlapsAny(start, start + task.duration, slots) || start + task.duration > sleepMin)) {
+          start += 30; // check in half hour increments
           attempts++;
         }
         if (start + task.duration > sleepMin) return;
+        if (overlapsAny(start, start + task.duration, slots)) return;
 
         const sh = Math.floor(start/60), sm = start%60;
         const eh = Math.floor((start+task.duration)/60), em = (start+task.duration)%60;
@@ -1446,7 +1488,7 @@ function TimetableBuilder({ user }) {
     setTimetable(table);
     setSubtab("timetable");
 
-    // Snapshot current timetable configuration to history
+    // Snapshot configuration to history
     const newHistoryItem = {
       id: uid(),
       name: `Schedule generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
@@ -1458,8 +1500,193 @@ function TimetableBuilder({ user }) {
     setHistory([newHistoryItem, ...history]);
   };
 
-  // Build hour rows for time-grid view (5:00–22:00)
+  const generateWithAI = async () => {
+    if (!apiKey) {
+      alert("Please set your Gemini API key in VedAI tab or Settings first.");
+      return;
+    }
+    setAiOptimizing(true);
+    try {
+      const prompt = `You are an expert AI productivity coach. Formulate an optimized weekly study schedule based on the following:
+Tasks List: ${JSON.stringify(tasks)}
+Weekly Constraints: wake at ${constraints.wake}, sleep at ${constraints.sleep}, max study hours daily ${constraints.maxHours}.
+Locked Block Commitments: ${JSON.stringify(constraints.blocks)} (No tasks should ever be assigned during these times).
+
+Instructions:
+1. Output the final schedule strictly as a raw JSON object (with no markdown or wrapping quotes) matching this exact format:
+{
+  "Mon": [ { "id": "1", "title": "Math Deep Practice", "taskType": "Practice", "start": "08:30", "end": "10:30", "duration": 120, "priority": 5, "energy": 5, "isBlockSlot": false } ],
+  "Tue": [], ...
+}
+2. Ensure you represent each week day: Mon, Tue, Wed, Thu, Fri, Sat, Sun.
+3. Output ONLY the raw valid JSON. Do not write any explanations before or after.`;
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
+        })
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.error.message);
+
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const parsed = JSON.parse(text.trim());
+
+      // Merge locked blocks into AI response
+      const finalTable = {};
+      DAYS.forEach(day => {
+        const slots = parsed[day] || [];
+        const dayBlocks = (constraints.blocks || []).filter(b => b.days.includes(day));
+        dayBlocks.forEach(b => {
+          const [sh, sm] = b.start.split(":").map(Number);
+          const [eh, em] = b.end.split(":").map(Number);
+          slots.push({
+            id: b.id,
+            title: b.label,
+            taskType: "Blocked",
+            start: b.start,
+            end: b.end,
+            startMin: sh * 60 + sm,
+            duration: (eh*60+em) - (sh*60+sm),
+            priority: 5,
+            energy: 1,
+            isBlockSlot: true
+          });
+        });
+        finalTable[day] = slots.sort((a,b) => {
+          const [ah, am] = a.start.split(":").map(Number);
+          const [bh, bm] = b.start.split(":").map(Number);
+          return (ah*60+am) - (bh*60+bm);
+        });
+      });
+
+      setTimetable(finalTable);
+      setSubtab("timetable");
+
+      // Snapshot to history
+      const newHistoryItem = {
+        id: uid(),
+        name: `AI Generated Schedule (${new Date().toLocaleDateString()})`,
+        createdAt: new Date().toISOString(),
+        tasks: [...tasks],
+        constraints: { ...constraints },
+        timetable: finalTable
+      };
+      setHistory([newHistoryItem, ...history]);
+    } catch (e) {
+      alert("Failed to generate schedule with AI: " + e.message);
+    } finally {
+      setAiOptimizing(false);
+    }
+  };
+
+  const handleMoveSlot = (sourceDay, slotId, targetDay, targetHour, targetMinute) => {
+    const targetSlot = (timetable[sourceDay] || []).find(s => s.id === slotId);
+    if (!targetSlot) return;
+
+    if (targetSlot.isBlockSlot) {
+      alert("Blocked commitment slots cannot be dragged. Remove them in constraints setup.");
+      return;
+    }
+
+    const startMin = targetHour * 60 + targetMinute;
+    const endMin = startMin + targetSlot.duration;
+
+    const targetDaySlots = (timetable[targetDay] || []).filter(s => s.id !== slotId);
+    const hasConflict = targetDaySlots.some(s => startMin < s.startMin + s.duration && endMin > s.startMin);
+
+    if (hasConflict) {
+      if (!window.confirm("⚠️ Conflict Warning: Dragged slot overlaps with another task or block. Proceed anyway?")) {
+        return;
+      }
+    }
+
+    const sh = Math.floor(startMin / 60), sm = startMin % 60;
+    const eh = Math.floor(endMin / 60), em = endMin % 60;
+    
+    const newStart = `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")}`;
+    const newEnd = `${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`;
+
+    const updated = { ...timetable };
+    updated[sourceDay] = (updated[sourceDay] || []).filter(s => s.id !== slotId);
+    
+    const moved = { 
+      ...targetSlot, 
+      start: newStart, 
+      end: newEnd, 
+      startMin 
+    };
+
+    updated[targetDay] = [...(updated[targetDay] || []), moved].sort((a,b) => a.startMin - b.startMin);
+    setTimetable(updated);
+
+    // Save update to history
+    const newHistoryItem = {
+      id: uid(),
+      name: `Drag-adjusted Schedule (${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`,
+      createdAt: new Date().toISOString(),
+      tasks: [...tasks],
+      constraints: { ...constraints },
+      timetable: updated
+    };
+    setHistory([newHistoryItem, ...history]);
+  };
+
+  const getRenderState = (day, hour, minute) => {
+    const currentMin = hour * 60 + minute;
+    const daySlots = timetable[day] || [];
+
+    const startingSlot = daySlots.find(s => {
+      const [sh, sm] = s.start.split(":").map(Number);
+      return sh * 60 + sm === currentMin;
+    });
+
+    if (startingSlot) {
+      const [sh, sm] = startingSlot.start.split(":").map(Number);
+      const [eh, em] = startingSlot.end.split(":").map(Number);
+      const durationMin = (eh * 60 + em) - (sh * 60 + sm);
+      const rowSpan = Math.max(1, Math.round(durationMin / 30));
+      return { render: true, slot: startingSlot, rowSpan };
+    }
+
+    const occupiedSlot = daySlots.find(s => {
+      const [sh, sm] = s.start.split(":").map(Number);
+      const [eh, em] = s.end.split(":").map(Number);
+      const startMin = sh * 60 + sm;
+      const endMin = eh * 60 + em;
+      return currentMin > startMin && currentMin < endMin;
+    });
+
+    if (occupiedSlot) return { render: false };
+    return { render: true, slot: null, rowSpan: 1 };
+  };
+
+  const isCellBlocked = (day, hour, minute) => {
+    const currentMin = hour * 60 + minute;
+    return (constraints.blocks || []).some(b => {
+      if (!b.days.includes(day)) return false;
+      const [sh, sm] = b.start.split(":").map(Number);
+      const [eh, em] = b.end.split(":").map(Number);
+      const startMin = sh * 60 + sm;
+      const endMin = eh * 60 + em;
+      return currentMin >= startMin && currentMin < endMin;
+    });
+  };
+
+  // Build 30-minute rows for grid (5:00 to 22:30)
   const HOURS = Array.from({length:18}, (_,i)=>i+5); // 5..22
+  const ROWS = [];
+  HOURS.forEach(h => {
+    ROWS.push({ hour: h, minute: 0, label: `${String(h).padStart(2,"0")}:00` });
+    ROWS.push({ hour: h, minute: 30, label: `${String(h).padStart(2,"0")}:30` });
+  });
+
+  const getDayTotal = (day) => {
+    return (timetable[day] || []).filter(s => !s.isBlockSlot).reduce((acc, s) => acc + s.duration, 0);
+  };
 
   const downloadImage = async () => {
     if (!exportRef.current) return;
@@ -1528,7 +1755,6 @@ function TimetableBuilder({ user }) {
               color: #1f2937 !important;
               text-align: center !important;
             }
-            /* Explicit color-adjust guarantees backgrounds render */
             * {
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
@@ -1553,7 +1779,7 @@ function TimetableBuilder({ user }) {
 
   return (
     <div>
-      <PageHeader title="Timetable Planner" subtitle="Constraint-based intelligent scheduling"
+      <PageHeader title="Timetable Planner" subtitle="Interactive schedule builder with custom commitments and AI helper"
         actions={subtab==="timetable" && timetable ? (
           <div style={{display:"flex",gap:8}}>
             <Btn variant="secondary" onClick={printTimetableCleanly}>🖨 Print Timetable</Btn>
@@ -1561,340 +1787,410 @@ function TimetableBuilder({ user }) {
           </div>
         ) : null}
       />
-      {/* Tab bar matching screenshot */}
-      <div style={{ padding:"0 32px", display:"flex", gap:0, borderBottom:"1px solid rgba(255,255,255,0.08)" }}>
-        {[["setup","+ Task & Constraints Setup"],["timetable","📅 Generated Timetable"],["analytics","📈 Analytics & Adaptation"],["printable","🖨 Printable Export"]].map(([id,lbl])=>(
-          <button key={id} onClick={()=>setSubtab(id)} style={{ padding:"13px 20px", background:"none", border:"none", borderBottom:`2px solid ${subtab===id?"#6c63ff":"transparent"}`, color:subtab===id?"#a78bfa":"#666", fontWeight:subtab===id?700:400, fontSize:13, cursor:"pointer", whiteSpace:"nowrap" }}>{lbl}</button>
+
+      {/* Navigation Subtabs */}
+      <div style={{ display:"flex", borderBottom:"1px solid rgba(255,255,255,0.07)", marginBottom:20 }}>
+        {[
+          ["setup","+ Task & Block Setup"],
+          ["timetable","📅 Interactive Schedule"],
+          ["analytics","📈 Productivity Analytics"],
+          ["printable","🖨 Printable Export"]
+        ].map(([id,lbl])=>(
+          <button key={id} onClick={()=>setSubtab(id)}
+            style={{ padding:"12px 20px", background:"none", border:"none", color:subtab===id?"#a78bfa":"#64748b", fontWeight:subtab===id?800:600, borderBottom:subtab===id?"2px solid #a78bfa":"none", cursor:"pointer", transition:"0.2s", fontSize:13 }}>{lbl}</button>
         ))}
       </div>
 
-      <div style={{ padding:"24px 32px 32px" }}>
-        {/* ── SETUP TAB ── */}
-        {subtab === "setup" && (
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
-            {/* Quick presets row */}
-            <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
-              <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}>✨ LOAD STUDY PRESETS:</span>
-              {PRESETS.map(p => (
-                <button 
-                  key={p.name} 
-                  onClick={() => { loadPreset(p); }} 
-                  style={{ 
-                    padding: "8px 16px", background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.2)", 
-                    borderRadius: 10, color: "#a78bfa", fontWeight: 700, fontSize: 12, cursor: "pointer", transition: "0.2s" 
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.18)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.08)"; }}
-                >
-                  {p.name}
-                </button>
+      {/* ── SETUP TAB ── */}
+      {subtab === "setup" && (
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
+          {/* Presets Row */}
+          <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
+            <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}>✨ LOAD STUDY PRESETS:</span>
+            {PRESETS.map(p => (
+              <button key={p.name} onClick={() => loadPreset(p)}
+                style={{ padding: "8px 16px", background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.2)", borderRadius: 10, color: "#a78bfa", fontWeight: 700, fontSize: 12, cursor: "pointer", transition: "0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.18)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.08)"; }}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Create Task Form */}
+          <Card>
+            <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Create New Task</div>
+            <Field label="Title *"><Inp value={form.title} onChange={v=>setForm({...form,title:v})} placeholder="e.g., Physics Revision" /></Field>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+              <Field label="Priority (1-5) *"><Inp type="number" value={form.priority} onChange={v=>setForm({...form,priority:v})} min="1" max="5" /></Field>
+              <Field label="Duration (hours) *"><Inp type="number" value={Math.round(form.duration/60*10)/10} onChange={v=>setForm({...form,duration:Math.round(Number(v)*60)})} min="0.5" max="8" step="0.5" /></Field>
+            </div>
+            <Field label="Deadline *"><Inp type="date" value={form.deadline||""} onChange={v=>setForm({...form,deadline:v})} /></Field>
+            <Field label="Energy Level (1-5) *">
+              <div style={{ display:"flex", gap:8 }}>
+                {[1,2,3,4,5].map(n=>(
+                  <button key={n} onClick={()=>setForm({...form,energy:n})} style={{ flex:1, padding:"8px 0", borderRadius:8, border:"1px solid rgba(255,255,255,0.15)", background:form.energy===n?"#3b82f6":"transparent", color:form.energy===n?"#fff":"#888", cursor:"pointer", fontWeight:700, fontSize:15 }}>{n}</button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Type *">
+              <Sel value={form.taskType} onChange={v=>setForm({...form,taskType:v})}>
+                {TASK_TYPES.map(t=><option key={t} value={t}>{t}</option>)}
+              </Sel>
+            </Field>
+            <Field label="Task Recurrence Type *">
+              <Sel value={form.type} onChange={v=>setForm({...form,type:v})}>
+                <option value="daily">Daily Task</option>
+                <option value="specific">Specific Days</option>
+              </Sel>
+            </Field>
+            {form.type==="specific" && (
+              <Field label="Select Days">
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {DAYS.map(d=>(
+                    <button key={d} onClick={()=>setForm({...form,days:form.days.includes(d)?form.days.filter(x=>x!==d):[...form.days,d]})}
+                      style={{ padding:"5px 12px", borderRadius:7, border:"1px solid rgba(255,255,255,0.15)", background:form.days.includes(d)?"#6c63ff":"transparent", color:form.days.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13 }}>{d}</button>
+                  ))}
+                </div>
+              </Field>
+            )}
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+              <Field label="Preferred Start"><Inp type="time" value={form.preferStart} onChange={v=>setForm({...form,preferStart:v})} /></Field>
+              <Field label="Preferred End"><Inp type="time" value={form.preferEnd} onChange={v=>setForm({...form,preferEnd:v})} /></Field>
+            </div>
+            <Btn onClick={addTask} style={{ width:"100%", marginTop:4 }}>Add Task</Btn>
+          </Card>
+
+          {/* Constraints & Blocks Card */}
+          <Card>
+            <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Constraints & Study Slots</div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+              <Field label="Wake Up Time"><Inp type="time" value={constraints.wake} onChange={v=>setConstraints({...constraints,wake:v})} /></Field>
+              <Field label="Sleep Time"><Inp type="time" value={constraints.sleep} onChange={v=>setConstraints({...constraints,sleep:v})} /></Field>
+            </div>
+            <Field label="Max Study Hours/Day"><Inp type="number" value={constraints.maxHours} onChange={v=>setConstraints({...constraints,maxHours:Number(v)})} min="1" max="18" /></Field>
+            <Field label="Break Duration (minutes)"><Inp type="number" value={constraints.breakMin} onChange={v=>setConstraints({...constraints,breakMin:Number(v)})} min="0" max="60" /></Field>
+            <Field label="No Study Days">
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                {DAYS.map(d=>(
+                  <button key={d} onClick={()=>setConstraints({...constraints,noWork:constraints.noWork.includes(d)?constraints.noWork.filter(x=>x!==d):[...constraints.noWork,d]})}
+                    style={{ padding:"5px 11px", borderRadius:20, border:"1px solid rgba(255,255,255,0.15)", background:constraints.noWork.includes(d)?"#ef4444":"transparent", color:constraints.noWork.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>{d}</button>
+                ))}
+              </div>
+            </Field>
+
+            {/* Block hours setup */}
+            <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Orbitron" }}>🏫 College & Class Blocks (Busy Hours)</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 10 }}>
+                <Field label="Block Label"><Inp value={blockForm.label} onChange={v => setBlockForm({ ...blockForm, label: v })} placeholder="e.g. Lectures / Work" /></Field>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <Field label="From"><Inp type="time" value={blockForm.start} onChange={v => setBlockForm({ ...blockForm, start: v })} /></Field>
+                  <Field label="To"><Inp type="time" value={blockForm.end} onChange={v => setBlockForm({ ...blockForm, end: v })} /></Field>
+                </div>
+              </div>
+              <Field label="Select Target Days">
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+                  {DAYS.map(d => (
+                    <button key={d} onClick={() => setBlockForm({ ...blockForm, days: blockForm.days.includes(d) ? blockForm.days.filter(x => x !== d) : [...blockForm.days, d] })}
+                      style={{ padding: "5px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", background: blockForm.days.includes(d) ? "#6c63ff" : "transparent", color: blockForm.days.includes(d) ? "#fff" : "#888", cursor: "pointer", fontSize: 12 }}>{d}</button>
+                  ))}
+                </div>
+              </Field>
+              <Btn small onClick={addBlock} style={{ width: "100%", marginBottom: 16 }}>Add Busy block</Btn>
+              
+              {/* Blocks list */}
+              {(constraints.blocks || []).map(b => (
+                <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 10, padding: "8px 14px", marginBottom: 6 }}>
+                  <span style={{ fontSize: 12, color: "#f87171", flex: 1, fontWeight: 600 }}>🚫 {b.label} ({b.start}–{b.end}) on {b.days.join(", ")}</span>
+                  <button onClick={() => removeBlock(b.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18, fontWeight:"bold" }}>×</button>
+                </div>
               ))}
             </div>
 
-            {/* Create task form */}
-            <Card>
-              <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Create New Task</div>
-              <Field label="Title *"><Inp value={form.title} onChange={v=>setForm({...form,title:v})} placeholder="e.g., Study Physics" /></Field>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                <Field label="Priority (1-5) *"><Inp type="number" value={form.priority} onChange={v=>setForm({...form,priority:v})} min="1" max="5" /></Field>
-                <Field label="Duration (hours) *"><Inp type="number" value={Math.round(form.duration/60*10)/10} onChange={v=>setForm({...form,duration:Math.round(Number(v)*60)})} min="0.5" max="8" step="0.5" /></Field>
-              </div>
-              <Field label="Deadline *"><Inp type="date" value={form.deadline||""} onChange={v=>setForm({...form,deadline:v})} /></Field>
-              <Field label="Energy Level (1-5) *">
-                <div style={{ display:"flex", gap:8 }}>
-                  {[1,2,3,4,5].map(n=>(
-                    <button key={n} onClick={()=>setForm({...form,energy:n})} style={{ flex:1, padding:"8px 0", borderRadius:8, border:"1px solid rgba(255,255,255,0.15)", background:form.energy===n?"#3b82f6":"transparent", color:form.energy===n?"#fff":"#888", cursor:"pointer", fontWeight:700, fontSize:15 }}>{n}</button>
-                  ))}
-                </div>
-              </Field>
-              <Field label="Type *">
-                <Sel value={form.taskType} onChange={v=>setForm({...form,taskType:v})}>
-                  {TASK_TYPES.map(t=><option key={t} value={t}>{t}</option>)}
-                </Sel>
-              </Field>
-              <Field label="Task Recurrence Type *">
-                <Sel value={form.type} onChange={v=>setForm({...form,type:v})}>
-                  <option value="daily">Daily Task</option>
-                  <option value="specific">Specific Days</option>
-                </Sel>
-              </Field>
-              {form.type==="specific" && (
-                <Field label="Select Days">
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                    {DAYS.map(d=>(
-                      <button key={d} onClick={()=>setForm({...form,days:form.days.includes(d)?form.days.filter(x=>x!==d):[...form.days,d]})}
-                        style={{ padding:"5px 12px", borderRadius:7, border:"1px solid rgba(255,255,255,0.15)", background:form.days.includes(d)?"#6c63ff":"transparent", color:form.days.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13 }}>{d}</button>
-                    ))}
-                  </div>
-                </Field>
-              )}
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                <Field label="Preferred Start"><Inp type="time" value={form.preferStart} onChange={v=>setForm({...form,preferStart:v})} /></Field>
-                <Field label="Preferred End"><Inp type="time" value={form.preferEnd} onChange={v=>setForm({...form,preferEnd:v})} /></Field>
-              </div>
-              <Btn onClick={addTask} style={{ width:"100%", marginTop:4 }}>Add Task</Btn>
-            </Card>
+            <div style={{ marginTop:24, display:"flex", gap:12 }}>
+              <button onClick={generate} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow:"0 4px 16px rgba(139,92,246,0.2)" }}>
+                ✨ Auto Schedule Tasks
+              </button>
+              <button onClick={generateWithAI} disabled={aiOptimizing} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#3b82f6,#22c55e)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow:"0 4px 16px rgba(59,130,246,0.2)", opacity:aiOptimizing?0.5:1 }}>
+                {aiOptimizing ? "🤖 Analyzing..." : "🤖 AI Optimize"}
+              </button>
+            </div>
+          </Card>
 
-            {/* Constraints panel */}
-            <Card>
-              <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Set Constraints</div>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                <Field label="Wake Up Time"><Inp type="time" value={constraints.wake} onChange={v=>setConstraints({...constraints,wake:v})} /></Field>
-                <Field label="Sleep Time"><Inp type="time" value={constraints.sleep} onChange={v=>setConstraints({...constraints,sleep:v})} /></Field>
-              </div>
-              <Field label="Max Hours/Day"><Inp type="number" value={constraints.maxHours} onChange={v=>setConstraints({...constraints,maxHours:Number(v)})} min="1" max="18" /></Field>
-              <Field label="Break Duration (minutes)"><Inp type="number" value={constraints.breakMin} onChange={v=>setConstraints({...constraints,breakMin:Number(v)})} min="0" max="60" /></Field>
-              <Field label="No Work Days">
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                  {DAYS.map(d=>(
-                    <button key={d} onClick={()=>setConstraints({...constraints,noWork:constraints.noWork.includes(d)?constraints.noWork.filter(x=>x!==d):[...constraints.noWork,d]})}
-                      style={{ padding:"5px 11px", borderRadius:20, border:"1px solid rgba(255,255,255,0.15)", background:constraints.noWork.includes(d)?"#ef4444":"transparent", color:constraints.noWork.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>{d}</button>
-                  ))}
-                </div>
-              </Field>
-
-              <div style={{ marginTop:24, display:"flex", flexDirection:"column", gap:10 }}>
-                <button onClick={generate} style={{ padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:14, cursor:"pointer", boxShadow:"0 4px 16px rgba(139,92,246,0.25)" }}>
-                  ✨ Generate Timetable
-                </button>
-              </div>
-            </Card>
-
-            {/* Task list below */}
-            {tasks.length > 0 && (
-              <div style={{ gridColumn:"1/-1" }}>
-                <Card>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
-                    <div style={{ fontSize:14, fontWeight:800, color:"#aaa", letterSpacing:0.5 }}>ACTIVE TASKS ({tasks.length})</div>
-                    {/* Visual Category Bar Mix */}
-                    {tasks.length > 0 && (() => {
-                      const counts = {};
-                      tasks.forEach(t => { counts[t.taskType] = (counts[t.taskType] || 0) + t.duration; });
-                      const totalDuration = tasks.reduce((s,t) => s + t.duration, 0);
-                      
-                      return (
-                        <div style={{ display:"flex", gap:3, width:260, height:8, borderRadius:4, overflow:"hidden", background:"rgba(255,255,255,0.05)" }}>
-                          {Object.keys(counts).map(type => {
-                            const pct = Math.round((counts[type] / totalDuration) * 100);
-                            return (
-                              <div 
-                                key={type} 
-                                style={{ width: `${pct}%`, background: COLOR_MAP[type] || "#6c63ff", height: "100%" }} 
-                                title={`${type}: ${pct}% (${Math.round(counts[type]/60*10)/10}h)`}
-                              />
-                            );
-                          })}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
-                    {tasks.map(t=>(
-                      <div key={t.id} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:10, padding:"12px 14px", display:"flex", flexDirection:"column", gap:6 }}>
-                        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                          <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>{t.title}</span>
-                          <button onClick={()=>setTasks(tasks.filter(x=>x.id!==t.id))} style={{ background:"none", border:"none", color:"#f87171", cursor:"pointer" }}>×</button>
-                        </div>
-                        <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                          <span style={{ fontSize:11, background:COLOR_MAP[t.taskType]+"33", color:COLOR_MAP[t.taskType], padding:"2px 8px", borderRadius:20, fontWeight:600 }}>{t.taskType}</span>
-                          <span style={{ fontSize:11, color:"#888" }}>P{t.priority} · {t.duration}min · E{t.energy}</span>
-                        </div>
-                        <div style={{ fontSize:11, color:"#64748b" }}>{t.type === "specific" ? t.days.join(",") : "Daily"}</div>
+          {/* Active Tasks List */}
+          {tasks.length > 0 && (
+            <div style={{ gridColumn:"1/-1" }}>
+              <Card>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+                  <div style={{ fontSize:14, fontWeight:800, color:"#aaa", letterSpacing:0.5 }}>ACTIVE TASKS ({tasks.length})</div>
+                  {/* Category segment distribution bar */}
+                  {(() => {
+                    const counts = {};
+                    tasks.forEach(t => { counts[t.taskType] = (counts[t.taskType] || 0) + t.duration; });
+                    const totalDuration = tasks.reduce((s,t) => s + t.duration, 0);
+                    return (
+                      <div style={{ display:"flex", gap:3, width:260, height:8, borderRadius:4, overflow:"hidden", background:"rgba(255,255,255,0.05)" }}>
+                        {Object.keys(counts).map(type => {
+                          const pct = Math.round((counts[type] / totalDuration) * 100);
+                          return (
+                            <div key={type} style={{ width: `${pct}%`, background: COLOR_MAP[type] || "#6c63ff", height: "100%" }}
+                              title={`${type}: ${pct}% (${Math.round(counts[type]/60*10)/10}h)`} />
+                          );
+                        })}
                       </div>
-                    ))}
-                  </div>
-                </Card>
-              </div>
-            )}
-          </div>
-        )}
+                    );
+                  })()}
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
+                  {tasks.map(t=>(
+                    <div key={t.id} style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.05)", borderRadius:10, padding:"12px 14px", display:"flex", flexDirection:"column", gap:6 }}>
+                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                        <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>{t.title}</span>
+                        <button onClick={()=>setTasks(tasks.filter(x=>x.id!==t.id))} style={{ background:"none", border:"none", color:"#f87171", cursor:"pointer" }}>×</button>
+                      </div>
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                        <span style={{ fontSize:11, background:COLOR_MAP[t.taskType]+"22", color:COLOR_MAP[t.taskType], padding:"2px 8px", borderRadius:20, fontWeight:700 }}>{t.taskType}</span>
+                        <span style={{ fontSize:11, color:"#888" }}>P{t.priority} · {t.duration}min · E{t.energy}</span>
+                      </div>
+                      <div style={{ fontSize:11, color:"#64748b" }}>{t.type === "specific" ? t.days.join(",") : "Daily"}</div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          )}
+        </div>
+      )}
 
-        {/* ── GENERATED TIMETABLE TAB ── */}
-        {subtab === "timetable" && (
-          timetable ? (
-            <div>
-              {/* Time-grid calendar view matching screenshot */}
-              <div style={{ overflowX:"auto" }}>
-                <table style={{ width:"100%", borderCollapse:"collapse", minWidth:800 }}>
-                  <thead>
-                    <tr style={{ background:"rgba(255,255,255,0.04)" }}>
-                      <th style={{ padding:"10px 14px", fontSize:13, color:"#888", fontWeight:700, border:"1px solid rgba(255,255,255,0.07)", width:70, textAlign:"left" }}>Time</th>
-                      {DAYS.map(d=>(
-                        <th key={d} style={{ padding:"10px 14px", fontSize:13, color:"#a78bfa", fontWeight:700, border:"1px solid rgba(255,255,255,0.07)", textAlign:"center" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {HOURS.map(h=>{
-                      const hourStr = `${String(h).padStart(2,"0")}:00`;
-                      return (
-                        <tr key={h}>
-                          <td style={{ padding:"8px 12px", border:"1px solid rgba(255,255,255,0.05)", color:"#64748b", fontSize:12, verticalAlign:"top", whiteSpace:"nowrap" }}>{hourStr}</td>
-                          {DAYS.map(d=>{
-                            const slot = (timetable[d]||[]).find(s => {
-                              const [sh] = s.start.split(":").map(Number);
-                              const [eh, em] = s.end.split(":").map(Number);
-                              const endHourFloat = eh + (em > 0 ? 0.5 : 0);
-                              return h >= sh && h < Math.max(sh + 1, endHourFloat);
-                            });
-                            const color = slot ? (COLOR_MAP[slot.taskType]||"#6c63ff") : null;
-                            return (
-                              <td key={d} style={{ padding:"4px 6px", border:"1px solid rgba(255,255,255,0.05)", verticalAlign:"top", minWidth:110, height:48 }}>
-                                {slot && (
-                                  <div style={{ 
+      {/* ── INTERACTIVE TIMETABLE TAB ── */}
+      {subtab === "timetable" && (
+        timetable ? (
+          <div>
+            <div style={{ color:"#888", fontSize:12, marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
+              <span>💡 Drag study cards to adjust timeslots. Warning conflict warnings automatically check constraints.</span>
+            </div>
+            <div style={{ overflowX:"auto" }}>
+              <table style={{ width:"100%", borderCollapse:"collapse", minWidth:800 }}>
+                <thead>
+                  <tr style={{ background:"rgba(255,255,255,0.02)" }}>
+                    <th style={{ padding:"10px 14px", fontSize:13, color:"#64748b", fontWeight:700, border:"1px solid rgba(255,255,255,0.05)", width:70, textAlign:"center" }}>Time</th>
+                    {DAYS.map(d=>(
+                      <th key={d} style={{ padding:"10px 14px", fontSize:13, color:"#a78bfa", fontWeight:700, border:"1px solid rgba(255,255,255,0.05)", textAlign:"center" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {ROWS.map(row=>{
+                    return (
+                      <tr key={row.label}>
+                        <td style={{ padding:"8px 12px", border:"1px solid rgba(255,255,255,0.05)", color:"#64748b", fontSize:12, verticalAlign:"middle", whiteSpace:"nowrap", textAlign:"center" }}>{row.label}</td>
+                        {DAYS.map(d=>{
+                          const state = getRenderState(d, row.hour, row.minute);
+                          if (!state.render) return null;
+                          const slot = state.slot;
+                          const color = slot ? (COLOR_MAP[slot.taskType] || "#6c63ff") : null;
+                          return (
+                            <td key={d} rowSpan={state.rowSpan}
+                              onDragOver={e => e.preventDefault()}
+                              onDrop={e => {
+                                const { day: sourceDay, slotId } = JSON.parse(e.dataTransfer.getData("text/plain"));
+                                handleMoveSlot(sourceDay, slotId, d, row.hour, row.minute);
+                              }}
+                              style={{ 
+                                padding:"4px 6px", 
+                                border:"1px solid rgba(255,255,255,0.05)", 
+                                verticalAlign:"top", 
+                                minWidth:110, 
+                                height: 48 * state.rowSpan,
+                                background: !slot && isCellBlocked(d, row.hour, row.minute) ? "rgba(239, 68, 68, 0.03)" : "transparent"
+                              }}
+                            >
+                              {slot && (
+                                <div draggable={!slot.isBlockSlot}
+                                  onDragStart={e => {
+                                    e.dataTransfer.setData("text/plain", JSON.stringify({ day: d, slotId: slot.id }));
+                                  }}
+                                  style={{ 
                                     background: color+"15", 
-                                    borderLeft:`3px solid ${color}`, 
+                                    borderLeft:`4px solid ${color}`, 
                                     borderRadius:8, 
                                     padding:"6px 10px",
                                     border:`1px solid ${color}33`,
-                                    boxShadow:`0 4px 12px ${color}11`
-                                  }}>
+                                    boxShadow:`0 4px 12px ${color}11`,
+                                    cursor: slot.isBlockSlot ? "not-allowed" : "grab",
+                                    height: "100%",
+                                    boxSizing: "border-box",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between"
+                                  }}
+                                >
+                                  <div>
                                     <div style={{ fontSize:12, fontWeight:800, color:"#f1f5f9", lineHeight:1.2 }}>{slot.title}</div>
-                                    <div style={{ fontSize:10, color:"#888", marginTop:3, display:"flex", justifyContent:"space-between" }}>
-                                      <span>{slot.start}–{slot.end}</span>
-                                      {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}>⚡{slot.energy}</span>}
-                                    </div>
+                                    <div style={{ fontSize:10, color:color, fontWeight:700, marginTop:3 }}>{slot.taskType}</div>
                                   </div>
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
+                                  <div style={{ fontSize:10, color:"#888", marginTop:4, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                                    <span>{slot.start}–{slot.end}</span>
+                                    {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}>⚡{slot.energy}</span>}
+                                  </div>
+                                </div>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <Card>
+            <div style={{ textAlign:"center", color:"#555", padding:60 }}>
+              <div style={{fontSize:40,marginBottom:12}}>🗓</div>
+              <div>No weekly timetable generated yet.</div>
+              <Btn style={{marginTop:16}} onClick={()=>setSubtab("setup")}>Go to Setup →</Btn>
+            </div>
+          </Card>
+        )
+      )}
+
+      {/* ── ANALYTICS & ADAPTATION TAB ── */}
+      {subtab === "analytics" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {/* Charts Row */}
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }}>
+            <Card>
+              <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Weekly Productive Hours Distribution</div>
+              {timetable ? (
+                <div style={{ padding: "10px 0" }}>
+                  <svg viewBox="0 0 500 200" style={{ width: "100%", height: 200 }}>
+                    <defs>
+                      <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#8b5cf6" />
+                        <stop offset="100%" stopColor="#6c63ff" />
+                      </linearGradient>
+                    </defs>
+                    {/* Render grid lines */}
+                    {[0, 50, 100, 150].map(y => (
+                      <line key={y} x1="40" y1={170 - y} x2="480" y2={170 - y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                    ))}
+                    {DAYS.map((d, i) => {
+                      const totalMin = getDayTotal(d);
+                      const barHeight = Math.min(150, (totalMin / 480) * 150); // capped at 8h
+                      return (
+                        <g key={d}>
+                          <rect x={60 + i * 60} y={170 - barHeight} width="24" height={barHeight} fill="url(#barGrad)" rx="4" />
+                          <text x={72 + i * 60} y="190" fill="#64748b" fontSize="11" textAnchor="middle">{d}</text>
+                          <text x={72 + i * 60} y={160 - barHeight} fill="#fff" fontSize="10" textAnchor="middle" fontWeight="bold">
+                            {totalMin > 0 ? `${Math.round(totalMin/60*10)/10}h` : "0h"}
+                          </text>
+                        </g>
                       );
                     })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ) : (
-            <Card><div style={{ textAlign:"center", color:"#555", padding:60 }}>
-              <div style={{fontSize:40,marginBottom:12}}>🗓</div>
-              <div>No timetable generated yet.</div>
-              <Btn style={{marginTop:16}} onClick={()=>setSubtab("setup")}>Go to Setup →</Btn>
-            </div></Card>
-          )
-        )}
-
-        {/* ── ANALYTICS & ADAPTATION TAB ── */}
-        {subtab === "analytics" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <Card>
-              <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Schedule Analytics</div>
-              {timetable ? (
-                <>
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:20 }}>
-                    {[
-                      ["Total Tasks", tasks.length, "#6c63ff"],
-                      ["Work Days", DAYS.filter(d=>!constraints.noWork.includes(d)).length, "#22c55e"],
-                      ["Daily Avg", tasks.length ? Math.round(tasks.reduce((s,t)=>s+t.duration,0)/60*10)/10+"h" : "0h", "#f59e0b"],
-                    ].map(([l,v,c])=>(
-                      <div key={l} style={{ background:c+"11", border:`1px solid ${c}33`, borderRadius:12, padding:"16px 14px" }}>
-                        <div style={{ fontSize:24, fontWeight:800, color:c }}>{v}</div>
-                        <div style={{ fontSize:13, color:"#888", marginTop:4 }}>{l}</div>
-                      </div>
-                    ))}
-                  </div>
-                  {DAYS.map(d=>(
-                    <div key={d} style={{ marginBottom:14 }}>
-                      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, fontSize:13 }}>
-                        <span style={{ fontWeight:600, color:"#e2e8f0" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</span>
-                        <span style={{ color:"#64748b" }}>{(timetable[d]||[]).reduce((s,t)=>s+t.duration,0)} min</span>
-                      </div>
-                      <div style={{ display:"flex", gap:4, flexWrap:"wrap" }}>
-                        {(timetable[d]||[]).map(s=>(
-                          <span key={s.id} style={{ fontSize:12, background:(COLOR_MAP[s.taskType]||"#6c63ff")+"33", color:COLOR_MAP[s.taskType]||"#a78bfa", padding:"2px 10px", borderRadius:20, border:`1px solid ${(COLOR_MAP[s.taskType]||"#6c63ff")}44` }}>
-                            {s.start} {s.title}
-                          </span>
-                        ))}
-                        {constraints.noWork.includes(d) && <span style={{ fontSize:12, color:"#555" }}>Rest day</span>}
-                      </div>
-                    </div>
-                  ))}
-                </>
-              ) : <div style={{ color:"#555", textAlign:"center", padding:40 }}>Generate a timetable first.</div>}
+                    <line x1="40" y1="170" x2="480" y2="170" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                  </svg>
+                </div>
+              ) : (
+                <div style={{ color:"#555", textAlign:"center", padding:40 }}>Generate schedule to view stats.</div>
+              )}
             </Card>
 
-            {/* Saved Timetables History */}
             <Card>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontFamily: "Orbitron", letterSpacing: 0.5 }}>⏳ Saved Timetables History</span>
-                <span style={{ fontSize: 11, background: "rgba(108,99,255,0.15)", padding: "4px 10px", borderRadius: 20, color: "#a78bfa", fontWeight: 700 }}>{history.length} SAVED</span>
-              </div>
-              {history.length === 0 ? (
-                <div style={{ color: "#555", textAlign: "center", padding: "30px 0", fontSize: 13 }}>No historical timetables saved yet. Generate a schedule to auto-save it here!</div>
-              ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {history.map(item => (
-                    <div 
-                      key={item.id} 
-                      style={{ 
-                        display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.02)", 
-                        border: "1px solid rgba(255,255,255,0.05)", borderRadius: 12, padding: "12px 18px", transition: "0.2s" 
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(108,99,255,0.2)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; }}
-                    >
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{item.name}</div>
-                        <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
-                          📋 {item.tasks?.length || 0} tasks · 🚫 {item.constraints?.blocks?.length || 0} blocks · Wake: {item.constraints?.wake} · Sleep: {item.constraints?.sleep}
-                        </div>
-                      </div>
-                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        <button 
-                          onClick={() => {
-                            if (window.confirm("Overwrite active schedule with this historical version?")) {
-                              setTasks(item.tasks || []);
-                              setConstraints(item.constraints || {});
-                              setTimetable(item.timetable || null);
-                              setSubtab("timetable");
-                            }
-                          }} 
-                          style={{ padding: "6px 12px", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: 8, color: "#a78bfa", fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "0.2s" }}
-                          onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.25)"; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.15)"; }}
-                        >
-                          📂 Load & Edit
-                        </button>
-                        <button 
-                          onClick={() => {
-                            if (window.confirm("Delete this saved schedule?")) {
-                              setHistory(history.filter(x => x.id !== item.id));
-                            }
-                          }} 
-                          style={{ padding: "6px 10px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center" }}
-                          title="Delete history item"
-                        >
-                          🗑
-                        </button>
-                      </div>
+              <div style={{ fontSize:15, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Total Work Breakdown</div>
+              {timetable ? (
+                <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+                  {[
+                    ["Total Study Tasks", tasks.length, "#6c63ff"],
+                    ["Committed Busy Blocks", (constraints.blocks || []).length, "#ef4444"],
+                    ["Work Days/Week", DAYS.filter(d=>!constraints.noWork.includes(d)).length, "#22c55e"],
+                    ["Weekly Study Hours", Math.round(DAYS.reduce((acc,d)=>acc+getDayTotal(d), 0) / 60 * 10) / 10 + " hrs", "#f59e0b"]
+                  ].map(([l,v,c]) => (
+                    <div key={l} style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                      <span style={{ fontSize:13, color:"#64748b" }}>{l}</span>
+                      <span style={{ fontSize:14, fontWeight:800, color:c }}>{v}</span>
                     </div>
                   ))}
                 </div>
+              ) : (
+                <div style={{ color:"#555", textAlign:"center", padding:30 }}>No data.</div>
               )}
             </Card>
           </div>
-        )}
 
-        {/* ── PRINTABLE EXPORT TAB ── */}
-        {subtab === "printable" && (
+          {/* Timetable History logs */}
+          <Card>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontFamily: "Orbitron", letterSpacing: 0.5 }}>⏳ Saved Timetables History Logs</span>
+              <span style={{ fontSize: 11, background: "rgba(108,99,255,0.15)", padding: "4px 10px", borderRadius: 20, color: "#a78bfa", fontWeight: 700 }}>{history.length} SAVED</span>
+            </div>
+            {history.length === 0 ? (
+              <div style={{ color: "#555", textAlign: "center", padding: "30px 0", fontSize: 13 }}>No historical timetables saved yet. Auto-saves every new generation or manual drag adjust!</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {history.map(item => (
+                  <div key={item.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 12, padding: "12px 18px", transition: "0.2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(108,99,255,0.2)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{item.name}</div>
+                      <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
+                        📋 {item.tasks?.length || 0} tasks · 🚫 {item.constraints?.blocks?.length || 0} blocks · Wake: {item.constraints?.wake} · Sleep: {item.constraints?.sleep}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <button onClick={() => {
+                        if (window.confirm("Overwrite active schedule with this historical version?")) {
+                          setTasks(item.tasks || []);
+                          setConstraints(item.constraints || {});
+                          setTimetable(item.timetable || null);
+                          setSubtab("timetable");
+                        }
+                      }}
+                        style={{ padding: "6px 12px", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: 8, color: "#a78bfa", fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "0.2s" }}
+                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.25)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.15)"; }}
+                      >
+                        📂 Restore & Edit
+                      </button>
+                      <button onClick={() => {
+                        if (window.confirm("Delete this saved schedule?")) {
+                          setHistory(history.filter(x => x.id !== item.id));
+                        }
+                      }}
+                        style={{ padding: "6px 10px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center" }}
+                        title="Delete log"
+                      >
+                        🗑
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+      )}
+
+      {/* ── PRINTABLE EXPORT TAB ── */}
+      {subtab === "printable" && (
+        timetable ? (
           <div>
             <div style={{ display:"flex", gap:10, marginBottom:20 }}>
-              <Btn onClick={printTimetableCleanly}>🖨 Print Timetable</Btn>
-              <Btn variant="secondary" onClick={downloadImage}>⬇ Download Image</Btn>
+              <Btn onClick={printTimetableCleanly}>🖨 Print Timetable (PDF)</Btn>
+              <Btn variant="secondary" onClick={downloadImage}>⬇ Download Image (PNG)</Btn>
             </div>
-            {/* White print-friendly layout */}
+            {/* Print canvas */}
             <div ref={exportRef} id="tt-print" style={{ background:"#fff", color:"#111", borderRadius:12, padding:"32px 28px", fontFamily:"'Segoe UI',sans-serif" }}>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20, paddingBottom:16, borderBottom:"2px solid #e5e7eb" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <img 
-        src="/logo.png" 
-        alt="Logo" 
-        style={{ width: 60, height: 60, objectFit: "contain" }} 
-      />
+                  <img src="/logo.png" alt="Logo" style={{ width: 48, height: 48, objectFit: "contain" }} />
                   <div>
                     <div style={{ fontSize:18, fontWeight:800, color:"#1e6fa8" }}>ApexLink</div>
-                    
                   </div>
                 </div>
                 <div style={{ textAlign:"right" }}>
@@ -1904,39 +2200,37 @@ function TimetableBuilder({ user }) {
               <table style={{ width:"100%", borderCollapse:"collapse" }}>
                 <thead>
                   <tr>
-                    <th style={{ border:"1px solid #ddd", padding:"10px 12px", fontSize:13, fontWeight:700, color:"#333", textAlign:"left", background:"#f8f8f8" }}>Time</th>
+                    <th style={{ border:"1px solid #ddd", padding:"8px 10px", fontSize:12, fontWeight:700, color:"#333", textAlign:"left", background:"#f8f8f8", width: 70 }}>Time</th>
                     {DAYS.map(d=>(
-                      <th key={d} style={{ border:"1px solid #ddd", padding:"10px 12px", fontSize:13, fontWeight:700, color:"#333", textAlign:"center", background:"#f8f8f8" }}>
-                        <div>{d==="Mon"?"Monday":d==="Tue"?"Tuesday":d==="Wed"?"Wednesday":d==="Thu"?"Thursday":d==="Fri"?"Friday":d==="Sat"?"Saturday":"Sunday"}</div>
+                      <th key={d} style={{ border:"1px solid #ddd", padding:"8px 10px", fontSize:12, fontWeight:700, color:"#333", textAlign:"center", background:"#f8f8f8" }}>
+                        {d==="Mon"?"Monday":d==="Tue"?"Tuesday":d==="Wed"?"Wednesday":d==="Thu"?"Thursday":d==="Fri"?"Friday":d==="Sat"?"Saturday":"Sunday"}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {HOURS.map(h=>{
-                    const hourStr = `${String(h).padStart(2,"0")}:00`;
+                  {ROWS.map(row=>{
                     return (
-                      <tr key={h}>
-                        <td style={{ border:"1px solid #ddd", padding:"8px 12px", fontSize:12, color:"#555", fontWeight:600, whiteSpace:"nowrap" }}>{hourStr}</td>
+                      <tr key={row.label}>
+                        <td style={{ border:"1px solid #ddd", padding:"6px 10px", fontSize:11, color:"#555", fontWeight:600, whiteSpace:"nowrap" }}>{row.label}</td>
                         {DAYS.map(d=>{
-                          const slot = timetable && (timetable[d]||[]).find(s => {
-                            const [sh] = s.start.split(":").map(Number);
-                            const [eh, em] = s.end.split(":").map(Number);
-                            const endHourFloat = eh + (em > 0 ? 0.5 : 0);
-                            return h >= sh && h < Math.max(sh + 1, endHourFloat);
-                          });
+                          const state = getRenderState(d, row.hour, row.minute);
+                          if (!state.render) return null;
+                          const slot = state.slot;
                           const color = slot ? (COLOR_MAP[slot.taskType]||"#6c63ff") : null;
                           return (
-                            <td key={d} style={{ border:"1px solid #ddd", padding:"4px 6px", verticalAlign:"top", minWidth:80, height:36 }}>
+                            <td key={d} rowSpan={state.rowSpan} style={{ border:"1px solid #ddd", padding:"4px 6px", verticalAlign:"top", minWidth:80, height:36 * state.rowSpan }}>
                               {slot && (
                                 <div style={{ 
                                   background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : "#f0f0ff", 
                                   borderLeft:`3px solid ${color}`, 
                                   borderRadius:4, 
-                                  padding:"4px 6px" 
+                                  padding:"4px 6px",
+                                  height: "100%",
+                                  boxSizing: "border-box"
                                 }}>
-                                  <div style={{ fontSize:11, fontWeight:700, color: slot.isBlockSlot ? "#ef4444" : "#111" }}>{slot.title}</div>
-                                  <div style={{ fontSize:10, color:"#666" }}>{slot.start}–{slot.end}</div>
+                                  <div style={{ fontSize:10, fontWeight:700, color: slot.isBlockSlot ? "#ef4444" : "#111" }}>{slot.title}</div>
+                                  <div style={{ fontSize:9, color:"#666", marginTop: 2 }}>{slot.start}–{slot.end}</div>
                                 </div>
                               )}
                             </td>
