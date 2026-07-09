@@ -3422,6 +3422,7 @@ function FriendCircles({ user }) {
 }
 
 function RoomView({ room, user, allRooms, setAllRooms }) {
+  const SHOW_SIMULATOR = false;
   const [tab, setTab] = useState("tasks"); 
   const [msg, setMsg] = useState("");
   const [editingMsgId, setEditingMsgId] = useState(null);
@@ -3924,39 +3925,41 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       </Modal>
 
       {/* 🛠️ DEVELOPER SIMULATION CONSOLE */}
-      <div style={{ 
-        padding: "12px 20px", 
-        background: "rgba(255, 255, 255, 0.02)", 
-        borderTop: "1.5px dashed rgba(255,255,255,0.08)", 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        flexShrink: 0 
-      }}>
-        <div style={{ fontSize: 12, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
-          <span>🧪 <strong>Simulated Date:</strong> {today()}</span>
-          {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
-            <span style={{ color: "#fbbf24", fontWeight: 700 }}>(+{localStorage.getItem("apx_date_offset")} days)</span>
-          )}
-        </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
+      {SHOW_SIMULATOR && (
+        <div style={{ 
+          padding: "12px 20px", 
+          background: "rgba(255, 255, 255, 0.02)", 
+          borderTop: "1.5px dashed rgba(255,255,255,0.08)", 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          flexShrink: 0 
+        }}>
+          <div style={{ fontSize: 12, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
+            <span>🧪 <strong>Simulated Date:</strong> {today()}</span>
+            {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
+              <span style={{ color: "#fbbf24", fontWeight: 700 }}>(+{localStorage.getItem("apx_date_offset")} days)</span>
+            )}
+          </div>
+          <div style={{ display: "flex", gap: 10 }}>
+            {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
+              <Btn small onClick={() => {
+                localStorage.removeItem("apx_date_offset");
+                window.location.reload();
+              }} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.3)", padding: "4px 10px", fontSize: 11 }}>
+                🔄 Reset Date
+              </Btn>
+            )}
             <Btn small onClick={() => {
-              localStorage.removeItem("apx_date_offset");
+              const currentOffset = Number(localStorage.getItem("apx_date_offset") || 0);
+              localStorage.setItem("apx_date_offset", currentOffset + 1);
               window.location.reload();
-            }} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.3)", padding: "4px 10px", fontSize: 11 }}>
-              🔄 Reset Date
+            }} style={{ padding: "4px 10px", fontSize: 11 }}>
+              ⚡ Fast Forward 24h
             </Btn>
-          )}
-          <Btn small onClick={() => {
-            const currentOffset = Number(localStorage.getItem("apx_date_offset") || 0);
-            localStorage.setItem("apx_date_offset", currentOffset + 1);
-            window.location.reload();
-          }} style={{ padding: "4px 10px", fontSize: 11 }}>
-            ⚡ Fast Forward 24h
-          </Btn>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
