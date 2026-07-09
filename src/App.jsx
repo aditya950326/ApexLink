@@ -2879,13 +2879,20 @@ function Reminders({ user }) {
           if (n >= rTime) {
             setReminders(prev => prev.map(x => x.id === r.id ? { ...x, triggered: true } : x));
             setTriggered(r);
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            if (window.activeAlarmAudio) {
+              try { window.activeAlarmAudio.pause(); } catch(e) {}
+            }
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3');
+            audio.loop = true;
             audio.play().catch(e => {});
+            window.activeAlarmAudio = audio;
           }
         }
       });
     }, 1000);
-    return () => clearInterval(t);
+    return () => {
+      clearInterval(t);
+    };
   }, [reminders]);
 
   const addReminder = () => {
@@ -3033,6 +3040,34 @@ function Reminders({ user }) {
           <Btn className="click-scale" onClick={() => { setForm({...form, datetime: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}-${String(selectedDayMissions.day).padStart(2,'0')}T10:00` }); setSelectedDayMissions(null); setShowAdd(true); }}>+ ADD NEW OBJECTIVE</Btn>
         </div>
       </Modal>
+
+      {/* 🚨 MISSION CRITICAL ALARM MODAL */}
+      {triggered && (
+        <Modal open={true} onClose={() => {
+          if (window.activeAlarmAudio) {
+            try { window.activeAlarmAudio.pause(); } catch(e) {}
+            window.activeAlarmAudio = null;
+          }
+          setTriggered(null);
+        }} title="🚨 CRITICAL ALARM STATUS">
+          <div style={{ padding: 10, textAlign: 'center' }}>
+            <div style={{ fontSize: 50, animation: "bounce 1s infinite", marginBottom: 15 }}>⏰</div>
+            <h3 style={{ fontSize: 20, color: '#f87171', margin: '0 0 10px', fontWeight: 900 }}>{triggered.title.toUpperCase()}</h3>
+            <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 25, lineHeight: 1.5 }}>{triggered.description || "Mission objective timeline reached!"}</p>
+            <Btn onClick={() => {
+              if (window.activeAlarmAudio) {
+                try { window.activeAlarmAudio.pause(); } catch(e) {}
+                window.activeAlarmAudio = null;
+              }
+              // Dismiss the reminder (mark as done)
+              setReminders(prev => prev.map(x => x.id === triggered.id ? { ...x, done: true } : x));
+              setTriggered(null);
+            }} style={{ background: '#ef4444', border: 'none', width: '100%', padding: '14px', fontWeight: 900, borderRadius: 12 }}>
+              DISMISS & SILENCE ALARM
+            </Btn>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
