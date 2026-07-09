@@ -1424,7 +1424,6 @@ function TimetableBuilder({ user }) {
 
     const table = {};
     DAYS.forEach((day, dayIdx) => {
-      if (constraints.noWork.includes(day)) { table[day] = []; return; }
       let cursor = wakeMin;
       let usedMin = 0;
       const slots = [];
@@ -1449,7 +1448,8 @@ function TimetableBuilder({ user }) {
       });
 
       sorted.forEach(task => {
-        if (task.type === "specific" && !task.days.includes(day)) return;
+        if (constraints.noWork.includes(day) && task.type !== "specific") return;
+        if (task.type === "specific" && (!task.days || !task.days.includes(day))) return;
         if (usedMin + task.duration > maxMin) return;
 
         let start = cursor;
@@ -1509,7 +1509,7 @@ function TimetableBuilder({ user }) {
     try {
       const prompt = `You are an expert AI productivity coach. Formulate an optimized weekly study schedule based on the following:
 Tasks List: ${JSON.stringify(tasks)}
-Weekly Constraints: wake at ${constraints.wake}, sleep at ${constraints.sleep}, max study hours daily ${constraints.maxHours}.
+Weekly Constraints: wake at ${constraints.wake}, sleep at ${constraints.sleep}, max study hours daily ${constraints.maxHours}, rest/no-work days: ${constraints.noWork.join(", ")} (Do not schedule daily tasks on rest days, but schedule specific tasks if they target a rest day).
 Locked Block Commitments: ${JSON.stringify(constraints.blocks)} (No tasks should ever be assigned during these times).
 
 Instructions:
