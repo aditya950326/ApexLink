@@ -2268,8 +2268,10 @@ Instructions:
               }
             `}</style>
           </div>
-        )}
-      </div>
+        ) : (
+          <Card><div style={{ textAlign:"center", color:"#555", padding:40 }}>Generate schedule first.</div></Card>
+        )
+      )}
     </div>
   );
 }
