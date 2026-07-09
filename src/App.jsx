@@ -2859,12 +2859,10 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
 }
 
 // ─── REMINDERS ────────────────────────────────────────────────────────────────
-function Reminders({ user }) {
-  const [reminders, setReminders] = useLS(`apx_rem_${user.id}`, []);
+function Reminders({ user, reminders = [], setReminders }) {
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ title: "", description: "", datetime: "", urgency: "normal" });
   const [now, setNow] = useState(new Date());
-  const [triggered, setTriggered] = useState(null);
   const [editingReminderId, setEditingReminderId] = useState(null);
   
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -2889,29 +2887,10 @@ function Reminders({ user }) {
 
   useEffect(() => {
     const t = setInterval(() => {
-      const n = new Date();
-      setNow(n);
-      reminders.forEach(r => {
-        if (!r.done && !r.triggered) {
-          const rTime = new Date(r.datetime);
-          if (n >= rTime) {
-            setReminders(prev => prev.map(x => x.id === r.id ? { ...x, triggered: true } : x));
-            setTriggered(r);
-            if (window.activeAlarmAudio) {
-              try { window.activeAlarmAudio.pause(); } catch(e) {}
-            }
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3');
-            audio.loop = true;
-            audio.play().catch(e => {});
-            window.activeAlarmAudio = audio;
-          }
-        }
-      });
+      setNow(new Date());
     }, 1000);
-    return () => {
-      clearInterval(t);
-    };
-  }, [reminders]);
+    return () => clearInterval(t);
+  }, []);
 
   const addReminder = () => {
     if (!form.title || !form.datetime) return;
@@ -3072,33 +3051,6 @@ function Reminders({ user }) {
         </div>
       </Modal>
 
-      {/* 🚨 MISSION CRITICAL ALARM MODAL */}
-      {triggered && (
-        <Modal open={true} onClose={() => {
-          if (window.activeAlarmAudio) {
-            try { window.activeAlarmAudio.pause(); } catch(e) {}
-            window.activeAlarmAudio = null;
-          }
-          setTriggered(null);
-        }} title="🚨 CRITICAL ALARM STATUS">
-          <div style={{ padding: 10, textAlign: 'center' }}>
-            <div style={{ fontSize: 50, animation: "bounce 1s infinite", marginBottom: 15 }}>⏰</div>
-            <h3 style={{ fontSize: 20, color: '#f87171', margin: '0 0 10px', fontWeight: 900 }}>{triggered.title.toUpperCase()}</h3>
-            <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 25, lineHeight: 1.5 }}>{triggered.description || "Mission objective timeline reached!"}</p>
-            <Btn onClick={() => {
-              if (window.activeAlarmAudio) {
-                try { window.activeAlarmAudio.pause(); } catch(e) {}
-                window.activeAlarmAudio = null;
-              }
-              // Dismiss the reminder (mark as done)
-              setReminders(prev => prev.map(x => x.id === triggered.id ? { ...x, done: true } : x));
-              setTriggered(null);
-            }} style={{ background: '#ef4444', border: 'none', width: '100%', padding: '14px', fontWeight: 900, borderRadius: 12 }}>
-              DISMISS & SILENCE ALARM
-            </Btn>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 }
@@ -6235,6 +6187,33 @@ export default function App() {
   const [stopwatch, setStopwatch] = useLS(`apx_warrior_stop_${currentUser?.id}`, { time: 0, active: false, lastTick: Date.now() });
   const [counter, setCounter] = useLS(`apx_warrior_count_${currentUser?.id}`, 0);
 
+  const [reminders, setReminders] = useLS(`apx_rem_${currentUser?.id}`, []);
+  const [triggered, setTriggered] = useState(null);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const t = setInterval(() => {
+      const n = new Date();
+      reminders.forEach(r => {
+        if (!r.done && !r.triggered) {
+          const rTime = new Date(r.datetime);
+          if (n >= rTime) {
+            setReminders(prev => prev.map(x => x.id === r.id ? { ...x, triggered: true } : x));
+            setTriggered(r);
+            if (window.activeAlarmAudio) {
+              try { window.activeAlarmAudio.pause(); } catch(e) {}
+            }
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3');
+            audio.loop = true;
+            audio.play().catch(e => {});
+            window.activeAlarmAudio = audio;
+          }
+        }
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [reminders, currentUser, setReminders]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
@@ -6290,7 +6269,7 @@ export default function App() {
       case "dashboard": return <Dashboard user={liveUser} pomo={pomo} setPomo={setPomo} />;
       case "timetable": return <TimetableBuilder user={liveUser} />;
       case "vedai": return <VedAI user={liveUser} />;
-      case "reminders": return <Reminders user={liveUser} />;
+      case "reminders": return <Reminders user={liveUser} reminders={reminders} setReminders={setReminders} />;
       case "notes": return <StickyNotes user={liveUser} />;
       case "friends": return <FriendCircles user={liveUser} />;
       case "corporate": return <CorporateWork user={liveUser} />;
@@ -6302,12 +6281,42 @@ export default function App() {
   };
 
   return (
-    <Layout 
-      user={liveUser} tab={tab} setTab={setTab} onLogout={handleLogout}
-      pomo={pomo} setPomo={setPomo} stopwatch={stopwatch} setStopwatch={setStopwatch} counter={counter} setCounter={setCounter}
-    >
-      {renderTab()}
-    </Layout>
+    <>
+      <Layout 
+        user={liveUser} tab={tab} setTab={setTab} onLogout={handleLogout}
+        pomo={pomo} setPomo={setPomo} stopwatch={stopwatch} setStopwatch={setStopwatch} counter={counter} setCounter={setCounter}
+      >
+        {renderTab()}
+      </Layout>
+
+      {/* 🚨 MISSION CRITICAL ALARM MODAL */}
+      {triggered && (
+        <Modal open={true} onClose={() => {
+          if (window.activeAlarmAudio) {
+            try { window.activeAlarmAudio.pause(); } catch(e) {}
+            window.activeAlarmAudio = null;
+          }
+          setTriggered(null);
+        }} title="🚨 CRITICAL ALARM STATUS">
+          <div style={{ padding: 10, textAlign: 'center' }}>
+            <div style={{ fontSize: 50, animation: "bounce 1s infinite", marginBottom: 15 }}>⏰</div>
+            <h3 style={{ fontSize: 20, color: '#f87171', margin: '0 0 10px', fontWeight: 900 }}>{triggered.title.toUpperCase()}</h3>
+            <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 25, lineHeight: 1.5 }}>{triggered.description || "Mission objective timeline reached!"}</p>
+            <Btn onClick={() => {
+              if (window.activeAlarmAudio) {
+                try { window.activeAlarmAudio.pause(); } catch(e) {}
+                window.activeAlarmAudio = null;
+              }
+              // Dismiss the reminder (mark as done)
+              setReminders(prev => prev.map(x => x.id === triggered.id ? { ...x, done: true } : x));
+              setTriggered(null);
+            }} style={{ background: '#ef4444', border: 'none', width: '100%', padding: '14px', fontWeight: 900, borderRadius: 12 }}>
+              DISMISS & SILENCE ALARM
+            </Btn>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }
 
