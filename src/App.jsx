@@ -1685,6 +1685,18 @@ Instructions:
     ROWS.push({ hour: h, minute: 30, label: `${String(h).padStart(2,"0")}:30` });
   });
 
+  const filteredRows = ROWS.filter(row => {
+    const currentMin = row.hour * 60 + row.minute;
+    const isInsideAnyBlock = (constraints.blocks || []).some(b => {
+      const [sh, sm] = b.start.split(":").map(Number);
+      const [eh, em] = b.end.split(":").map(Number);
+      const startMin = sh * 60 + sm;
+      const endMin = eh * 60 + em;
+      return currentMin > startMin && currentMin < endMin;
+    });
+    return !isInsideAnyBlock;
+  });
+
   const getDayTotal = (day) => {
     return (timetable[day] || []).filter(s => !s.isBlockSlot).reduce((acc, s) => acc + s.duration, 0);
   };
@@ -1983,7 +1995,7 @@ Instructions:
                   </tr>
                 </thead>
                 <tbody>
-                  {ROWS.map(row=>{
+                  {filteredRows.map(row=>{
                     return (
                       <tr key={row.label}>
                         <td style={{ padding:"8px 12px", border:"1px solid rgba(255,255,255,0.05)", color:"#64748b", fontSize:12, verticalAlign:"middle", whiteSpace:"nowrap", textAlign:"center" }}>{row.label}</td>
@@ -2220,7 +2232,7 @@ Instructions:
                   </tr>
                 </thead>
                 <tbody>
-                  {ROWS.map(row=>{
+                  {filteredRows.map(row=>{
                     return (
                       <tr key={row.label}>
                         <td style={{ border:"1px solid #ddd", padding:"6px 10px", fontSize:11, color:"#555", fontWeight:600, whiteSpace:"nowrap" }}>{row.label}</td>
