@@ -3372,7 +3372,17 @@ function FriendCircles({ user }) {
                 <div style={{ fontWeight: 700, fontSize: 14, color: activeRoomId === room.id ? "#3b82f6" : "#fff" }}>{room.name}</div>
                 <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.isBroken ? "💀 0" : `🔥 ${room.streak || 0}`}</div>
               </div>
-              <div style={{ fontSize: 10, color: "#475569", marginTop: 6 }}>ID: {room.id.slice(0,8)} • {room.members.length} members</div>
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(room.id);
+                  alert("Squad ID copied!");
+                }}
+                style={{ fontSize: 10, color: "#475569", marginTop: 6, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+                title="Click to copy full ID"
+              >
+                📋 ID: {room.id.slice(0,8)}... • {room.members.length} members
+              </div>
             </div>
           ))}
         </div>
@@ -3585,8 +3595,25 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 180px)", background: "#0a0a0f", borderRadius: 20, overflow: 'hidden', position: 'relative' }}>
-      <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", flexShrink: 0 }}>
-        <div style={{ fontWeight: 800 }}>{room.name} <span style={{ color: "#f59e0b", marginLeft: 8 }}>{room.isBroken ? "💀 0" : `🔥 ${room.streak || 0}`}</span></div>
+      <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+        <div style={{ fontWeight: 800, display: "flex", alignItems: "center", gap: 12 }}>
+          <span>{room.name}</span>
+          <span style={{ color: "#f59e0b" }}>{room.isBroken ? "💀 0" : `🔥 ${room.streak || 0}`}</span>
+          <span 
+            onClick={() => {
+              navigator.clipboard.writeText(room.id);
+              alert("Squad ID copied to clipboard!");
+            }}
+            style={{ 
+              fontSize: 12, background: "rgba(59, 130, 246, 0.12)", border: "1px solid rgba(59, 130, 246, 0.3)", 
+              borderRadius: 8, padding: "3px 10px", color: "#60a5fa", cursor: "pointer", fontWeight: 700, 
+              display: "flex", alignItems: "center", gap: 4 
+            }}
+            title="Click to copy Room ID"
+          >
+            📋 ID: {room.id}
+          </span>
+        </div>
         <div style={{ display: "flex", gap: 15 }}>
           {["Tasks", "Chat", "Members"].map(t => (
             <span key={t} onClick={() => setTab(t.toLowerCase())} style={{ cursor: "pointer", fontSize: 12, color: tab === t.toLowerCase() ? "#3b82f6" : "#666", fontWeight: 700 }}>{t.toUpperCase()}</span>
