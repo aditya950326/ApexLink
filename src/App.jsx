@@ -207,7 +207,23 @@ function LandingPage({ onEnterAuth }) {
 
 // ─── UTILITY HELPERS ────────────────────────────────────────────────────────
 const uid = () => Math.random().toString(36).slice(2, 10);
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => {
+  const offset = Number(localStorage.getItem("apx_date_offset") || 0);
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+};
+const yesterday = () => {
+  const offset = Number(localStorage.getItem("apx_date_offset") || 0);
+  const d = new Date();
+  d.setDate(d.getDate() - 1 + offset);
+  return d.toISOString().slice(0, 10);
+};
+const addDays = (dateStr, days) => {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+};
 const fmtDate = (d) => new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
 const fmtTime = (d) => new Date(d).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
 const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
@@ -3328,7 +3344,7 @@ function FriendCircles({ user }) {
     const newRoom = { 
       id: newId, name: form.name, password: form.password, creator: user.id, 
       members: [{ id: user.id, name: user.name }], tasks: [], messages: [], streak: 0,
-      isBroken: false, previousStreak: 0 
+      restoreState: null, previousStreak: 0 
     };
     setAllRooms(prev => [...prev.filter(r => r.id !== newId), newRoom]);
     setRooms(prev => [...new Set([...prev, newId])]);
@@ -3370,7 +3386,7 @@ function FriendCircles({ user }) {
               style={{ padding: 16, background: activeRoomId === room.id ? "rgba(59, 130, 246, 0.1)" : "rgba(255,255,255,0.03)", border: activeRoomId === room.id ? "1.5px solid #3b82f6" : "1px solid rgba(255,255,255,0.08)", borderRadius: 14, cursor: "pointer", transition: "all 0.2s" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: activeRoomId === room.id ? "#3b82f6" : "#fff" }}>{room.name}</div>
-                <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.isBroken ? "💀 0" : `🔥 ${room.streak || 0}`}</div>
+                <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.restoreState ? "💀 0" : `🔥 ${room.streak || 0}`}</div>
               </div>
               <div 
                 onClick={(e) => {
@@ -3418,6 +3434,16 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
 
+  const restorePrice = (() => {
+    if (!room.restoreState) return 0;
+    const d = today();
+    if (d === room.restoreState.brokenDate) return 15;
+    if (d === addDays(room.restoreState.brokenDate, 1)) return 25;
+    return 0;
+  })();
+
+  const failedMembers = room.restoreState ? room.restoreState.failedMembers || [] : [];
+
   // 🟢 1. LOAD RAZORPAY SDK (Necessary for payment to work)
   useEffect(() => {
     const script = document.createElement("script");
@@ -3430,49 +3456,82 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
   useEffect(() => {
     const runCycleCheck = () => {
       const d = today();
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yDate = yesterday.toLocaleDateString("en-IN").split('/').join('-');
+      const yDate = yesterday();
 
       let r = { ...room };
       let updated = false;
 
-      const yesterdaySuccess = r.tasks.length > 0 && r.tasks.every(t => 
-        r.members.every(m => t.logs?.[yDate]?.[m.id] === true)
-      );
+      // 1. Roll over check: if we haven't run the check for today 'd' yet
+      if (r.lastCheckDate !== d) {
+        // Evaluate if yesterday was successful
+        const hasTasks = r.tasks && r.tasks.length > 0;
+        const yesterdaySuccess = hasTasks && r.tasks.every(t => 
+          r.members.every(m => t.logs?.[yDate]?.[m.id] === true)
+        );
 
-      if (!yesterdaySuccess && r.streak > 0 && r.lastCheckDate !== d) {
-        r.backupStreak = r.streak; 
-        r.streak = 0;
-        r.isBroken = true;
+        if (!yesterdaySuccess) {
+          // If yesterday was NOT successful, and streak > 0, the streak breaks!
+          if (r.streak > 0) {
+            // Find who failed to complete tasks yesterday
+            const failedIds = r.members.filter(m => 
+              r.tasks.some(t => t.logs?.[yDate]?.[m.id] !== true)
+            ).map(m => m.id);
+
+            const payments = {};
+            failedIds.forEach(id => { payments[id] = false; });
+
+            r.restoreState = {
+              failedDate: yDate,
+              brokenDate: d,
+              backupStreak: r.streak + 1, // Restores to what it would have been if they succeeded
+              failedMembers: failedIds,
+              payments: payments
+            };
+            r.streak = 0;
+            updated = true;
+          }
+        }
+
+        // 2. Check if active restoreState has expired
+        if (r.restoreState) {
+          const expiryDate = addDays(r.restoreState.brokenDate, 2);
+          if (d >= expiryDate) {
+            // Restoring has expired (Day 7 onwards)! Wipe it out.
+            r.restoreState = null;
+            updated = true;
+          }
+        }
+
         r.lastCheckDate = d;
         updated = true;
       }
 
-      if (updated) setAllRooms(prev => prev.map(item => item.id === room.id ? r : item));
+      if (updated) {
+        setAllRooms(prev => prev.map(item => item.id === room.id ? r : item));
+      }
     };
 
     runCycleCheck();
-    const interval = setInterval(runCycleCheck, 60000); 
+    const interval = setInterval(runCycleCheck, 15000); 
     return () => clearInterval(interval);
   }, [room, allRooms]);
 
   const sync = (updatedRoom) => {
     const d = today();
     let r = { ...updatedRoom };
-    const everyoneFinishedToday = r.tasks.length > 0 && r.tasks.every(t => 
+    const hasTasks = r.tasks && r.tasks.length > 0;
+    const everyoneFinishedToday = hasTasks && r.tasks.every(t => 
       r.members.every(m => t.logs?.[d]?.[m.id] === true)
     );
     if (everyoneFinishedToday && r.lastStreakUpdate !== d) {
       r.streak = (r.streak || 0) + 1;
       r.lastStreakUpdate = d;
-      r.isBroken = false;
     } 
     setAllRooms(prev => prev.map(item => item.id === room.id ? r : item));
   };
 
-  // 🟢 2. UPDATED RESTORE LOGIC WITH PAYMENT GATEWAY (₹15)
-  const handleRestore = () => {
+  // 🟢 2. UPDATED RESTORE LOGIC WITH PAYMENT GATEWAY (₹15 / ₹25)
+  const handleRestore = (price) => {
     if (!window.Razorpay) {
       alert("Payment gateway is loading... please try again in a second.");
       return;
@@ -3480,15 +3539,31 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
 
     const options = {
       key: "rzp_test_SebP7w5lLEyj7I", 
-      amount: 15 * 100, // 1500 Paise = ₹15
+      amount: price * 100, // Price in paise
       currency: "INR",
       name: "ApexLink Squad",
-      description: "Streak Restoration Protocol",
+      description: `Restore Streak Fee (₹${price})`,
       handler: function (response) {
         // Only executes if payment is successful
-        const restored = { ...room, isBroken: false, streak: room.backupStreak || 0, backupStreak: 0 };
-        setAllRooms(prev => prev.map(item => item.id === room.id ? restored : item));
-        alert("STREAK RECOVERED. Mission status: Active.");
+        let r = { ...room };
+        if (!r.restoreState) return;
+
+        // Mark this user as paid
+        r.restoreState.payments[user.id] = true;
+
+        // Check if all failed members have paid
+        const allPaid = r.restoreState.failedMembers.every(id => r.restoreState.payments[id] === true);
+
+        if (allPaid) {
+          r.streak = r.restoreState.backupStreak;
+          r.lastStreakUpdate = r.restoreState.failedDate;
+          r.restoreState = null;
+          alert("🎉 STREAK SUCCESSFULLY RESTORED! Streak count set to +" + r.streak);
+        } else {
+          alert("👍 Payment of ₹" + price + " successful! Waiting for remaining failed members to pay.");
+        }
+
+        setAllRooms(prev => prev.map(item => item.id === room.id ? r : item));
       },
       prefill: { name: user.name },
       theme: { color: "#3b82f6" }
@@ -3598,7 +3673,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
         <div style={{ fontWeight: 800, display: "flex", alignItems: "center", gap: 12 }}>
           <span>{room.name}</span>
-          <span style={{ color: "#f59e0b" }}>{room.isBroken ? "💀 0" : `🔥 ${room.streak || 0}`}</span>
+          <span style={{ color: "#f59e0b" }}>{room.restoreState ? "💀 0" : `🔥 ${room.streak || 0}`}</span>
           <span 
             onClick={() => {
               navigator.clipboard.writeText(room.id);
@@ -3622,10 +3697,81 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "20px" }}>
-        {room.isBroken && (
-          <div style={{ marginBottom: 20, padding: 15, background: "rgba(239, 68, 68, 0.15)", border: "1px solid #ef4444", borderRadius: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ color: "#ef4444", fontSize: 13, fontWeight: 700 }}>Streak was lost. Deploy ₹15 to restore {room.backupStreak} days.</div>
-            <Btn small onClick={handleRestore} style={{background: '#22c55e', border: 'none'}}>RECOVER STREAK</Btn>
+        {room.restoreState && restorePrice > 0 && (
+          <div style={{ 
+            marginBottom: 20, 
+            padding: "20px", 
+            background: "rgba(239, 68, 68, 0.08)", 
+            border: "1px solid rgba(239, 68, 68, 0.3)", 
+            borderRadius: 16, 
+            display: "flex", 
+            flexDirection: "column", 
+            gap: 12 
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 20 }}>⚠️</span>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: "#f87171" }}>
+                    Streak Broken! (Previous Streak: +{room.restoreState.backupStreak - 1})
+                  </div>
+                  <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 2 }}>
+                    Failed members missed tasks on <strong style={{ color: "#fff" }}>{room.restoreState.failedDate}</strong>.
+                  </div>
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: restorePrice === 15 ? "#fbbf24" : "#f87171" }}>
+                  {restorePrice === 15 ? "⏳ 1ST CHANCE (DAY 5)" : "🚨 FINAL CHANCE (DAY 6)"}
+                </div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
+                  Fee: ₹{restorePrice} per person
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: "rgba(0, 0, 0, 0.2)", borderRadius: 10, padding: 12, fontSize: 13 }}>
+              <div style={{ fontWeight: 700, color: "#cbd5e1", marginBottom: 6 }}>Payment Status:</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                {failedMembers.map(id => {
+                  const m = room.members.find(x => x.id === id);
+                  const name = m ? m.name : "Unknown";
+                  const paid = room.restoreState.payments?.[id] === true;
+                  return (
+                    <div key={id} style={{ 
+                      padding: "4px 10px", 
+                      borderRadius: 8, 
+                      fontSize: 11, 
+                      fontWeight: 700, 
+                      background: paid ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.15)",
+                      color: paid ? "#4ade80" : "#f87171",
+                      border: `1.5px solid ${paid ? "rgba(34, 197, 94, 0.3)" : "rgba(239, 68, 68, 0.3)"}`
+                    }}>
+                      {name}: {paid ? "✅ Paid" : "⏳ Pending"}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4 }}>
+              <div style={{ fontSize: 13, color: "#cbd5e1" }}>
+                {failedMembers.includes(user.id) ? (
+                  room.restoreState.payments?.[user.id] === true ? (
+                    <span style={{ color: "#4ade80", fontWeight: 700 }}>✅ You have paid. Waiting for other failed members to restore streak.</span>
+                  ) : (
+                    <span style={{ color: "#fbbf24", fontWeight: 700 }}>👉 Action Required: You must pay ₹{restorePrice} to restore the team streak to +{room.restoreState.backupStreak}.</span>
+                  )
+                ) : (
+                  <span style={{ color: "#94a3b8" }}>Waiting for failed members to restore streak to +{room.restoreState.backupStreak}.</span>
+                )}
+              </div>
+              {failedMembers.includes(user.id) && room.restoreState.payments?.[user.id] !== true && (
+                <Btn onClick={() => handleRestore(restorePrice)} style={{ background: "#22c55e", border: "none", boxShadow: "0 4px 12px rgba(34, 197, 94, 0.3)" }}>
+                  Pay ₹{restorePrice}
+                </Btn>
+              )}
+            </div>
           </div>
         )}
 
@@ -3776,6 +3922,41 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
         <Field label="Task Title"><Inp value={taskForm.title} onChange={v => setTaskForm({...taskForm, title: v})} /></Field>
         <Btn onClick={() => { if(!taskForm.title) return; sync({ ...room, tasks: [...(room.tasks || []), { id: uid(), ...taskForm, logs: {} }] }); setShowAddTask(false); }} style={{ width: "100%" }}>Launch</Btn>
       </Modal>
+
+      {/* 🛠️ DEVELOPER SIMULATION CONSOLE */}
+      <div style={{ 
+        padding: "12px 20px", 
+        background: "rgba(255, 255, 255, 0.02)", 
+        borderTop: "1.5px dashed rgba(255,255,255,0.08)", 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        flexShrink: 0 
+      }}>
+        <div style={{ fontSize: 12, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
+          <span>🧪 <strong>Simulated Date:</strong> {today()}</span>
+          {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
+            <span style={{ color: "#fbbf24", fontWeight: 700 }}>(+{localStorage.getItem("apx_date_offset")} days)</span>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
+            <Btn small onClick={() => {
+              localStorage.removeItem("apx_date_offset");
+              window.location.reload();
+            }} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.3)", padding: "4px 10px", fontSize: 11 }}>
+              🔄 Reset Date
+            </Btn>
+          )}
+          <Btn small onClick={() => {
+            const currentOffset = Number(localStorage.getItem("apx_date_offset") || 0);
+            localStorage.setItem("apx_date_offset", currentOffset + 1);
+            window.location.reload();
+          }} style={{ padding: "4px 10px", fontSize: 11 }}>
+            ⚡ Fast Forward 24h
+          </Btn>
+        </div>
+      </div>
     </div>
   );
 }
