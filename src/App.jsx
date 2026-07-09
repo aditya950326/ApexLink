@@ -1641,24 +1641,24 @@ Instructions:
 
     const startingSlot = daySlots.find(s => {
       const [sh, sm] = s.start.split(":").map(Number);
-      return sh * 60 + sm === currentMin;
+      const startMin = sh * 60 + sm;
+      const startCell = Math.floor(startMin / 30) * 30;
+      return startCell === currentMin;
     });
 
     if (startingSlot) {
-      const [sh, sm] = startingSlot.start.split(":").map(Number);
-      const [eh, em] = startingSlot.end.split(":").map(Number);
-      const durationMin = (eh * 60 + em) - (sh * 60 + sm);
-      const rowSpan = startingSlot.isBlockSlot ? 1 : Math.max(1, Math.round(durationMin / 30));
+      const rowSpan = startingSlot.isBlockSlot ? 1 : Math.max(1, Math.round(startingSlot.duration / 30));
       return { render: true, slot: startingSlot, rowSpan };
     }
 
     const occupiedSlot = daySlots.find(s => {
       if (s.isBlockSlot) return false; // do not collapse cells for blocked slots
       const [sh, sm] = s.start.split(":").map(Number);
-      const [eh, em] = s.end.split(":").map(Number);
       const startMin = sh * 60 + sm;
-      const endMin = eh * 60 + em;
-      return currentMin > startMin && currentMin < endMin;
+      const startCell = Math.floor(startMin / 30) * 30;
+      const rowSpan = Math.max(1, Math.round(s.duration / 30));
+      const endCell = startCell + rowSpan * 30;
+      return currentMin > startCell && currentMin < endCell;
     });
 
     if (occupiedSlot) return { render: false };
