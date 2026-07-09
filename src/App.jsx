@@ -4405,7 +4405,18 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
   const [copiedText, setCopiedText] = useState("");
 
   const tasks   = (eh.tasks||[]).filter(t=>t.workspaceId===ws.id);
-  const members = (eh.members||[]).filter(m=>m.workspaceId===ws.id&&m.status==="Approved");
+  const members = (() => {
+    const unique = [];
+    const seen = new Set();
+    const raw = (eh.members || []).filter(m => m.workspaceId === ws.id && m.status === "Approved");
+    raw.forEach(m => {
+      if (!seen.has(m.userId)) {
+        seen.add(m.userId);
+        unique.push(m);
+      }
+    });
+    return unique;
+  })();
   const myRole  = ws.createdBy===user.id?"Admin":(members.find(m=>m.userId===user.id)?.role||"Member");
   const isAdmin = myRole==="Admin"||myRole==="Manager";
 
@@ -5074,22 +5085,45 @@ function EHTimeline({ tasks, ws, members }) {
 
 // ═══ TEAM MANAGEMENT ═════════════════════════════════════════════════════════
 function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
-  const pendingReqs = (eh.joinRequests||[]).filter(r=>r.workspaceId===ws.id&&r.status==="Pending");
+  const pendingReqs = [];
+  const seenUserIds = new Set();
+  const rawPending = (eh.joinRequests || []).filter(r => r.workspaceId === ws.id && r.status === "Pending");
+  [...rawPending].reverse().forEach(r => {
+    if (!seenUserIds.has(r.userId)) {
+      seenUserIds.add(r.userId);
+      pendingReqs.unshift(r);
+    }
+  });
 
   const approveReq = (reqId, userName) => {
-    const req = (eh.joinRequests||[]).find(r=>r.id===reqId);
+    const req = (eh.joinRequests || []).find(r => r.id === reqId);
     if (!req) return;
-    const newMember = { id:uid(), workspaceId:ws.id, userId:req.userId, name:req.userName, email:req.userEmail||"", role:"Member", status:"Approved", joinedAt:new Date().toISOString() };
-    setEH(prev=>({
+    const newMember = { id: uid(), workspaceId: ws.id, userId: req.userId, name: req.userName, email: req.userEmail || "", role: "Member", status: "Approved", joinedAt: new Date().toISOString() };
+    const isAlreadyMember = (eh.members || []).some(m => m.userId === req.userId && m.workspaceId === ws.id);
+    
+    setEH(prev => ({
       ...prev,
-      joinRequests:prev.joinRequests.map(r=>r.id===reqId?{...r,status:"Approved"}:r),
-      members:[...(prev.members||[]),newMember]
+      joinRequests: prev.joinRequests.map(r => 
+        (r.userId === req.userId && r.workspaceId === ws.id && r.status === "Pending") 
+          ? { ...r, status: "Approved" } 
+          : r
+      ),
+      members: isAlreadyMember ? (prev.members || []) : [...(prev.members || []), newMember]
     }));
     addLog(`Approved: ${userName}`);
   };
 
   const rejectReq = (reqId, userName) => {
-    setEH(prev=>({...prev,joinRequests:prev.joinRequests.map(r=>r.id===reqId?{...r,status:"Rejected"}:r)}));
+    const req = (eh.joinRequests || []).find(r => r.id === reqId);
+    if (!req) return;
+    setEH(prev => ({
+      ...prev,
+      joinRequests: prev.joinRequests.map(r => 
+        (r.userId === req.userId && r.workspaceId === ws.id && r.status === "Pending") 
+          ? { ...r, status: "Rejected" } 
+          : r
+      )
+    }));
     addLog(`Rejected: ${userName}`);
   };
 
