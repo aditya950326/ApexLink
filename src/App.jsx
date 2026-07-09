@@ -293,7 +293,7 @@ const parseProductivityLogs = (userId) => {
 
   // Parse Execution Hub tasks
   ehTasks.forEach(t => {
-    if (t.status === "Completed" && t.updatedAt) {
+    if (t.status === "Done" && t.updatedAt) {
       const date = new Date(t.updatedAt);
       if (!isNaN(date.getTime())) {
         const dayOfWeek = date.getDay();
@@ -4185,7 +4185,7 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
             {myWorkspaces.map(ws => {
               const wsTasks   = (eh.tasks||[]).filter(t=>t.workspaceId===ws.id);
               const wsMembers = (eh.members||[]).filter(m=>m.workspaceId===ws.id&&m.status==="Approved");
-              const done      = wsTasks.filter(t=>t.status==="Completed").length;
+              const done      = wsTasks.filter(t=>t.status==="Done").length;
               const pct       = wsTasks.length ? Math.round((done/wsTasks.length)*100) : 0;
               const myRole    = ws.createdBy===user.id?"Admin":(wsMembers.find(m=>m.userId===user.id)?.role||"Member");
               return (
@@ -4255,9 +4255,12 @@ function EHCreateWorkspace({ user, eh, setEH, onDone, onCancel }) {
   const [err, setErr] = useState("");
 
   const create = () => {
-  if (!form.name.trim()) return setErr("Workspace name is required.");
-  if (!form.endDate)     return setErr("End date is required.");
-  setErr("");
+    if (!form.name.trim()) return setErr("Workspace name is required.");
+    if (!form.endDate)     return setErr("End date is required.");
+    if (new Date(form.endDate) < new Date(form.startDate)) {
+      return setErr("End date cannot be earlier than the start date.");
+    }
+    setErr("");
   
   const wsId = uid();
   const accessCode = Math.random().toString(36).slice(2,8).toUpperCase();
@@ -4595,7 +4598,15 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
 
   const createTask = () => {
     if (!form.title.trim()) return;
-    const t = { id:uid(), workspaceId:ws.id, ...form, status:"Backlog", createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), key: `${ws.name.slice(0,2).toUpperCase()}-${tasks.length + 101}` };
+    
+    const maxNum = tasks.reduce((max, task) => {
+      const parts = (task.key || "").split("-");
+      const num = parseInt(parts[1], 10);
+      return (!isNaN(num) && num > max) ? num : max;
+    }, 100);
+    const nextKey = `${ws.name.slice(0,2).toUpperCase()}-${maxNum + 1}`;
+    
+    const t = { id:uid(), workspaceId:ws.id, ...form, status:"Backlog", createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), key: nextKey };
     setEH(prev=>({...prev,tasks:[...(prev.tasks||[]),t]}));
     addLog(`Initialized Issue: ${form.title}`);
     setForm({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task", points: 1 });
@@ -4923,19 +4934,19 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
     return () => window.removeEventListener('click', hide);
   }, []);
 
-  const renderFile = (m) => {
+  const renderFile = (m, isMe) => {
     if (!m.file) return null;
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
     if (m.fType?.startsWith("image/")) return <img src={m.file} style={s} alt={m.fName} />;
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
     if (m.fType?.startsWith("audio/")) return (
-      <div style={{ marginTop: 10, background: "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 18 }}>🎧</span>
         <audio src={m.file} controls style={{ flex: 1, height: 32 }} />
       </div>
     );
     return (
-      <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+      <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
         <span style={{ fontSize: 20 }}>📄</span>
         <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.fName}</div>
       </a>
@@ -4967,7 +4978,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
               }}>
                 <div style={{ fontSize: 14, lineHeight: "1.6", fontWeight: isMe ? 600 : 500, wordBreak: "break-word" }}>
                   {m.text}
-                  {renderFile(m)}
+                  {renderFile(m, isMe)}
                 </div>
                 <div style={{ position: "absolute", bottom: 6, right: 10, fontSize: 10, color: isMe ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", gap: 5, fontWeight: 800 }}>
                   {m.isEdited && <span style={{ opacity: 0.8 }}>Edited</span>}
@@ -5041,13 +5052,13 @@ function EHTimeline({ tasks, ws, members }) {
       {/* List Pane */}
       <div style={{ width: 340, borderRight: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)", overflowY: "auto" }}>
         <div style={{ padding: "20px", borderBottom: `1px solid ${EH_BORDER}`, fontSize: 10, fontWeight: 900, color: "#475569", letterSpacing: 2 }}>OPERATIONAL ISSUES</div>
-        {tasks.map(t => (
+        {dated.map(t => (
           <div key={t.id} style={{ padding: "16px 20px", borderBottom: `1px solid ${EH_BORDER}`, fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", gap: 14 }}>
             <span style={{ color: EH_PRIMARY, fontSize: 10, fontFamily: "monospace", minWidth: 40 }}>{t.key?.split("-")[1]}</span>
             <span style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#cbd5e1" }}>{t.title}</span>
           </div>
         ))}
-        {tasks.length===0 && <div style={{ padding: 40, textAlign:"center", fontSize:12, color:"#333" }}>NO DIRECTIVES LOGGED</div>}
+        {dated.length===0 && <div style={{ padding: 40, textAlign:"center", fontSize:12, color:"#333" }}>NO DIRECTIVES LOGGED</div>}
       </div>
       {/* Timeline Pane */}
       <div style={{ flex: 1, overflowX: "auto", position: "relative" }}>
@@ -5231,19 +5242,21 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
 // ═══ INSIGHTS DASHBOARD ══════════════════════════════════════════════════════
 function EHInsights({ tasks, members, ws, eh }) {
   const total      = tasks.length;
-  const completed  = tasks.filter(t=>t.status==="Completed").length;
-  const active     = tasks.filter(t=>t.status==="Active").length;
-  const pending    = tasks.filter(t=>t.status==="Pending").length;
-  const review     = tasks.filter(t=>t.status==="UnderReview").length;
-  const overdue    = tasks.filter(t=>t.deadline && new Date(t.deadline)<new Date() && t.status!=="Completed").length;
-  const pct        = total ? Math.round((completed/total)*100) : 0;
+  const backlog    = tasks.filter(t=>t.status==="Backlog").length;
+  const todo       = tasks.filter(t=>t.status==="Todo").length;
+  const inProgress = tasks.filter(t=>t.status==="InProgress").length;
+  const review     = tasks.filter(t=>t.status==="Review").length;
+  const done       = tasks.filter(t=>t.status==="Done").length;
+  
+  const overdue    = tasks.filter(t=>t.deadline && new Date(t.deadline)<new Date() && t.status!=="Done").length;
+  const pct        = total ? Math.round((done/total)*100) : 0;
   const reqs       = (eh.joinRequests||[]).filter(r=>r.workspaceId===ws.id);
   const approved   = reqs.filter(r=>r.status==="Approved").length;
   const rejected   = reqs.filter(r=>r.status==="Rejected").length;
 
   const memberStats = members.map(m=>{
     const mt = tasks.filter(t=>t.assignedTo===m.userId);
-    const md = mt.filter(t=>t.status==="Completed").length;
+    const md = mt.filter(t=>t.status==="Done").length;
     return { ...m, assigned:mt.length, done:md, eff:mt.length?Math.round((md/mt.length)*100):0 };
   }).sort((a,b)=>b.done-a.done);
 
@@ -5257,7 +5270,7 @@ function EHInsights({ tasks, members, ws, eh }) {
       <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:24 }}>
         {[
           ["Total",       total,    "#6c63ff", "Scoring smart"],
-          ["Completed",   completed,"#22c55e", "Autoespace"],
+          ["Completed",   done,     "#22c55e", "Autoespace"],
           ["Approved",    approved, "#3b82f6", "Approved"],
           ["Completion",  pct+"%",  "#f59e0b", "Completion"],
         ].map(([l,v,c,sub])=>(
@@ -5265,7 +5278,7 @@ function EHInsights({ tasks, members, ws, eh }) {
             <div style={{ fontSize:26, fontWeight:800, color:c, marginBottom:2 }}>{v}</div>
             <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>{l}</div>
             <div style={{ height:3, background:"rgba(255,255,255,0.05)", borderRadius:2, overflow:"hidden" }}>
-              <div style={{ height:"100%", width:typeof v==="number"?`${Math.min(100,(v/Math.max(total,1))*100)}%`:`${pct}%`, background:c, borderRadius:2 }} />
+              <div style={{ height:"100%", width:typeof v === "number" ? `${Math.min(100,(v/Math.max(total,1))*100)}%` : `${pct}%`, background:c, borderRadius:2 }} />
             </div>
           </Card>
         ))}
@@ -5278,13 +5291,20 @@ function EHInsights({ tasks, members, ws, eh }) {
             <div style={{ fontWeight:700, fontSize:14, color:"#f1f5f9", marginBottom:14 }}>Status Distribution</div>
             <div style={{ display:"flex", alignItems:"center", gap:20 }}>
               <EHPieChart size={120} slices={[
-                { value:pending,   color:"#94a3b8" },
-                { value:active,    color:"#3b82f6" },
-                { value:review,    color:"#f59e0b" },
-                { value:completed, color:"#22c55e" },
+                { value:backlog,    color:"#94a3b8" },
+                { value:todo,       color:"#34b7f1" },
+                { value:inProgress, color:"#f59e0b" },
+                { value:review,     color:"#8b5cf6" },
+                { value:done,       color:"#22c55e" },
               ].filter(s=>s.value>0)} />
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {[["#94a3b8","Pending",pending],["#3b82f6","Active",active],["#f59e0b","Under Review",review],["#22c55e","Completed",completed]].map(([c,l,v])=>(
+                {[
+                  ["#94a3b8", "Backlog", backlog],
+                  ["#34b7f1", "To Do", todo],
+                  ["#f59e0b", "In Progress", inProgress],
+                  ["#8b5cf6", "Review", review],
+                  ["#22c55e", "Done", done]
+                ].map(([c,l,v])=>(
                   <div key={l} style={{ display:"flex", alignItems:"center", gap:8 }}>
                     <div style={{ width:8, height:8, borderRadius:2, background:c, flexShrink:0 }} />
                     <span style={{ fontSize:12, color:"#94a3b8", minWidth:90 }}>{l}</span>
