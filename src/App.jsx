@@ -4826,7 +4826,11 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const renderFile = (c, isMe) => {
     if (!c.file) return null;
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
-    if (c.fType?.startsWith("image/")) return <img src={c.file} style={{ ...s, cursor: "zoom-in" }} alt={c.fName} onClick={() => window.setGlobalLightboxImg?.(c.file)} />;
+    if (c.fType?.startsWith("image/")) return (
+      <div style={{ marginTop: 12, position: "relative", overflow: "hidden", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}>
+        <img src={c.file} style={{ ...s, cursor: "zoom-in", transition: "transform 0.3s ease" }} alt={c.fName} onClick={() => window.setGlobalLightboxImg?.(c.file)} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1.0)"} />
+      </div>
+    );
     if (c.fType?.startsWith("video/")) return <video src={c.file} controls style={s} />;
     if (c.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
@@ -4835,9 +4839,31 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       </div>
     );
     return (
-      <a href={c.file} download={c.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-        <span style={{ fontSize: 20 }}>📄</span>
-        <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.fName}</div>
+      <a href={c.file} download={c.fName} style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        gap: 12, 
+        background: isMe ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.03)", 
+        border: isMe ? "1px solid rgba(0,0,0,0.08)" : `1px solid ${EH_BORDER}`,
+        padding: "12px 16px", 
+        borderRadius: 12, 
+        color: isMe ? "#050505" : "#00B8D9", 
+        marginTop: 12, 
+        textDecoration: "none", 
+        fontSize: 13, 
+        fontWeight: 800,
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+        transition: "0.2s" 
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.06)"; }}
+      onMouseLeave={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.03)"; }}
+      >
+        <div style={{ width: 36, height: 36, borderRadius: 8, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,184,217,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 18 }}>📄</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", fontSize: 12 }}>{c.fName}</div>
+          <div style={{ fontSize: 9, opacity: 0.6, marginTop: 2, textTransform: "uppercase", letterSpacing: 0.5 }}>DOCUMENT FILE</div>
+        </div>
+        <div style={{ fontSize: 12, opacity: 0.8 }}>📥</div>
       </a>
     );
   };
@@ -4904,38 +4930,87 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
           </div>
         </div>
       ) : (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
+          <style>{`
+            .cyber-chat-pane::-webkit-scrollbar { width: 6px; }
+            .cyber-chat-pane::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+            .cyber-chat-pane::-webkit-scrollbar-thumb { background: rgba(0, 184, 217, 0.2); border-radius: 10px; }
+            .cyber-chat-pane::-webkit-scrollbar-thumb:hover { background: rgba(0, 184, 217, 0.5); }
+            .cyber-bubble { position: relative; transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1); }
+            .cyber-bubble:hover { transform: translateY(-1px); }
+            .cyber-bubble:hover .bubble-actions-trigger { opacity: 1 !important; transform: scale(1) !important; }
+            .cyber-input:focus-within { border-color: ${EH_PRIMARY}aa !important; box-shadow: 0 0 15px ${EH_PRIMARY}33, inset 0 2px 10px rgba(0,0,0,0.6) !important; }
+          `}</style>
           {/* WhatsApp-Style Chat body */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "30px", display: "flex", flexDirection: "column", gap: 16 }}>
+          <div 
+            className="cyber-chat-pane" 
+            style={{ 
+              flex: 1, 
+              overflowY: "auto", 
+              padding: "30px", 
+              display: "flex", 
+              flexDirection: "column", 
+              gap: 20, 
+              background: "radial-gradient(circle at top right, rgba(0, 184, 217, 0.04), transparent 45%), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.04), transparent 45%), #090b0d",
+              position: "relative"
+            }}
+          >
               {comments.map((c, idx) => {
                   const isMe = c.userId === user.id;
                   return (
                   <div 
                     key={c.id} 
                     onContextMenu={(e) => handleCommentInteraction(e, c)}
-                    style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "85%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s ease-out" }}
+                    style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "80%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}
                   >
                       <EHAvatar name={c.userName} size={32} />
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1 }}>
+                      <div className="cyber-bubble" style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1, position: "relative" }}>
                           <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6, flexDirection: isMe ? "row-reverse" : "row" }}>
-                              <span style={{ fontSize: 11, fontWeight: 900, color: isMe ? EH_PRIMARY : "#94a3b8", letterSpacing: 1 }}>{c.userName.toUpperCase()}</span>
-                              <span style={{ fontSize: 9, color: "#555", fontFamily: "monospace" }}>{new Date(c.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                              <span style={{ fontSize: 10, fontWeight: 900, color: isMe ? EH_PRIMARY : "#64748b", letterSpacing: 1.5 }}>{c.userName.toUpperCase()}</span>
+                              <span style={{ fontSize: 8, color: "#475569", fontFamily: "monospace", fontWeight: 700 }}>{new Date(c.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                           </div>
+                          
+                          {/* Quick Options Overlay Menu */}
+                          {isMe && (
+                            <div className="bubble-actions-trigger" style={{
+                              position: "absolute",
+                              top: 24,
+                              [isMe ? "left" : "right"]: -36,
+                              display: "flex",
+                              gap: 2,
+                              opacity: 0,
+                              transform: "scale(0.85)",
+                              transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                              background: "#0c0e10",
+                              border: `1px solid ${EH_BORDER}`,
+                              borderRadius: 20,
+                              padding: "2px 6px",
+                              zIndex: 10,
+                              boxShadow: "0 10px 20px rgba(0,0,0,0.5)"
+                            }}>
+                              <button onClick={(e) => { e.stopPropagation(); startEditComment(c); }} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Edit">✎</button>
+                              <button onClick={(e) => { e.stopPropagation(); deleteComment(c.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Delete">🗑</button>
+                            </div>
+                          )}
+
                           <div style={{ 
-                              fontSize: 13, color: isMe ? "#000" : "#e2e8f0", lineHeight: 1.5, 
-                              background: isMe ? `linear-gradient(135deg, ${EH_PRIMARY}, #008AA1)` : "#16191c", 
+                              fontSize: 13, 
+                              color: isMe ? "#050505" : "#e2e8f0", 
+                              lineHeight: 1.6, 
+                              background: isMe ? `linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)` : "rgba(255, 255, 255, 0.02)", 
                               padding: "14px 18px", 
-                              borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px", 
-                              border: isMe ? "none" : `1px solid ${EH_BORDER}`,
-                              boxShadow: isMe ? `0 10px 25px ${EH_PRIMARY}33` : "4px 10px 20px rgba(0,0,0,0.2)",
+                              borderRadius: isMe ? "18px 4px 18px 18px" : "4px 18px 18px 18px", 
+                              border: isMe ? "none" : `1px solid rgba(255,255,255,0.04)`,
+                              boxShadow: isMe ? `0 8px 24px rgba(0, 242, 254, 0.15)` : "0 8px 32px rgba(0,0,0,0.25)",
                               wordBreak: "break-word",
                               paddingBottom: c.isEdited ? "22px" : "14px",
-                              position: "relative"
+                              position: "relative",
+                              fontWeight: isMe ? 800 : 500
                           }}>
                               <div>{c.comment}</div>
                               {renderFile(c, isMe)}
                               {c.isEdited && (
-                                <span style={{ fontSize: 9, color: isMe ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", position: "absolute", bottom: 2, right: 8, fontWeight: 800 }}>Edited</span>
+                                <span style={{ fontSize: 8, color: isMe ? "rgba(5,5,5,0.5)" : "rgba(255,255,255,0.3)", position: "absolute", bottom: 4, right: 8, fontWeight: 900, letterSpacing: 0.5, textTransform: "uppercase" }}>Edited</span>
                               )}
                           </div>
                       </div>
@@ -4946,19 +5021,19 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
           </div>
           
           {/* Footer attachments and input */}
-          <div style={{ padding: "20px 30px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.8)", backdropFilter: "blur(20px)" }}>
+          <div style={{ padding: "20px 30px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.4)", backdropFilter: "blur(20px)" }}>
             {file && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "10px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "10px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)`, backdropFilter: "blur(10px)", animation: "msgSlide 0.25s ease-out" }}>
                 <span style={{ fontSize: 14 }}>📎</span>
-                <div style={{ flex: 1, fontSize: 12, color: '#00B8D9', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name.toUpperCase()}</div>
-                <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>DISCARD</button>
+                <div style={{ flex: 1, fontSize: 11, color: '#00B8D9', fontWeight: 900, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: 0.5 }}>{file.name.toUpperCase()}</div>
+                <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 800, cursor: "pointer", fontSize: 11, letterSpacing: 1 }}>DISCARD</button>
               </div>
             )}
-            <div style={{ display: "flex", gap: 12, background: "#0c0e10", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 12, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}>
-                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#475569" }}>📎</button>
+            <div className="cyber-input" style={{ display: "flex", gap: 12, background: "#06080a", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 18, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.6)", transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}>
+                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#475569"}>📎</button>
                 <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-                <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise report..." : "Transmit report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
-                <button onClick={sendComment} style={{ background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, padding: "10px 20px", cursor: "pointer", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>{editingCommentId ? "SAVE ↵" : "SEND ↵"}</button>
+                <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise transmission report..." : "Transmit intelligence report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
+                <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: "50%", background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow=`0 4px 20px ${EH_PRIMARY}66`;}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=`0 4px 15px ${EH_PRIMARY}44`;}}>{editingCommentId ? "✓" : "↵"}</button>
             </div>
           </div>
         </div>
