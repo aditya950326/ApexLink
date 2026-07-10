@@ -5584,6 +5584,7 @@ function HabitTracker({ user }) {
   const [logs, setLogs] = useLS(`apx_habits_${user.id}`, {});
   const [showAdd, setShowAdd] = useState(false);
   const [newHabit, setNewHabit] = useState({ label: "", icon: "🎯", type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
+  const [chartView, setChartView] = useState("week"); // "day" or "week"
   const d = today();
 
   const getVal = (date, id) => logs[date]?.[id] ?? 0;
@@ -5621,12 +5622,39 @@ function HabitTracker({ user }) {
     return streak;
   };
 
-  // 📊 DISCIPLINE TRAJECTORY DATA (Last 10 Days)
-  const last10Days = Array.from({ length: 10 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (9 - i));
-    return date;
-  });
+  // Get Monday-to-Sunday dates for the current week
+  const getWeekDates = () => {
+    const current = new Date();
+    const day = current.getDay();
+    const diff = current.getDate() - day + (day === 0 ? -6 : 1);
+    return Array.from({ length: 7 }, (_, i) => {
+      const dateObj = new Date(current);
+      dateObj.setDate(diff + i);
+      return dateObj;
+    });
+  };
+  const weekDates = getWeekDates();
+
+  const getAverageScoreForDays = (daysAgoStart, daysAgoEnd) => {
+    let totalScore = 0;
+    let daysCount = 0;
+    for (let i = daysAgoStart; i <= daysAgoEnd; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      const dailyScore = myHabits.length ? myHabits.reduce((sum, h) => sum + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length : 0;
+      totalScore += dailyScore;
+      daysCount++;
+    }
+    return daysCount ? Math.round(totalScore / daysCount) : 0;
+  };
+
+  const weeklyComparison = [
+    { label: "3 Weeks Ago", score: getAverageScoreForDays(21, 27) },
+    { label: "2 Weeks Ago", score: getAverageScoreForDays(14, 20) },
+    { label: "1 Week Ago", score: getAverageScoreForDays(7, 13) },
+    { label: "Current Week", score: getAverageScoreForDays(0, 6) }
+  ];
 
   return (
     <div style={{ padding: "24px 32px", background: "#050508", minHeight: "100vh" }}>
@@ -5635,7 +5663,23 @@ function HabitTracker({ user }) {
       
       {/* ─── BAR CHART ANALYTICS ─── */}
       <Card style={{ marginBottom: 32, padding: "24px", background: "rgba(10,10,15,0.8)", border: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 30 }}>📊 DISCIPLINE TRAJECTORY</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 30 }}>
+          <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>📊 DISCIPLINE TRAJECTORY</div>
+          <div style={{ display: "flex", gap: 6, background: "rgba(0,0,0,0.4)", padding: 4, borderRadius: 10, border: "1px solid rgba(255,255,255,0.05)" }}>
+            <button 
+              onClick={() => setChartView("day")} 
+              style={{ padding: "6px 12px", background: chartView === "day" ? "linear-gradient(135deg, #6c63ff, #3b82f6)" : "none", border: "none", borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 900, cursor: "pointer", transition: "0.2s", letterSpacing: 0.5 }}
+            >
+              DAILY (THIS WEEK)
+            </button>
+            <button 
+              onClick={() => setChartView("week")} 
+              style={{ padding: "6px 12px", background: chartView === "week" ? "linear-gradient(135deg, #6c63ff, #3b82f6)" : "none", border: "none", borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 900, cursor: "pointer", transition: "0.2s", letterSpacing: 0.5 }}
+            >
+              WEEKLY COMPARISON
+            </button>
+          </div>
+        </div>
         <div style={{ display: "flex", height: 200, position: 'relative' }}>
           
           {/* Vertical Y-Axis (0-100%) */}
@@ -5645,24 +5689,47 @@ function HabitTracker({ user }) {
 
           {/* Bar Chart Container */}
           <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 12, paddingLeft: 10, borderBottom: '1px solid #222' }}>
-            {last10Days.map((dateObj, i) => {
-              const dateStr = dateObj.toISOString().split('T')[0];
-              const score = myHabits.length ? Math.round(myHabits.reduce((s, h) => s + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length) : 0;
-              return (
-                <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative' }}>
-                  <div style={{ 
-                    width: "100%", height: `${Math.max(score, 2)}%`, 
-                    background: score === 100 ? "#22c55e" : `linear-gradient(to top, #6c63ff, #a78bfa)`, 
-                    borderRadius: "4px 4px 0 0", transition: "height 0.8s ease",
-                    opacity: i === 9 ? 1 : 0.5
-                  }} />
-                  {/* Horizontal X-Axis (Day of Month) */}
-                  <div style={{ fontSize: 10, fontWeight: 800, color: i === 9 ? "#fff" : "#444", marginTop: 10, position: 'absolute', bottom: -25 }}>
-                    {dateObj.getDate()}
+            {chartView === "day" ? (
+              weekDates.map((dateObj, i) => {
+                const dateStr = dateObj.toISOString().split('T')[0];
+                const score = myHabits.length ? Math.round(myHabits.reduce((s, h) => s + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length) : 0;
+                const isToday = dateStr === d;
+                const dayLabel = dateObj.toLocaleDateString("en-IN", { weekday: 'short' });
+                return (
+                  <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative' }}>
+                    <div style={{ 
+                      width: "100%", height: `${Math.max(score, 2)}%`, 
+                      background: score === 100 ? "#22c55e" : `linear-gradient(to top, #6c63ff, #3b82f6)`, 
+                      borderRadius: "4px 4px 0 0", transition: "height 0.8s ease",
+                      opacity: isToday ? 1 : 0.6,
+                      boxShadow: isToday ? `0 0 15px #6c63ff55` : "none"
+                    }} />
+                    {/* Horizontal X-Axis (Day of Month + Name) */}
+                    <div style={{ fontSize: 9, fontWeight: 800, color: isToday ? EH_PRIMARY : "#444", marginTop: 10, position: 'absolute', bottom: -25, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      {dayLabel.toUpperCase()} {dateObj.getDate()}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              weeklyComparison.map((item, i) => {
+                return (
+                  <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative' }}>
+                    <div style={{ 
+                      width: "100%", height: `${Math.max(item.score, 2)}%`, 
+                      background: item.score === 100 ? "#22c55e" : `linear-gradient(to top, #8b5cf6, #3b82f6)`, 
+                      borderRadius: "4px 4px 0 0", transition: "height 0.8s ease",
+                      opacity: i === 3 ? 1 : 0.6,
+                      boxShadow: i === 3 ? `0 0 15px #8b5cf655` : "none"
+                    }} />
+                    {/* Horizontal X-Axis (Week labels) */}
+                    <div style={{ fontSize: 9, fontWeight: 800, color: i === 3 ? EH_PRIMARY : "#444", marginTop: 10, position: 'absolute', bottom: -25, whiteSpace: 'nowrap' }}>
+                      {item.label.toUpperCase()}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
         <div style={{ marginTop: 30 }} /> {/* Spacer for X-axis labels */}
@@ -5699,6 +5766,32 @@ function HabitTracker({ user }) {
                   <button onClick={() => updateHabit(h.id, "no")} style={{ flex: 1, padding: 10, borderRadius: 8, background: val === "no" ? h.color : "#111", border: "1px solid #222", color: "#fff", fontWeight: 700 }}>NO</button>
                 </div>
               )}
+              {/* Mini Weekly Chart (Mon-Sun) */}
+              <div style={{ marginTop: 20, marginBottom: 20, borderTop: "1px dashed rgba(255,255,255,0.05)", paddingTop: 16 }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", marginBottom: 12, letterSpacing: 0.5 }}>WEEKLY PROGRESSION</div>
+                <div style={{ display: "flex", gap: 6, height: 40, alignItems: "flex-end" }}>
+                  {weekDates.map((dateObj, idx) => {
+                    const dateStr = dateObj.toISOString().split('T')[0];
+                    const dayVal = logs[dateStr]?.[h.id] ?? 0;
+                    const dayPct = calculatePct(h, dayVal);
+                    const isToday = dateStr === d;
+                    const initials = ["M", "T", "W", "T", "F", "S", "S"][idx];
+                    return (
+                      <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
+                        <div style={{ 
+                          width: 8, 
+                          height: `${Math.max(dayPct * 0.4, 2)}px`, // max height 40px
+                          background: dayPct === 100 ? "#22c55e" : h.color,
+                          borderRadius: 2,
+                          opacity: isToday ? 1 : 0.4
+                        }} title={`${dateStr}: ${dayPct}%`} />
+                        <span style={{ fontSize: 8, fontWeight: 900, color: isToday ? EH_PRIMARY : "#444", marginTop: 4 }}>{initials}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div style={{ height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 2 }}>
                 <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? "#22c55e" : h.color, borderRadius: 2, transition: "width 0.4s" }} />
               </div>
