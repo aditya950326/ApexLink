@@ -4747,6 +4747,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [file, setFile] = useState(null);
+  const [drawerTab, setDrawerTab] = useState("chat");
   const fileInputRef = useRef(null);
   const chatEndRef = useRef(null);
 
@@ -4825,7 +4826,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const renderFile = (c, isMe) => {
     if (!c.file) return null;
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
-    if (c.fType?.startsWith("image/")) return <img src={c.file} style={s} alt={c.fName} />;
+    if (c.fType?.startsWith("image/")) return <img src={c.file} style={{ ...s, cursor: "zoom-in" }} alt={c.fName} onClick={() => window.setGlobalLightboxImg?.(c.file)} />;
     if (c.fType?.startsWith("video/")) return <video src={c.file} controls style={s} />;
     if (c.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
@@ -4840,99 +4841,128 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       </a>
     );
   };
+
   return (
     <div style={{ display:"flex", flexDirection:"column", height:"100%", background: EH_PANEL }}>
-      <div style={{ padding: "30px 40px", borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div style={{ padding: "24px 30px", borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)", flexShrink: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div style={{ display: "flex", gap: 10 }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: "#444", fontFamily: "monospace", letterSpacing: 2 }}>{task.key || "EH-???"}</span>
                 <EHTag label={task.type?.toUpperCase() || "TASK"} color={EH_PRIMARY} />
             </div>
-            <button onClick={onClose} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 24, padding: 0 }}>âœ•</button>
+            <button onClick={onClose} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 24, padding: 0 }}>✕</button>
         </div>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1.2 }}>{task.title}</h1>
-      </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: "40px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "24px 10px", marginBottom: 40, borderBottom: `1px solid ${EH_BORDER}`, paddingBottom: 40 }}>
-            <EHLabel>ASSIGNEE</EHLabel>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <EHAvatar name={assignee?.name||"?"} />
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{assignee?.name || "UNASSIGNED"}</span>
+        <h1 style={{ margin: 0, fontSize: 20, fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 16 }}>{task.title}</h1>
+        
+        {/* Glowing Tab Header */}
+        <div style={{ display: "flex", gap: 10, borderBottom: `1px solid ${EH_BORDER}`, margin: "0 -30px -25px", padding: "0 30px" }}>
+          {[["chat", "Discussion"], ["details", "Details"]].map(([id, label]) => (
+            <div 
+              key={id} 
+              onClick={() => setDrawerTab(id)}
+              style={{
+                padding: "12px 16px",
+                cursor: "pointer",
+                fontSize: 11,
+                fontWeight: 900,
+                color: drawerTab === id ? EH_PRIMARY : "#64748b",
+                borderBottom: drawerTab === id ? `3px solid ${EH_PRIMARY}` : "3px solid transparent",
+                transition: "0.2s",
+                letterSpacing: 1
+              }}
+            >
+              {label.toUpperCase()}
             </div>
-            <EHLabel>STATUS</EHLabel>
-            <select value={task.status} onChange={e=>updateStatus(e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: meta.color, fontWeight: 900, fontSize: 10, padding: "6px 12px", width: "fit-content", outline: "none" }}>
-                {Object.keys(EH_STATUS).map(s => <option key={s} value={s}>{EH_STATUS[s].label}</option>)}
-            </select>
-            <EHLabel>PRIORITY</EHLabel>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: p.color, fontSize: 16 }}>{p.icon}</span>
-                <span style={{ color: p.color, fontSize: 12, fontWeight: 900 }}>{p.label}</span>
-            </div>
-            <EHLabel>DEADLINE</EHLabel>
-            <input type="date" value={task.deadline || ""} onChange={e=>updateField("deadline", e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: "#fff", fontWeight: 700, fontSize: 11, padding: "6px 12px", outline: "none", fontFamily: "monospace", width: "fit-content" }} />
-        </div>
-        <div style={{ marginBottom: 50 }}>
-            <EHLabel>DESCRIPTION</EHLabel>
-            {editing ? <textarea value={editDesc} onChange={e=>setEditDesc(e.target.value)} onBlur={saveDesc} autoFocus rows={8} style={{ width:"100%", background:"#0c0e10", border:`1px solid ${EH_PRIMARY}`, borderRadius:12, padding:"16px", color:"#fff", fontSize:14, outline:"none", fontFamily: "inherit", lineHeight: 1.6 }} /> : 
-            <div onClick={()=>setEditing(true)} style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.7, background: "rgba(255,255,255,0.01)", padding: "20px", borderRadius: 12, border: `1px solid ${EH_BORDER}`, cursor: "text", minHeight: 120 }}>{task.description || "Intelligence missing..."}</div>}
-        </div>
-        <div>
-            <EHLabel>MISSION LOGS ({comments.length})</EHLabel>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16, background: "rgba(0,0,0,0.2)", padding: 20, borderRadius: 16, border: `1px solid ${EH_BORDER}`, maxHeight: 380, overflowY: "auto", position: "relative" }}>
-                {comments.map((c, idx) => {
-                    const isMe = c.userId === user.id;
-                    return (
-                    <div 
-                      key={c.id} 
-                      onContextMenu={(e) => handleCommentInteraction(e, c)}
-                      style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "85%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s ease-out" }}
-                    >
-                        <EHAvatar name={c.userName} size={32} />
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1 }}>
-                            <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6, flexDirection: isMe ? "row-reverse" : "row" }}>
-                                <span style={{ fontSize: 11, fontWeight: 900, color: isMe ? EH_PRIMARY : "#94a3b8", letterSpacing: 1 }}>{c.userName.toUpperCase()}</span>
-                                <span style={{ fontSize: 9, color: "#555", fontFamily: "monospace" }}>{new Date(c.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            </div>
-                            <div style={{ 
-                                fontSize: 13, color: isMe ? "#000" : "#e2e8f0", lineHeight: 1.5, 
-                                background: isMe ? `linear-gradient(135deg, ${EH_PRIMARY}, #008AA1)` : "#16191c", 
-                                padding: "14px 18px", 
-                                borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px", 
-                                border: isMe ? "none" : `1px solid ${EH_BORDER}`,
-                                boxShadow: isMe ? `0 10px 25px ${EH_PRIMARY}33` : "4px 10px 20px rgba(0,0,0,0.2)",
-                                wordBreak: "break-word",
-                                paddingBottom: c.isEdited ? "22px" : "14px",
-                                position: "relative"
-                            }}>
-                                <div>{c.comment}</div>
-                                {renderFile(c, isMe)}
-                                {c.isEdited && (
-                                  <span style={{ fontSize: 9, color: isMe ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", position: "absolute", bottom: 2, right: 8, fontWeight: 800 }}>Edited</span>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )})}
-                <div ref={chatEndRef} />
-                {comments.length === 0 && <div style={{ margin: "auto", color: "#555", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>NO MISSION LOGS RECORDED.</div>}
-            </div>
+          ))}
         </div>
       </div>
-      <div style={{ padding: "20px 40px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.8)", backdropFilter: "blur(20px)" }}>
-        {file && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "10px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)` }}>
-            <span style={{ fontSize: 14 }}>📎</span>
-            <div style={{ flex: 1, fontSize: 12, color: '#00B8D9', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name.toUpperCase()}</div>
-            <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>DISCARD</button>
+
+      {drawerTab === "details" ? (
+        <div style={{ flex: 1, overflowY: "auto", padding: "30px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "24px 10px", marginBottom: 30, borderBottom: `1px solid ${EH_BORDER}`, paddingBottom: 30 }}>
+              <EHLabel>ASSIGNEE</EHLabel>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <EHAvatar name={assignee?.name||"?"} />
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{assignee?.name || "UNASSIGNED"}</span>
+              </div>
+              <EHLabel>STATUS</EHLabel>
+              <select value={task.status} onChange={e=>updateStatus(e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: meta.color, fontWeight: 900, fontSize: 10, padding: "6px 12px", width: "fit-content", outline: "none" }}>
+                  {Object.keys(EH_STATUS).map(s => <option key={s} value={s}>{EH_STATUS[s].label}</option>)}
+              </select>
+              <EHLabel>PRIORITY</EHLabel>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ color: p.color, fontSize: 16 }}>{p.icon}</span>
+                  <span style={{ color: p.color, fontSize: 12, fontWeight: 900 }}>{p.label}</span>
+              </div>
+              <EHLabel>DEADLINE</EHLabel>
+              <input type="date" value={task.deadline || ""} onChange={e=>updateField("deadline", e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: "#fff", fontWeight: 700, fontSize: 11, padding: "6px 12px", outline: "none", fontFamily: "monospace", width: "fit-content" }} />
           </div>
-        )}
-        <div style={{ display: "flex", gap: 12, background: "#0c0e10", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 12, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}>
-            <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#475569" }}>📎</button>
-            <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-            <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise report..." : "Transmit report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
-            <button onClick={sendComment} style={{ background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, padding: "10px 20px", cursor: "pointer", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>{editingCommentId ? "SAVE ↵" : "SEND ↵"}</button>
+          <div style={{ marginBottom: 30 }}>
+              <EHLabel>DESCRIPTION</EHLabel>
+              {editing ? <textarea value={editDesc} onChange={e=>setEditDesc(e.target.value)} onBlur={saveDesc} autoFocus rows={8} style={{ width:"100%", background:"#0c0e10", border:`1px solid ${EH_PRIMARY}`, borderRadius:12, padding:"16px", color:"#fff", fontSize:14, outline:"none", fontFamily: "inherit", lineHeight: 1.6 }} /> : 
+              <div onClick={()=>setEditing(true)} style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.7, background: "rgba(255,255,255,0.01)", padding: "20px", borderRadius: 12, border: `1px solid ${EH_BORDER}`, cursor: "text", minHeight: 150 }}>{task.description || "Intelligence missing..."}</div>}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          {/* WhatsApp-Style Chat body */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "30px", display: "flex", flexDirection: "column", gap: 16 }}>
+              {comments.map((c, idx) => {
+                  const isMe = c.userId === user.id;
+                  return (
+                  <div 
+                    key={c.id} 
+                    onContextMenu={(e) => handleCommentInteraction(e, c)}
+                    style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "85%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s ease-out" }}
+                  >
+                      <EHAvatar name={c.userName} size={32} />
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1 }}>
+                          <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6, flexDirection: isMe ? "row-reverse" : "row" }}>
+                              <span style={{ fontSize: 11, fontWeight: 900, color: isMe ? EH_PRIMARY : "#94a3b8", letterSpacing: 1 }}>{c.userName.toUpperCase()}</span>
+                              <span style={{ fontSize: 9, color: "#555", fontFamily: "monospace" }}>{new Date(c.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          </div>
+                          <div style={{ 
+                              fontSize: 13, color: isMe ? "#000" : "#e2e8f0", lineHeight: 1.5, 
+                              background: isMe ? `linear-gradient(135deg, ${EH_PRIMARY}, #008AA1)` : "#16191c", 
+                              padding: "14px 18px", 
+                              borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px", 
+                              border: isMe ? "none" : `1px solid ${EH_BORDER}`,
+                              boxShadow: isMe ? `0 10px 25px ${EH_PRIMARY}33` : "4px 10px 20px rgba(0,0,0,0.2)",
+                              wordBreak: "break-word",
+                              paddingBottom: c.isEdited ? "22px" : "14px",
+                              position: "relative"
+                          }}>
+                              <div>{c.comment}</div>
+                              {renderFile(c, isMe)}
+                              {c.isEdited && (
+                                <span style={{ fontSize: 9, color: isMe ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", position: "absolute", bottom: 2, right: 8, fontWeight: 800 }}>Edited</span>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+              )})}
+              <div ref={chatEndRef} />
+              {comments.length === 0 && <div style={{ margin: "auto", color: "#555", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>NO MISSION LOGS RECORDED.</div>}
+          </div>
+          
+          {/* Footer attachments and input */}
+          <div style={{ padding: "20px 30px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.8)", backdropFilter: "blur(20px)" }}>
+            {file && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "10px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)` }}>
+                <span style={{ fontSize: 14 }}>📎</span>
+                <div style={{ flex: 1, fontSize: 12, color: '#00B8D9', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name.toUpperCase()}</div>
+                <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>DISCARD</button>
+              </div>
+            )}
+            <div style={{ display: "flex", gap: 12, background: "#0c0e10", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 12, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}>
+                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#475569" }}>📎</button>
+                <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
+                <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise report..." : "Transmit report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
+                <button onClick={sendComment} style={{ background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, padding: "10px 20px", cursor: "pointer", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>{editingCommentId ? "SAVE ↵" : "SEND ↵"}</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {contextMenu && (
         <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#111316', border: `1px solid ${EH_BORDER}`, borderRadius: 10, padding: '6px', zIndex: 9999, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", minWidth: 160 }}>
@@ -5039,7 +5069,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
   const renderFile = (m, isMe) => {
     if (!m.file) return null;
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
-    if (m.fType?.startsWith("image/")) return <img src={m.file} style={s} alt={m.fName} />;
+    if (m.fType?.startsWith("image/")) return <img src={m.file} style={{ ...s, cursor: "zoom-in" }} alt={m.fName} onClick={() => window.setGlobalLightboxImg?.(m.file)} />;
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
     if (m.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
@@ -6345,6 +6375,8 @@ export default function App() {
 
   const [reminders, setReminders] = useLS(`apx_rem_${currentUser?.id}`, []);
   const [triggered, setTriggered] = useState(null);
+  const [lightboxImg, setLightboxImg] = useState(null);
+  window.setGlobalLightboxImg = setLightboxImg;
 
   useEffect(() => {
     if (!currentUser) return;
@@ -6469,6 +6501,16 @@ export default function App() {
             }} style={{ background: '#ef4444', border: 'none', width: '100%', padding: '14px', fontWeight: 900, borderRadius: 12 }}>
               DISMISS & SILENCE ALARM
             </Btn>
+          </div>
+        </Modal>
+      )}
+
+      {/* 🖼️ IMAGE PREVIEW LIGHTBOX MODAL */}
+      {lightboxImg && (
+        <Modal open={true} onClose={() => setLightboxImg(null)} title="👁️ IMAGE PREVIEW" width={800}>
+          <div style={{ padding: 10, textAlign: 'center', background: '#090a0c', borderRadius: 16 }}>
+            <img src={lightboxImg} style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12, objectFit: 'contain', border: '1px solid rgba(255,255,255,0.08)' }} alt="Preview" />
+            <Btn onClick={() => setLightboxImg(null)} style={{ marginTop: 20, width: '100%' }}>CLOSE PREVIEW</Btn>
           </div>
         </Modal>
       )}
