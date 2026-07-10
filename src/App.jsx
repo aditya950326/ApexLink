@@ -897,10 +897,10 @@ function PageHeader({ title, subtitle, actions }) {
 }
 
 function Btn({ onClick, children, variant = "primary", small, style: extra }) {
-  const bg = { primary: "linear-gradient(135deg,#6c63ff,#8b5cf6)", secondary: "rgba(255,255,255,0.07)", danger: "rgba(239,68,68,0.15)" };
-  const col = { primary: "#fff", secondary: "#ccc", danger: "#f87171" };
+  const bg = { primary: "linear-gradient(135deg, var(--accent), #8b5cf6)", secondary: "var(--code-bg)", danger: "rgba(239,68,68,0.15)" };
+  const col = { primary: "#fff", secondary: "var(--text-h)", danger: "#f87171" };
   return (
-    <button onClick={onClick} style={{ padding: small ? "6px 14px" : "9px 18px", background: bg[variant], border: variant === "secondary" ? "1px solid rgba(255,255,255,0.1)" : "none", borderRadius: 8, color: col[variant], fontWeight: 600, fontSize: small ? 12 : 14, cursor: "pointer", whiteSpace: "nowrap", ...extra }}>
+    <button onClick={onClick} style={{ padding: small ? "6px 14px" : "9px 18px", background: bg[variant], border: variant === "secondary" ? "1px solid var(--border)" : "none", borderRadius: 8, color: col[variant], fontWeight: 600, fontSize: small ? 12 : 14, cursor: "pointer", whiteSpace: "nowrap", ...extra }}>
       {children}
     </button>
   );
@@ -927,12 +927,12 @@ function Field({ label, children }) {
 
 function Inp({ value, onChange, type = "text", placeholder, min, max, style: s }) {
   return <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} min={min} max={max}
-    style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "9px 12px", color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box", ...s }} />;
+    style={{ width: "100%", background: "var(--code-bg)", border: "1px solid var(--border)", borderRadius: 8, padding: "9px 12px", color: "var(--text-h)", fontSize: 14, outline: "none", boxSizing: "border-box", ...s }} />;
 }
 
 function Sel({ value, onChange, children, style: s }) {
   return <select value={value} onChange={e => onChange(e.target.value)}
-    style={{ width: "100%", background: "#1a1a2e", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "9px 12px", color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box", ...s }}>
+    style={{ width: "100%", background: "var(--code-bg)", border: "1px solid var(--border)", borderRadius: 8, padding: "9px 12px", color: "var(--text-h)", fontSize: 14, outline: "none", boxSizing: "border-box", ...s }}>
     {children}
   </select>;
 }
@@ -7232,7 +7232,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 }
   
 // ─── SETTINGS ─────────────────────────────────────────────────────────────────
-function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlinesActive, appThemeAccent, setAppThemeAccent }) {
+function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlinesActive, appThemeAccent, setAppThemeAccent, themeMode, setThemeMode }) {
   const [activeSetTab, setActiveSetTab] = useState("profile");
   const [form, setForm] = useState({ name: user.name, email: user.email });
   const [pwForm, setPwForm] = useState({ current: "", newPw: "", confirm: "" });
@@ -7331,20 +7331,19 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
   return (
     <div>
       <PageHeader title="Settings" subtitle="System Control Panel & Customization Desk" />
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 30, padding: "24px 32px", minHeight: '80vh' }}>
-        
-        {/* Left Side Tab bar */}
-        <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: 10, padding: 16, height: 'fit-content' }}>
-          <div style={{ fontSize: 10, fontWeight: 900, color: '#64748b', letterSpacing: 1.5, marginBottom: 10, paddingLeft: 8 }}>MENU CATEGORIES</div>
-          <button onClick={() => setActiveSetTab("profile")} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: activeSetTab === "profile" ? 'var(--accent-bg)' : 'transparent', border: 'none', borderLeft: activeSetTab === "profile" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "profile" ? 'var(--text-h)' : '#64748b', borderRadius: '0 8px 8px 0', fontSize: 13, fontWeight: 900, cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>👤 PROFILE CARD</button>
-          <button onClick={() => setActiveSetTab("themes")} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: activeSetTab === "themes" ? 'var(--accent-bg)' : 'transparent', border: 'none', borderLeft: activeSetTab === "themes" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "themes" ? 'var(--text-h)' : '#64748b', borderRadius: '0 8px 8px 0', fontSize: 13, fontWeight: 900, cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>🎨 NEON THEMES</button>
-          <button onClick={() => setActiveSetTab("sounds")} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: activeSetTab === "sounds" ? 'var(--accent-bg)' : 'transparent', border: 'none', borderLeft: activeSetTab === "sounds" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "sounds" ? 'var(--text-h)' : '#64748b', borderRadius: '0 8px 8px 0', fontSize: 13, fontWeight: 900, cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>🔊 SOUND & ALARMS</button>
-          <button onClick={() => setActiveSetTab("backup")} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: activeSetTab === "backup" ? 'var(--accent-bg)' : 'transparent', border: 'none', borderLeft: activeSetTab === "backup" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "backup" ? 'var(--text-h)' : '#64748b', borderRadius: '0 8px 8px 0', fontSize: 13, fontWeight: 900, cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>💾 DATA ARCHIVE</button>
-          <button onClick={() => setActiveSetTab("diagnostics")} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: activeSetTab === "diagnostics" ? 'var(--accent-bg)' : 'transparent', border: 'none', borderLeft: activeSetTab === "diagnostics" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "diagnostics" ? 'var(--text-h)' : '#64748b', borderRadius: '0 8px 8px 0', fontSize: 13, fontWeight: 900, cursor: 'pointer', textAlign: 'left', transition: '0.2s' }}>⚙️ SYSTEM HEALTH</button>
-        </Card>
+      
+      <div style={{ padding: "0 32px 24px 32px" }}>
+        {/* Horizontal Navigation Menu */}
+        <div style={{ display: 'flex', gap: 20, marginBottom: 25, borderBottom: '1px solid var(--border)', overflowX: 'auto', paddingBottom: 5 }}>
+          <button onClick={() => setActiveSetTab("profile")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "profile" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "profile" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>👤 PROFILE CARD</button>
+          <button onClick={() => setActiveSetTab("themes")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "themes" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "themes" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🎨 NEON THEMES</button>
+          <button onClick={() => setActiveSetTab("sounds")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "sounds" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "sounds" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🔊 SOUND & ALARMS</button>
+          <button onClick={() => setActiveSetTab("backup")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "backup" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "backup" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>💾 DATA ARCHIVE</button>
+          <button onClick={() => setActiveSetTab("diagnostics")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "diagnostics" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "diagnostics" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>⚙️ SYSTEM HEALTH</button>
+        </div>
 
-        {/* Right Side Content Pane */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {/* Content Area */}
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
           {msg && <div style={{ background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e33", borderRadius: 12, padding: "12px 16px", color: "#22c55e", fontSize: 14, animation: 'fadeIn 0.2s' }}>{msg}</div>}
           {err && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid #ef444433", borderRadius: 12, padding: "12px 16px", color: "#f87171", fontSize: 14, animation: 'fadeIn 0.2s' }}>{err}</div>}
 
@@ -7352,13 +7351,13 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
           {activeSetTab === "profile" && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {/* Profile Card Header */}
-              <Card style={{ display: 'flex', gap: 24, alignItems: 'center', background: 'radial-gradient(circle at top right, var(--accent-bg), transparent 60%), rgba(10,10,15,0.7)', padding: 24 }}>
+              <Card style={{ display: 'flex', gap: 24, alignItems: 'center', background: 'radial-gradient(circle at top right, var(--accent-bg), transparent 60%), var(--code-bg)', padding: 24 }}>
                 <div style={{ position: 'relative' }}>
                   <div style={{
                     width: 80,
                     height: 80,
                     borderRadius: '50%',
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'rgba(0,0,0,0.1)',
                     border: '3px solid var(--accent)',
                     display: 'flex',
                     alignItems: 'center',
@@ -7379,7 +7378,7 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                 
                 <div style={{ flex: 1 }}>
                   <span style={{ fontSize: 10, fontWeight: 900, color: 'var(--accent)', letterSpacing: 1.5 }}>ACTIVE PILOT PROFILE</span>
-                  <h2 style={{ margin: '4px 0 6px 0', fontSize: 24, fontWeight: 900, color: '#fff' }}>{user.name}</h2>
+                  <h2 style={{ margin: '4px 0 6px 0', fontSize: 24, fontWeight: 900, color: 'var(--text-h)' }}>{user.name}</h2>
                   <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 800 }}>ID: {user.email}</div>
                 </div>
               </Card>
@@ -7394,23 +7393,23 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                       onClick={() => saveProfile({ avatar: pres.emoji })}
                       style={{ 
                         padding: 16, 
-                        background: 'rgba(255,255,255,0.02)', 
-                        border: user.avatar === pres.emoji ? `2px solid ${pres.color}` : '1px solid rgba(255,255,255,0.05)', 
+                        background: 'var(--code-bg)', 
+                        border: user.avatar === pres.emoji ? `2px solid ${pres.color}` : '1px solid var(--border)', 
                         borderRadius: 12, 
                         textAlign: 'center', 
                         cursor: 'pointer',
                         transition: '0.2s'
                       }}
                       onMouseEnter={e=>e.currentTarget.style.background='rgba(255,255,255,0.05)'}
-                      onMouseLeave={e=>e.currentTarget.style.background='rgba(255,255,255,0.02)'}
+                      onMouseLeave={e=>e.currentTarget.style.background='var(--code-bg)'}
                     >
                       <div style={{ fontSize: 32, marginBottom: 8 }}>{pres.emoji}</div>
-                      <div style={{ fontSize: 10, fontWeight: 900, color: '#fff' }}>{pres.label.toUpperCase()}</div>
+                      <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text-h)' }}>{pres.label.toUpperCase()}</div>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: 20, paddingTop: 20 }}>
+                <div style={{ borderTop: '1px solid var(--border)', marginTop: 20, paddingTop: 20 }}>
                   <label style={{ fontSize: 11, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 10 }}>UPLOAD CUSTOM AVATAR</label>
                   <input 
                     type="file" 
@@ -7422,7 +7421,7 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                       reader.onload = (ev) => saveProfile({ avatar: ev.target.result });
                       reader.readAsDataURL(file);
                     }}
-                    style={{ fontSize: 12, color: '#94a3b8' }}
+                    style={{ fontSize: 12, color: 'var(--text)' }}
                   />
                 </div>
               </Card>
@@ -7432,7 +7431,7 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                 <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>ACCOUNT INFORMATION</div>
                 <Field label="Full Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
                 <Field label="Email"><Inp value={form.email} onChange={() => {}} style={{ opacity: 0.5 }} disabled /></Field>
-                <div style={{ fontSize: 11, color: "#475569", marginBottom: 12, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
+                <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 12, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
                 <Btn onClick={() => saveProfile({ name: form.name })}>Save Profile</Btn>
               </Card>
 
@@ -7465,8 +7464,8 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                     onClick={() => setAppThemeAccent(theme.code)}
                     style={{ 
                       padding: 16, 
-                      background: 'rgba(0,0,0,0.3)', 
-                      border: appThemeAccent === theme.code ? `2px solid ${theme.code}` : '1px solid rgba(255,255,255,0.05)', 
+                      background: 'var(--code-bg)', 
+                      border: appThemeAccent === theme.code ? `2px solid ${theme.code}` : '1px solid var(--border)', 
                       borderRadius: 12, 
                       textAlign: 'center', 
                       cursor: 'pointer',
@@ -7474,14 +7473,45 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                     }}
                   >
                     <div style={{ width: 24, height: 24, borderRadius: '50%', background: theme.code, margin: '0 auto 8px' }} />
-                    <div style={{ fontSize: 10, fontWeight: 900, color: '#fff' }}>{theme.name.toUpperCase()}</div>
+                    <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text-h)' }}>{theme.name.toUpperCase()}</div>
                   </div>
                 ))}
               </div>
 
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              {/* Light and Dark theme configuration toggles */}
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20 }}>
+                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 12, letterSpacing: 1 }}>COLOR MODE PREFERENCE</div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {[
+                    { id: 'dark', label: '🌙 Dark Mode' },
+                    { id: 'light', label: '☀️ Light Mode' },
+                    { id: 'system', label: '⚙️ Sync System' }
+                  ].map(mode => (
+                    <button
+                      key={mode.id}
+                      onClick={() => setThemeMode(mode.id)}
+                      style={{
+                        flex: 1,
+                        padding: '12px 16px',
+                        background: themeMode === mode.id ? 'var(--accent-bg)' : 'var(--code-bg)',
+                        border: themeMode === mode.id ? '1.5px solid var(--accent)' : '1px solid var(--border)',
+                        borderRadius: 10,
+                        color: 'var(--text-h)',
+                        fontSize: 12,
+                        fontWeight: 900,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {mode.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>📟 CRT SCANLINE FILTER EFFECT</div>
+                  <div style={{ fontSize: 13, fontWeight: 900, color: 'var(--text-h)' }}>📟 CRT SCANLINE FILTER EFFECT</div>
                   <div style={{ fontSize: 11, color: '#64748b', marginTop: 4, fontWeight: 700 }}>Overlays a retro matrix display filter across the application interface.</div>
                 </div>
                 <input 
@@ -7511,13 +7541,13 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                         justifyContent: 'space-between', 
                         alignItems: 'center', 
                         padding: '12px 16px', 
-                        background: alarmSound === sound.id ? 'var(--accent-bg)' : 'rgba(255,255,255,0.02)', 
-                        border: alarmSound === sound.id ? '1px solid var(--accent)' : '1px solid rgba(255,255,255,0.05)', 
+                        background: alarmSound === sound.id ? 'var(--accent-bg)' : 'var(--code-bg)', 
+                        border: alarmSound === sound.id ? '1px solid var(--accent)' : '1px solid var(--border)', 
                         borderRadius: 10, 
                         cursor: 'pointer' 
                       }}
                     >
-                      <span style={{ fontSize: 12, fontWeight: 800, color: '#fff' }}>{sound.label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-h)' }}>{sound.label}</span>
                       <button onClick={(e) => {
                         e.stopPropagation();
                         new Audio(sound.url).play().catch(()=>{});
@@ -7547,7 +7577,7 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <Card style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
                 <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>EXPORT DATA ARCHIVE</div>
-                <p style={{ fontSize: 12, color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 12, color: 'var(--text)', margin: 0, lineHeight: 1.5 }}>
                   Download a complete backup log of your profiles, active habits, timelines, and battle quest experience records to a JSON file.
                 </p>
                 <Btn onClick={exportProfileBackup} style={{ width: 'fit-content' }}>📤 Export Backup File</Btn>
@@ -7555,14 +7585,14 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
 
               <Card style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
                 <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>IMPORT DATA ARCHIVE</div>
-                <p style={{ fontSize: 12, color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 12, color: 'var(--text)', margin: 0, lineHeight: 1.5 }}>
                   Upload a previously exported backup file to restore your full profile state.
                 </p>
                 <input 
                   type="file" 
                   accept=".json"
                   onChange={importProfileBackup}
-                  style={{ fontSize: 12, color: '#94a3b8' }}
+                  style={{ fontSize: 12, color: 'var(--text)' }}
                 />
               </Card>
 
@@ -7595,9 +7625,9 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                   ["SYSTEM DRIVER VERSION", "v2.0.4 - Release (Stable)"],
                   ["PILOT AUTHENTICATION", "Secure SSL Key Token"]
                 ].map(([label, value]) => (
-                  <div key={label} style={{ padding: 12, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10 }}>
+                  <div key={label} style={{ padding: 12, background: 'var(--code-bg)', border: '1px solid var(--border)', borderRadius: 10 }}>
                     <div style={{ fontSize: 9, color: '#64748b', fontWeight: 900, letterSpacing: 1 }}>{label}</div>
-                    <div style={{ fontSize: 14, color: '#fff', fontWeight: 800, marginTop: 4 }}>{value}</div>
+                    <div style={{ fontSize: 14, color: 'var(--text-h)', fontWeight: 800, marginTop: 4 }}>{value}</div>
                   </div>
                 ))}
               </div>
@@ -7624,6 +7654,27 @@ export default function App() {
   const [users, setUsers] = useLS("apx_users", []);
   const [currentUser, setCurrentUser] = useLS("apx_current_user", null);
   const [tab, setTab] = useState("dashboard");
+
+  const [themeMode, setThemeMode] = useLS(`apx_theme_mode_${currentUser?.id}`, 'dark');
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const isDark = themeMode === 'dark' || (themeMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+    if (isDark) {
+      document.documentElement.style.setProperty('--text', '#9ca3af');
+      document.documentElement.style.setProperty('--text-h', '#f3f4f6');
+      document.documentElement.style.setProperty('--bg', '#16171d');
+      document.documentElement.style.setProperty('--border', '#2e303a');
+      document.documentElement.style.setProperty('--code-bg', '#1f2028');
+    } else {
+      document.documentElement.style.setProperty('--text', '#6b6375');
+      document.documentElement.style.setProperty('--text-h', '#08060d');
+      document.documentElement.style.setProperty('--bg', '#fff');
+      document.documentElement.style.setProperty('--border', '#e5e4e7');
+      document.documentElement.style.setProperty('--code-bg', '#f4f3ec');
+    }
+  }, [currentUser, themeMode]);
   const [scanlinesActive, setScanlinesActive] = useLS(`apx_scanlines_${currentUser?.id}`, false);
   const [appThemeAccent, setAppThemeAccent] = useLS(`apx_theme_accent_${currentUser?.id}`, '#c084fc');
 
@@ -7731,7 +7782,7 @@ export default function App() {
       case "corporate": return <CorporateWork user={liveUser} />;
       case "habits": return <HabitTracker user={liveUser} />;
       case "warrior": return <Warrior user={liveUser} exp={exp} setExp={setExp} pomo={pomo} setPomo={setPomo} stopwatch={stopwatch} setStopwatch={setStopwatch} counter={counter} setCounter={setCounter} />;
-      case "settings": return <Settings user={liveUser} users={users} setUsers={setUsers} onLogout={handleLogout} scanlinesActive={scanlinesActive} setScanlinesActive={setScanlinesActive} appThemeAccent={appThemeAccent} setAppThemeAccent={setAppThemeAccent} />;
+      case "settings": return <Settings user={liveUser} users={users} setUsers={setUsers} onLogout={handleLogout} scanlinesActive={scanlinesActive} setScanlinesActive={setScanlinesActive} appThemeAccent={appThemeAccent} setAppThemeAccent={setAppThemeAccent} themeMode={themeMode} setThemeMode={setThemeMode} />;
       default: return <Dashboard user={liveUser} />;
     }
   };
