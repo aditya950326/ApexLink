@@ -7232,7 +7232,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 }
   
 // ─── SETTINGS ─────────────────────────────────────────────────────────────────
-function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlinesActive, appThemeAccent, setAppThemeAccent, themeMode, setThemeMode }) {
+function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlinesActive, appThemeAccent, setAppThemeAccent }) {
   const [activeSetTab, setActiveSetTab] = useState("profile");
   const [form, setForm] = useState({ name: user.name, email: user.email });
   const [pwForm, setPwForm] = useState({ current: "", newPw: "", confirm: "" });
@@ -7478,36 +7478,7 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                 ))}
               </div>
 
-              {/* Light and Dark theme configuration toggles */}
-              <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 12, letterSpacing: 1 }}>COLOR MODE PREFERENCE</div>
-                <div style={{ display: 'flex', gap: 10 }}>
-                  {[
-                    { id: 'dark', label: '🌙 Dark Mode' },
-                    { id: 'light', label: '☀️ Light Mode' },
-                    { id: 'system', label: '⚙️ Sync System' }
-                  ].map(mode => (
-                    <button
-                      key={mode.id}
-                      onClick={() => setThemeMode(mode.id)}
-                      style={{
-                        flex: 1,
-                        padding: '12px 16px',
-                        background: themeMode === mode.id ? 'var(--accent-bg)' : 'var(--code-bg)',
-                        border: themeMode === mode.id ? '1.5px solid var(--accent)' : '1px solid var(--border)',
-                        borderRadius: 10,
-                        color: 'var(--text-h)',
-                        fontSize: 12,
-                        fontWeight: 900,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                    >
-                      {mode.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+
 
               <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
@@ -7655,26 +7626,15 @@ export default function App() {
   const [currentUser, setCurrentUser] = useLS("apx_current_user", null);
   const [tab, setTab] = useState("dashboard");
 
-  const [themeMode, setThemeMode] = useLS(`apx_theme_mode_${currentUser?.id}`, 'dark');
-
   useEffect(() => {
     if (!currentUser) return;
-    const isDark = themeMode === 'dark' || (themeMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
-    if (isDark) {
-      document.documentElement.style.setProperty('--text', '#9ca3af');
-      document.documentElement.style.setProperty('--text-h', '#f3f4f6');
-      document.documentElement.style.setProperty('--bg', '#16171d');
-      document.documentElement.style.setProperty('--border', '#2e303a');
-      document.documentElement.style.setProperty('--code-bg', '#1f2028');
-    } else {
-      document.documentElement.style.setProperty('--text', '#6b6375');
-      document.documentElement.style.setProperty('--text-h', '#08060d');
-      document.documentElement.style.setProperty('--bg', '#fff');
-      document.documentElement.style.setProperty('--border', '#e5e4e7');
-      document.documentElement.style.setProperty('--code-bg', '#f4f3ec');
-    }
-  }, [currentUser, themeMode]);
+    // Force Dark Mode theme variable mappings permanently
+    document.documentElement.style.setProperty('--text', '#9ca3af');
+    document.documentElement.style.setProperty('--text-h', '#f3f4f6');
+    document.documentElement.style.setProperty('--bg', '#16171d');
+    document.documentElement.style.setProperty('--border', '#2e303a');
+    document.documentElement.style.setProperty('--code-bg', '#1f2028');
+  }, [currentUser]);
   const [scanlinesActive, setScanlinesActive] = useLS(`apx_scanlines_${currentUser?.id}`, false);
   const [appThemeAccent, setAppThemeAccent] = useLS(`apx_theme_accent_${currentUser?.id}`, '#c084fc');
 
@@ -7782,7 +7742,7 @@ export default function App() {
       case "corporate": return <CorporateWork user={liveUser} />;
       case "habits": return <HabitTracker user={liveUser} />;
       case "warrior": return <Warrior user={liveUser} exp={exp} setExp={setExp} pomo={pomo} setPomo={setPomo} stopwatch={stopwatch} setStopwatch={setStopwatch} counter={counter} setCounter={setCounter} />;
-      case "settings": return <Settings user={liveUser} users={users} setUsers={setUsers} onLogout={handleLogout} scanlinesActive={scanlinesActive} setScanlinesActive={setScanlinesActive} appThemeAccent={appThemeAccent} setAppThemeAccent={setAppThemeAccent} themeMode={themeMode} setThemeMode={setThemeMode} />;
+      case "settings": return <Settings user={liveUser} users={users} setUsers={setUsers} onLogout={handleLogout} scanlinesActive={scanlinesActive} setScanlinesActive={setScanlinesActive} appThemeAccent={appThemeAccent} setAppThemeAccent={setAppThemeAccent} />;
       default: return <Dashboard user={liveUser} />;
     }
   };
