@@ -4594,7 +4594,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
 // ═══ PIPELINE VIEW ═══════════════════════════════════════════════════════════
 function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelectTask, selectedTaskId }) {
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task", points: 1 });
+  const [form, setForm] = useState({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task" });
 
   const createTask = () => {
     if (!form.title.trim()) return;
@@ -4609,7 +4609,7 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
     const t = { id:uid(), workspaceId:ws.id, ...form, status:"Backlog", createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), key: nextKey };
     setEH(prev=>({...prev,tasks:[...(prev.tasks||[]),t]}));
     addLog(`Initialized Issue: ${form.title}`);
-    setForm({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task", points: 1 });
+    setForm({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task" });
     setShowCreate(false);
   };
 
@@ -4685,7 +4685,7 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
         </div>
         <textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Technical specs and operational details..." rows={5}
           style={{ width:"100%", background:"rgba(0,0,0,0.3)", border:`1px solid ${EH_BORDER}`, borderRadius:12, padding:"16px", color:"#fff", fontSize:14, resize:"vertical", outline:"none", fontFamily:"inherit" }} />
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:16, marginTop: 20 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginTop: 20 }}>
           <Sel value={form.assignedTo} onChange={v=>setForm({...form,assignedTo:v})}>
             <option value="">Unassigned</option>
             {members.map(m=><option key={m.id} value={m.userId}>{m.name}</option>)}
@@ -4697,7 +4697,6 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
              <Inp type="date" value={form.deadline} onChange={v=>setForm({...form,deadline:v})} />
              <div style={{ position:"absolute", top:-7, left:12, background:"#0d0f11", fontSize:9, fontWeight:900, color:"#94a3b8", padding:"0 4px", letterSpacing:1 }}>DEADLINE</div>
           </div>
-          <Inp type="number" value={form.points} onChange={v=>setForm({...form,points:v})} placeholder="Points" />
         </div>
         <button onClick={createTask} style={{ width:"100%", marginTop:24, background: EH_PRIMARY, border: "none", color: "#000", padding: "14px", borderRadius: 12, fontWeight: 900, fontSize: 14, cursor: "pointer", boxShadow: `0 10px 30px ${EH_PRIMARY}33` }}>INITIALIZE MISSION</button>
       </Modal>
@@ -4733,8 +4732,7 @@ function EHCard({ task, members, onSelect, active, onDragStart }) {
       <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", marginBottom:14, lineHeight: 1.4, lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
         {task.title}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid rgba(255,255,255,0.03)`, paddingTop: 10 }}>
-        <div style={{ background: "rgba(255,255,255,0.03)", color: "#475569", fontSize: 10, padding: "2px 8px", borderRadius: 4, fontWeight: 900, letterSpacing: 1 }}>{task.points || 1} POINTS</div>
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", borderTop: `1px solid rgba(255,255,255,0.03)`, paddingTop: 10 }}>
         <EHAvatar name={assignee?.name||"?"} size={26} />
       </div>
     </div>
@@ -4746,17 +4744,65 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const [comment, setComment] = useState("");
   const [editing, setEditing] = useState(false);
   const [editDesc, setEditDesc] = useState(task.description||"");
-  const comments = (eh.comments||[]).filter(c=>c.taskId===task.id).reverse();
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [file, setFile] = useState(null);
+  const fileInputRef = useRef(null);
+  const chatEndRef = useRef(null);
+
+  const comments = (eh.comments||[]).filter(c=>c.taskId===task.id);
   const meta = EH_STATUS[task.status]||EH_STATUS.Backlog;
   const assignee = members.find(m=>m.userId===task.assignedTo);
   const p = EH_PRIORITY[task.priority] || EH_PRIORITY.Medium;
-  const sendComment = () => {
-    if (!comment.trim()) return;
-    const c = { id:uid(), taskId:task.id, userId:user.id, userName:user.name, comment:comment.trim(), createdAt:new Date().toISOString() };
-    setEH(prev=>({...prev,comments:[...(prev.comments||[]),c]}));
-    addLog(`Commented on: ${task.title}`);
-    setComment("");
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [comments]);
+
+  const startEditComment = (c) => {
+    setComment(c.comment);
+    setEditingCommentId(c.id);
+    setContextMenu(null);
   };
+
+  const deleteComment = (cId) => {
+    setEH(prev => ({ ...prev, comments: prev.comments.filter(x => x.id !== cId) }));
+    setContextMenu(null);
+  };
+
+  const handleCommentInteraction = (e, c) => {
+    if (c.userId !== user.id) return;
+    e.preventDefault();
+    const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+    const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+    setContextMenu({ x, y, c });
+  };
+
+  const handleFile = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => setFile({ data: r.result, type: f.type, name: f.name });
+    r.readAsDataURL(f);
+  };
+
+  const sendComment = () => {
+    if (!comment.trim() && !file) return;
+    if (editingCommentId) {
+      setEH(prev => ({
+        ...prev,
+        comments: prev.comments.map(x => x.id === editingCommentId ? { ...x, comment: comment.trim(), isEdited: true } : x)
+      }));
+      setEditingCommentId(null);
+    } else {
+      const c = { id: uid(), taskId: task.id, userId: user.id, userName: user.name, comment: comment.trim(), file: file?.data, fType: file?.type, fName: file?.name, createdAt: new Date().toISOString() };
+      setEH(prev => ({ ...prev, comments: [...(prev.comments || []), c] }));
+      addLog(`Transmitted report for: ${task.title}`);
+    }
+    setComment("");
+    setFile(null);
+  };
+
   const updateStatus = (status) => {
     setEH(prev=>({...prev,tasks:prev.tasks.map(t=>t.id===task.id?{...t,status,updatedAt:new Date().toISOString()}:t)}));
     addLog(`Task status  ${status}`);
@@ -4768,6 +4814,31 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const updateField = (field, value) => {
     setEH(prev=>({...prev,tasks:prev.tasks.map(t=>t.id===task.id?{...t,[field]:value,updatedAt:new Date().toISOString()}:t)}));
     addLog(`Task ${field} updated`);
+  };
+
+  useEffect(() => {
+    const hide = () => setContextMenu(null);
+    window.addEventListener('click', hide);
+    return () => window.removeEventListener('click', hide);
+  }, []);
+
+  const renderFile = (c, isMe) => {
+    if (!c.file) return null;
+    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
+    if (c.fType?.startsWith("image/")) return <img src={c.file} style={s} alt={c.fName} />;
+    if (c.fType?.startsWith("video/")) return <video src={c.file} controls style={s} />;
+    if (c.fType?.startsWith("audio/")) return (
+      <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 18 }}>🎧</span>
+        <audio src={c.file} controls style={{ flex: 1, height: 32 }} />
+      </div>
+    );
+    return (
+      <a href={c.file} download={c.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+        <span style={{ fontSize: 20 }}>📄</span>
+        <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.fName}</div>
+      </a>
+    );
   };
   return (
     <div style={{ display:"flex", flexDirection:"column", height:"100%", background: EH_PANEL }}>
@@ -4799,8 +4870,6 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             </div>
             <EHLabel>DEADLINE</EHLabel>
             <input type="date" value={task.deadline || ""} onChange={e=>updateField("deadline", e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: "#fff", fontWeight: 700, fontSize: 11, padding: "6px 12px", outline: "none", fontFamily: "monospace", width: "fit-content" }} />
-            <EHLabel>POINTS</EHLabel>
-            <div style={{ background: "rgba(255,255,255,0.03)", padding: "4px 10px", borderRadius: 4, fontSize: 10, fontWeight: 900, width: "fit-content", color: "#888" }}>{task.points||1} STORY POINTS</div>
         </div>
         <div style={{ marginBottom: 50 }}>
             <EHLabel>DESCRIPTION</EHLabel>
@@ -4809,11 +4878,15 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
         </div>
         <div>
             <EHLabel>MISSION LOGS ({comments.length})</EHLabel>
-            <div style={{ display: "flex", flexDirection: "column", gap: 24, background: "rgba(0,0,0,0.2)", padding: 24, borderRadius: 12, border: `1px solid ${EH_BORDER}`, minHeight: 200 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, background: "rgba(0,0,0,0.2)", padding: 20, borderRadius: 16, border: `1px solid ${EH_BORDER}`, maxHeight: 380, overflowY: "auto", position: "relative" }}>
                 {comments.map((c, idx) => {
                     const isMe = c.userId === user.id;
                     return (
-                    <div key={c.id} style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "85%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s ease-out" }}>
+                    <div 
+                      key={c.id} 
+                      onContextMenu={(e) => handleCommentInteraction(e, c)}
+                      style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "85%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s ease-out" }}
+                    >
                         <EHAvatar name={c.userName} size={32} />
                         <div style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1 }}>
                             <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6, flexDirection: isMe ? "row-reverse" : "row" }}>
@@ -4821,27 +4894,56 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                                 <span style={{ fontSize: 9, color: "#555", fontFamily: "monospace" }}>{new Date(c.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             </div>
                             <div style={{ 
-                                fontSize: 13, color: isMe ? "#fff" : "#e2e8f0", lineHeight: 1.5, 
+                                fontSize: 13, color: isMe ? "#000" : "#e2e8f0", lineHeight: 1.5, 
                                 background: isMe ? `linear-gradient(135deg, ${EH_PRIMARY}, #008AA1)` : "#16191c", 
                                 padding: "14px 18px", 
                                 borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px", 
                                 border: isMe ? "none" : `1px solid ${EH_BORDER}`,
                                 boxShadow: isMe ? `0 10px 25px ${EH_PRIMARY}33` : "4px 10px 20px rgba(0,0,0,0.2)",
-                                wordBreak: "break-word"
-                            }}>{c.comment}</div>
+                                wordBreak: "break-word",
+                                paddingBottom: c.isEdited ? "22px" : "14px",
+                                position: "relative"
+                            }}>
+                                <div>{c.comment}</div>
+                                {renderFile(c, isMe)}
+                                {c.isEdited && (
+                                  <span style={{ fontSize: 9, color: isMe ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.3)", position: "absolute", bottom: 2, right: 8, fontWeight: 800 }}>Edited</span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )})}
+                <div ref={chatEndRef} />
                 {comments.length === 0 && <div style={{ margin: "auto", color: "#555", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>NO MISSION LOGS RECORDED.</div>}
             </div>
         </div>
       </div>
       <div style={{ padding: "20px 40px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.8)", backdropFilter: "blur(20px)" }}>
+        {file && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "10px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)` }}>
+            <span style={{ fontSize: 14 }}>📎</span>
+            <div style={{ flex: 1, fontSize: 12, color: '#00B8D9', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name.toUpperCase()}</div>
+            <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>DISCARD</button>
+          </div>
+        )}
         <div style={{ display: "flex", gap: 12, background: "#0c0e10", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 12, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}>
-            <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder="Transmit report..." style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
-            <button onClick={sendComment} style={{ background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, padding: "10px 20px", cursor: "pointer", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>SEND ↵</button>
+            <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#475569" }}>📎</button>
+            <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
+            <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise report..." : "Transmit report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
+            <button onClick={sendComment} style={{ background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, padding: "10px 20px", cursor: "pointer", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>{editingCommentId ? "SAVE ↵" : "SEND ↵"}</button>
         </div>
       </div>
+
+      {contextMenu && (
+        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#111316', border: `1px solid ${EH_BORDER}`, borderRadius: 10, padding: '6px', zIndex: 9999, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", minWidth: 160 }}>
+          <button onClick={() => startEditComment(contextMenu.c)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#e9edef', textAlign: 'left', cursor: 'pointer', fontSize: 13, width: '100%', borderRadius: 6, fontWeight: 700 }} className="eh-ctx-btn">
+            <span>✎</span> Edit Transmission
+          </button>
+          <button onClick={() => deleteComment(contextMenu.c.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: 13, width: '100%', borderRadius: 6, fontWeight: 700 }} className="eh-ctx-btn">
+            <span>🗑</span> Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
