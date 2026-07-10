@@ -6336,35 +6336,13 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   };
 
   if (showMotivation) return (
-    <div className="cyber-grid" style={{ padding: 40, textAlign: 'center', minHeight: '94vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#050508', position: 'relative', overflow: 'hidden' }}>
-      <style>{`
-        @keyframes gridScroll { from { background-position: 0 0; } to { background-position: 0 40px; } }
-        .cyber-grid {
-          background-image: linear-gradient(rgba(108, 99, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(108, 99, 255, 0.04) 1px, transparent 1px);
-          background-size: 40px 40px;
-          animation: gridScroll 6s linear infinite;
-        }
-        @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 0 20px rgba(59, 172, 214, 0.15), inset 0 0 10px rgba(59, 172, 214, 0.1); }
-          50% { box-shadow: 0 0 40px rgba(59, 172, 214, 0.5), inset 0 0 20px rgba(59, 172, 214, 0.2); }
-        }
-        .gateway-btn {
-          animation: pulseGlow 3s infinite ease-in-out;
-        }
-        .gateway-btn:hover {
-          transform: translateY(-2px) scale(1.02);
-          background: rgba(59, 172, 214, 0.25) !important;
-          border-color: #00f2fe !important;
-          color: #fff !important;
-          box-shadow: 0 0 50px rgba(0, 242, 254, 0.6) !important;
-        }
-      `}</style>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `url('/samurai.png')`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.15, zIndex: 0 }}></div>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, #050508 85%)', zIndex: 1 }}></div>
-      <div style={{ maxWidth: 850, zIndex: 2, position: 'relative', background: 'rgba(5, 5, 8, 0.65)', border: '1px solid rgba(255,255,255,0.03)', padding: '60px 40px', borderRadius: 24, backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
-        <div style={{ fontSize: 13, fontWeight: 900, color: '#3bacd6', letterSpacing: 8, marginBottom: 35, textShadow: '0 0 20px rgba(59, 172, 214, 0.5)' }}>BATTLE COMMENCE</div>
-        <h1 style={{ fontSize: 34, color: '#f1f5f9', fontStyle: 'italic', fontWeight: 300, lineHeight: 1.6, textShadow: '0 2px 10px rgba(0,0,0,0.9)', marginBottom: 50, fontFamily: 'serif' }}>"{quote}"</h1>
-        <button className="gateway-btn" onClick={() => setShowMotivation(false)} style={{ padding: '20px 60px', background: 'rgba(59, 172, 214, 0.15)', border: '1px solid #3bacd6', borderRadius: 8, color: '#3bacd6', fontWeight: 900, cursor: 'pointer', letterSpacing: 3, textTransform: 'uppercase', transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)' }}>Initialize Command Center</button>
+    <div style={{ padding: 40, textAlign: 'center', minHeight: '94vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#050508', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `url('/samurai.png')`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.4, zIndex: 0 }}></div>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, #050508 90%)', zIndex: 1 }}></div>
+      <div style={{ maxWidth: 800, zIndex: 2, position: 'relative' }}>
+        <div style={{ fontSize: 14, fontWeight: 900, color: '#3bacd6', letterSpacing: 8, marginBottom: 30, textShadow: '0 0 15px #1e6fa8' }}>BATTLE COMMENCE</div>
+        <h1 style={{ fontSize: 42, color: '#fff', fontStyle: 'italic', fontWeight: 200, lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>"{quote}"</h1>
+        <button onClick={() => setShowMotivation(false)} style={{ marginTop: 60, padding: '18px 50px', background: 'rgba(59, 172, 214, 0.1)', border: '1px solid #3bacd6', borderRadius: 4, color: '#3bacd6', fontWeight: 900, cursor: 'pointer', letterSpacing: 3, textTransform: 'uppercase', transition: '0.3s', backdropFilter: 'blur(5px)' }}>Initialize Command Center</button>
       </div>
     </div>
   );
