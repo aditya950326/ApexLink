@@ -6255,6 +6255,205 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   const [tempCoords, setTempCoords] = useState(null);
   const [newPin, setNewPin] = useState({ name: "", notes: "", deadline: "", action: "" });
   const [pomoShieldBroke, setPomoShieldBroke] = useState(false);
+  const [creatorActive, setCreatorActive] = useState(false);
+  const [creatorLayout, setCreatorLayout] = useLS(`apx_vboard_layout_${user?.id}`, 'grid2x2');
+  const [creatorTheme, setCreatorTheme] = useLS(`apx_vboard_theme_${user?.id}`, 'space');
+  const [creatorSpacing, setCreatorSpacing] = useLS(`apx_vboard_spacing_${user?.id}`, 10);
+  const [creatorBorderColor, setCreatorBorderColor] = useLS(`apx_vboard_border_col_${user?.id}`, '#3bacd6');
+  const [creatorBorderGlow, setCreatorBorderGlow] = useLS(`apx_vboard_border_glow_${user?.id}`, true);
+  const [creatorSlots, setCreatorSlots] = useLS(`apx_vboard_slots_${user?.id}`, [
+    { type: 'text', content: 'Focus on the execution, not the outcome.', title: 'CORE VALUE', font: 'serif', color: '#ffffff', glowColor: '#3bacd6', image: null },
+    { type: 'image', content: '', title: 'TARGET VISUAL', font: 'sans-serif', color: '#ffffff', glowColor: '#00f2fe', image: null },
+    { type: 'text', content: 'Consistency builds empires. Excuses burn them.', title: 'AFFIRMATION', font: 'monospace', color: '#ffffff', glowColor: '#a78bfa', image: null },
+    { type: 'image', content: '', title: 'DAILY DRIVE', font: 'sans-serif', color: '#ffffff', glowColor: '#10b981', image: null }
+  ]);
+  const [editingSlotIdx, setEditingSlotIdx] = useState(null);
+
+  const CREATOR_THEMES = [
+    { id: 'space', name: '🌌 Deep Space', gradient: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%)' },
+    { id: 'sunset', name: '🌅 Retrowave Sunset', gradient: 'linear-gradient(135deg, #881337 0%, #4c0519 50%, #f43f5e 100%)' },
+    { id: 'cyber', name: '⚔️ Stealth Shogun', gradient: 'linear-gradient(135deg, #111827 0%, #030712 100%)' },
+    { id: 'gold', name: '🏆 Gladiator Gold', gradient: 'linear-gradient(135deg, #451a03 0%, #1a0c02 100%)' }
+  ];
+
+  const AI_AFFIRMATIONS = {
+    career: [
+      "I code with absolute precision; my systems run flawlessly.",
+      "Every bug I conquer elevates my level as an architect.",
+      "My solutions are simple, performant, and resilient."
+    ],
+    focus: [
+      "My focus is a fortress; obstacles dissolve before my actions.",
+      "I command respect through my work ethic and consistency.",
+      "No excuses. I start before I am ready."
+    ],
+    power: [
+      "My energy is infinite; I master my body and mind daily.",
+      "Discomfort is the price of admission to my goals.",
+      "Consistency beats talent. I execute relentlessly."
+    ]
+  };
+
+  const handleCompileVisionBoard = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    let grad = ctx.createLinearGradient(0, 0, 1200, 800);
+    if (creatorTheme === 'space') {
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(0.5, '#1e1b4b');
+      grad.addColorStop(1, '#020617');
+    } else if (creatorTheme === 'sunset') {
+      grad.addColorStop(0, '#881337');
+      grad.addColorStop(0.5, '#4c0519');
+      grad.addColorStop(1, '#f43f5e');
+    } else if (creatorTheme === 'cyber') {
+      grad.addColorStop(0, '#111827');
+      grad.addColorStop(1, '#030712');
+    } else {
+      grad.addColorStop(0, '#451a03');
+      grad.addColorStop(1, '#1a0c02');
+    }
+    
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1200, 800);
+
+    const gap = creatorSpacing;
+    let slotCoords = [];
+
+    if (creatorLayout === 'grid2x2') {
+      const w = (1200 - 3 * gap) / 2;
+      const h = (800 - 3 * gap) / 2;
+      slotCoords = [
+        { x: gap, y: gap, w, h },
+        { x: 2 * gap + w, y: gap, w, h },
+        { x: gap, y: 2 * gap + h, w, h },
+        { x: 2 * gap + w, y: 2 * gap + h, w, h }
+      ];
+    } else if (creatorLayout === 'grid3') {
+      const w = (1200 - 4 * gap) / 3;
+      const h = 800 - 2 * gap;
+      slotCoords = [
+        { x: gap, y: gap, w, h },
+        { x: 2 * gap + w, y: gap, w, h },
+        { x: 3 * gap + 2 * w, y: gap, w, h }
+      ];
+    } else {
+      const w1 = (1200 - 3 * gap) * 0.6;
+      const w2 = (1200 - 3 * gap) * 0.4;
+      const h1 = 800 - 2 * gap;
+      const h2 = (800 - 3 * gap) / 2;
+      slotCoords = [
+        { x: gap, y: gap, w: w1, h: h1 },
+        { x: 2 * gap + w1, y: gap, w: w2, h: h2 },
+        { x: 2 * gap + w1, y: 2 * gap + h2, w: w2, h: h2 }
+      ];
+    }
+
+    const drawPromises = slotCoords.map((coord, idx) => {
+      return new Promise((resolve) => {
+        const slot = creatorSlots[idx] || { type: 'text', content: 'Goal Target' };
+        
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.fillRect(coord.x, coord.y, coord.w, coord.h);
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = creatorBorderColor;
+        ctx.strokeRect(coord.x, coord.y, coord.w, coord.h);
+
+        if (creatorBorderGlow) {
+          ctx.shadowColor = creatorBorderColor;
+          ctx.shadowBlur = 20;
+          ctx.strokeRect(coord.x, coord.y, coord.w, coord.h);
+          ctx.shadowBlur = 0;
+        }
+
+        if (slot.type === 'image' && slot.image) {
+          const img = new Image();
+          img.src = slot.image;
+          img.onload = () => {
+            const imgAspect = img.width / img.height;
+            const slotAspect = coord.w / coord.h;
+            let sx, sy, sw, sh;
+            if (imgAspect > slotAspect) {
+              sh = img.height;
+              sw = sh * slotAspect;
+              sx = (img.width - sw) / 2;
+              sy = 0;
+            } else {
+              sw = img.width;
+              sh = sw / slotAspect;
+              sx = 0;
+              sy = (img.height - sh) / 2;
+            }
+            ctx.drawImage(img, sx, sy, sw, sh, coord.x, coord.y, coord.w, coord.h);
+
+            if (slot.title) {
+              ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+              ctx.fillRect(coord.x, coord.y + coord.h - 45, coord.w, 45);
+              
+              ctx.fillStyle = '#ffffff';
+              ctx.font = 'bold 15px sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText(slot.title, coord.x + coord.w / 2, coord.y + coord.h - 18);
+            }
+            resolve();
+          };
+          img.onerror = () => resolve();
+        } else {
+          if (slot.title) {
+            ctx.fillStyle = slot.glowColor || '#3bacd6';
+            ctx.font = 'bold 12px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(slot.title.toUpperCase(), coord.x + coord.w / 2, coord.y + 40);
+          }
+
+          const text = slot.content || "ENTER AFFIRMATION DIRECTIVE";
+          ctx.fillStyle = slot.color || '#ffffff';
+          
+          let fontName = 'sans-serif';
+          if (slot.font === 'serif') fontName = 'Georgia, serif';
+          if (slot.font === 'monospace') fontName = 'Courier New, monospace';
+          
+          ctx.font = `italic ${coord.w < 350 ? '16px' : '22px'} ${fontName}`;
+          ctx.textAlign = 'center';
+
+          const words = text.split(' ');
+          let line = '';
+          let lines = [];
+          const maxWidth = coord.w - 50;
+          
+          for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+              lines.push(line);
+              line = words[n] + ' ';
+            } else {
+              line = testLine;
+            }
+          }
+          lines.push(line);
+
+          const startY = coord.y + coord.h / 2 - ((lines.length - 1) * 15);
+          for (let j = 0; j < lines.length; j++) {
+            ctx.fillText(lines[j], coord.x + coord.w / 2, startY + (j * 32));
+          }
+          resolve();
+        }
+      });
+    });
+
+    Promise.all(drawPromises).then(() => {
+      const dataURL = canvas.toDataURL('image/jpeg', 0.95);
+      setVision({ ...vision, image: dataURL });
+      setCreatorActive(false);
+      new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+    });
+  };
+
 
   const STORIES = [
     {
@@ -6985,135 +7184,463 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
       {/* 🖼️ VISION BOARD SUBTAB (With clickable Coordinate Pin Dropping!) */}
       {subTab === "vision" && (
-        !vision.image ? (
-          <div style={{ padding: 60, textAlign: 'center', border: '2px dashed var(--border)', borderRadius: 30, margin: '20px auto', maxWidth: 800, backdropFilter: 'blur(10px)', background: 'rgba(255,255,255,0.02)' }}>
-            <div style={{ fontSize: 60, marginBottom: 20 }}>🖼️</div>
-            <h2 style={{ fontWeight: 900 }}>MANIFEST YOUR FUTURE</h2>
-            <p style={{ color: 'var(--text-dim)', marginBottom: 30 }}>Upload your custom vision board image to keep your goals in sight.</p>
-            <input type="file" id="vb-upload" style={{ display: 'none' }} onChange={handleVBRoute} accept="image/*" />
-            <Btn onClick={() => document.getElementById('vb-upload').click()} style={{ padding: '15px 40px' }}>Select Vision Board</Btn>
-          </div>
-        ) : (
-          <div style={{ animation: 'fadeIn 0.5s ease', position: 'relative', background: vision.isWarriorMode ? 'radial-gradient(circle, rgba(34,0,0,0.4) 0%, rgba(5,5,8,0.4) 100%)' : 'rgba(255,255,255,0.02)', borderRadius: 24, padding: 20, backdropFilter: 'blur(10px)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <div style={{ display: 'flex', gap: 10, background: 'rgba(0,0,0,0.3)', padding: 5, borderRadius: 12, border: '1px solid var(--border)' }}>
-                <button onClick={() => setVision({...vision, isWarriorMode: false})} style={{ padding: '8px 15px', borderRadius: 8, border: 'none', background: !vision.isWarriorMode ? 'var(--accent)' : 'transparent', color: !vision.isWarriorMode ? '#fff' : 'var(--text-dim)', fontWeight: 800, cursor: 'pointer' }}>🌈 NORMAL</button>
-                <button onClick={() => setVision({...vision, isWarriorMode: true})} style={{ padding: '8px 15px', borderRadius: 8, border: 'none', background: vision.isWarriorMode ? '#ef4444' : 'transparent', color: vision.isWarriorMode ? '#fff' : 'var(--text-dim)', fontWeight: 800, cursor: 'pointer' }}>⚔️ WARRIOR</button>
-              </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <Btn small variant="secondary" onClick={() => { const a = document.createElement('a'); a.href = vision.image; a.download = 'VisionBoard.jpg'; a.click(); }}>📥 Download</Btn>
-                <button onClick={() => setVision({...vision, image: null})} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>Delete</button>
-              </div>
-            </div>
-            
-            <div style={{ textAlign: 'center', fontSize: 11, color: '#38bdf8', fontWeight: 900, marginBottom: 12, letterSpacing: 1.5 }}>
-              🎯 TIP: CLICK ANYWHERE ON THE IMAGE TO PLACE A FUTURE TARGET PIN
-            </div>
-
-            <div 
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                setTempCoords({ x, y });
-                setShowPinModal(true);
-              }}
-              style={{ 
-                flex: 1, 
-                overflow: 'hidden', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                position: 'relative', 
-                borderRadius: 16, 
-                border: vision.isWarriorMode ? '3px solid #ef4444' : '1px solid var(--border)', 
-                boxShadow: vision.isWarriorMode ? '0 0 40px rgba(239, 68, 68, 0.2)' : 'var(--shadow)',
-                cursor: 'crosshair'
-              }}
-            >
-              {vision.isWarriorMode && (
-                <>
-                  <div style={{ position: 'absolute', top: 30, width: '100%', textAlign: 'center', color: '#ef4444', fontWeight: 900, letterSpacing: 15, fontSize: 18, zIndex: 5, textShadow: '0 0 10px #000' }}>NO EXCUSES</div>
-                  <div style={{ position: 'absolute', bottom: 30, width: '100%', textAlign: 'center', color: '#ef4444', fontWeight: 900, letterSpacing: 15, fontSize: 18, zIndex: 5, textShadow: '0 0 10px #000' }}>STAY HARD</div>
-                </>
-              )}
+        creatorActive ? (
+          /* 🎨 CREATOR STUDIO WORKSPACE */
+          <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24, animation: 'fadeIn 0.3s ease' }}>
+            {/* Control Panel Panel */}
+            <Card style={{ background: 'rgba(10,10,15,0.85)', border: '1px solid rgba(255,255,255,0.05)', padding: 20, display: 'flex', flexDirection: 'column', gap: 20, maxHeight: '82vh', overflowY: 'auto' }}>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#00f2fe', letterSpacing: 1.5 }}>🎨 CREATOR CONTROLS</div>
               
-              <img src={vision.image} alt="Vision Board" style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', transform: `scale(${vision.zoom})`, transition: 'transform 0.3s ease', filter: vision.isWarriorMode ? 'contrast(1.2) saturate(1.1)' : 'none' }} />
+              {/* Layout Picker */}
+              <div>
+                <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 8 }}>GRID LAYOUT</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => setCreatorLayout('grid2x2')} style={{ flex: 1, padding: 8, background: creatorLayout === 'grid2x2' ? 'rgba(0, 242, 254, 0.15)' : 'rgba(255,255,255,0.02)', border: creatorLayout === 'grid2x2' ? '1px solid #00f2fe' : '1px solid rgba(255,255,255,0.05)', color: creatorLayout === 'grid2x2' ? '#00f2fe' : '#94a3b8', borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>2x2 Grid</button>
+                  <button onClick={() => setCreatorLayout('grid3')} style={{ flex: 1, padding: 8, background: creatorLayout === 'grid3' ? 'rgba(0, 242, 254, 0.15)' : 'rgba(255,255,255,0.02)', border: creatorLayout === 'grid3' ? '1px solid #00f2fe' : '1px solid rgba(255,255,255,0.05)', color: creatorLayout === 'grid3' ? '#00f2fe' : '#94a3b8', borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>3 Columns</button>
+                  <button onClick={() => setCreatorLayout('hero')} style={{ flex: 1, padding: 8, background: creatorLayout === 'hero' ? 'rgba(0, 242, 254, 0.15)' : 'rgba(255,255,255,0.02)', border: creatorLayout === 'hero' ? '1px solid #00f2fe' : '1px solid rgba(255,255,255,0.05)', color: creatorLayout === 'hero' ? '#00f2fe' : '#94a3b8', borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>Hero focus</button>
+                </div>
+              </div>
 
-              {/* Render vision target pins */}
-              {visionPins.map((pin, index) => (
-                <div 
-                  key={index}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (confirm(`Delete pin "${pin.name}"?`)) {
-                      setVisionPins(prev => prev.filter((_, idx) => idx !== index));
-                    }
-                  }}
-                  style={{
-                    position: 'absolute',
-                    left: `${pin.x}%`,
-                    top: `${pin.y}%`,
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 200,
-                    cursor: 'pointer'
-                  }}
-                  title="Click to delete this target pin"
-                >
-                  {/* Glowing Reticle */}
-                  <div style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '50%',
-                    border: '2px solid #00f2fe',
-                    background: 'rgba(0, 242, 254, 0.25)',
-                    boxShadow: '0 0 12px #00f2fe',
+              {/* Theme Selector */}
+              <div>
+                <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 8 }}>BACKGROUND GRADIENCE</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  {CREATOR_THEMES.map(theme => (
+                    <button 
+                      key={theme.id}
+                      onClick={() => setCreatorTheme(theme.id)}
+                      style={{ 
+                        padding: '10px 6px', 
+                        background: theme.gradient, 
+                        border: creatorTheme === theme.id ? '2px solid #00f2fe' : '1px solid rgba(255,255,255,0.1)', 
+                        color: '#fff', 
+                        fontSize: 10, 
+                        fontWeight: 800, 
+                        borderRadius: 8, 
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {theme.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Border configuration styling */}
+              <div>
+                <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>GRID GAP: {creatorSpacing}px</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="30" 
+                  value={creatorSpacing} 
+                  onChange={(e) => setCreatorSpacing(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#00f2fe' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 6 }}>BORDER COLORS</label>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {['#3bacd6', '#ef4444', '#f59e0b', '#10b981', '#a78bfa', '#ffffff'].map(color => (
+                    <div 
+                      key={color}
+                      onClick={() => setCreatorBorderColor(color)}
+                      style={{ 
+                        width: 24, 
+                        height: 24, 
+                        borderRadius: 6, 
+                        background: color, 
+                        border: creatorBorderColor === color ? '2px solid #00f2fe' : '1px solid rgba(255,255,255,0.2)', 
+                        cursor: 'pointer' 
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 10, fontWeight: 900, color: '#64748b' }}>NEON BORDER GLOW</span>
+                <input 
+                  type="checkbox" 
+                  checked={creatorBorderGlow}
+                  onChange={(e) => setCreatorBorderGlow(e.target.checked)}
+                  style={{ accentColor: '#00f2fe', cursor: 'pointer' }}
+                />
+              </div>
+
+              <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <button onClick={handleCompileVisionBoard} style={{ padding: 14, background: 'linear-gradient(135deg, #00f2fe, #4facfe)', border: 'none', borderRadius: 10, color: '#000', fontWeight: 900, fontSize: 12, cursor: 'pointer', boxShadow: '0 4px 15px rgba(0, 242, 254, 0.3)' }}>
+                  💾 MANIFEST & SAVE
+                </button>
+                <button onClick={() => setCreatorActive(false)} style={{ padding: 12, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 800, fontSize: 11, cursor: 'pointer' }}>
+                  Cancel
+                </button>
+              </div>
+            </Card>
+
+            {/* Interactive collage Canvas view */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#64748b', textAlign: 'center' }}>
+                🧬 TIP: CLICK ON ANY SLOT TO POPULATE OR MODIFY ITS VISUAL CONTENT
+              </div>
+
+              <div style={{
+                aspectRatio: '1200/800',
+                background: CREATOR_THEMES.find(t => t.id === creatorTheme)?.gradient || CREATOR_THEMES[0].gradient,
+                borderRadius: 16,
+                padding: creatorSpacing,
+                display: 'grid',
+                gridTemplateColumns: creatorLayout === 'grid2x2' ? '1fr 1fr' : creatorLayout === 'grid3' ? '1fr 1fr 1fr' : '6fr 4fr',
+                gridTemplateRows: creatorLayout === 'grid2x2' ? '1fr 1fr' : '1fr',
+                gap: creatorSpacing,
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                border: '1px solid rgba(255,255,255,0.05)'
+              }}>
+                {/* Quadrant Render Loop */}
+                {Array.from({ length: creatorLayout === 'grid3' ? 3 : 4 }).map((_, idx) => {
+                  const slot = creatorSlots[idx] || { type: 'text', content: 'Goal' };
+                  const isHeroSplit = creatorLayout === 'hero';
+                  
+                  // Style configurations
+                  const cardStyle = {
+                    gridRow: (isHeroSplit && idx === 0) ? 'span 2' : 'auto',
+                    background: 'rgba(0, 0, 0, 0.45)',
+                    border: `2px solid ${creatorBorderColor}`,
+                    borderRadius: 12,
+                    boxShadow: creatorBorderGlow ? `0 0 15px ${creatorBorderColor}33` : 'none',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    animation: 'pulse 1.5s infinite ease-in-out'
-                  }}>
-                    <span style={{ fontSize: 10, fontWeight: 900, color: '#fff' }}>🎯</span>
-                  </div>
+                    padding: 20,
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'all 0.2s'
+                  };
 
-                  {/* Glassmorphic hover card */}
-                  <div style={{
-                    position: 'absolute',
-                    top: 28,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: 'rgba(10,10,15,0.9)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    padding: 12,
-                    borderRadius: 8,
-                    width: 180,
-                    pointerEvents: 'none',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '0 10px 20px rgba(0,0,0,0.5)',
-                    display: 'none',
-                    flexDirection: 'column',
-                    gap: 4
-                  }} className="pin-hover-card">
-                    <div style={{ fontSize: 12, fontWeight: 900, color: '#00f2fe' }}>{pin.name}</div>
-                    <div style={{ fontSize: 10, color: '#94a3b8' }}>{pin.notes}</div>
-                    <div style={{ fontSize: 9, color: '#a78bfa', fontWeight: 800 }}>📅 BY {pin.deadline}</div>
-                    <div style={{ fontSize: 9, color: '#22c55e', fontWeight: 800 }}>⚡ DO: {pin.action}</div>
-                  </div>
-                  <style>{`
-                    div:hover > .pin-hover-card {
-                      display: flex !important;
-                    }
-                  `}</style>
+                  return (
+                    <div 
+                      key={idx} 
+                      style={cardStyle}
+                      onClick={() => setEditingSlotIdx(idx)}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(0.99)'; e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.background = 'rgba(0,0,0,0.45)'; }}
+                    >
+                      {slot.type === 'image' && slot.image ? (
+                        <>
+                          <img src={slot.image} alt={slot.title} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }} />
+                          {slot.title && (
+                            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '10px 0', background: 'rgba(0,0,0,0.75)', color: '#fff', fontSize: 11, fontWeight: 900, zIndex: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
+                              {slot.title}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {slot.title && <div style={{ fontSize: 9, fontWeight: 900, color: slot.glowColor || '#00f2fe', letterSpacing: 1.5, position: 'absolute', top: 20 }}>{slot.title.toUpperCase()}</div>}
+                          <p style={{
+                            margin: 0,
+                            fontStyle: 'italic',
+                            fontSize: isHeroSplit && idx === 0 ? 20 : 14,
+                            fontWeight: 700,
+                            color: slot.color || '#fff',
+                            fontFamily: slot.font === 'serif' ? 'Georgia, serif' : slot.font === 'monospace' ? 'monospace' : 'sans-serif',
+                            textShadow: `0 0 10px ${slot.glowColor || 'transparent'}66`
+                          }}>
+                            "{slot.content || "Click to add affirmation"}"
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Popup Slot Modifier Modal */}
+            {editingSlotIdx !== null && (() => {
+              const activeSlot = creatorSlots[editingSlotIdx] || { type: 'text', content: '', title: '', font: 'sans-serif', color: '#ffffff', glowColor: '#00f2fe' };
+              return (
+                <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(5,5,8,0.75)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10000000 }}>
+                  <Card style={{ width: 380, background: 'rgba(10,10,15,0.95)', border: '1px solid rgba(255,255,255,0.1)', padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 900, color: '#00f2fe', letterSpacing: 1 }}>📝 EDIT CANVAS SLOT {editingSlotIdx + 1}</div>
+                    
+                    {/* Mode selector */}
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={() => {
+                        const next = [...creatorSlots];
+                        next[editingSlotIdx] = { ...activeSlot, type: 'text' };
+                        setCreatorSlots(next);
+                      }} style={{ flex: 1, padding: 8, background: activeSlot.type === 'text' ? 'rgba(0, 242, 254, 0.15)' : 'rgba(255,255,255,0.02)', border: activeSlot.type === 'text' ? '1px solid #00f2fe' : '1px solid rgba(255,255,255,0.05)', color: activeSlot.type === 'text' ? '#00f2fe' : '#94a3b8', borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>Affirmation</button>
+                      
+                      <button onClick={() => {
+                        const next = [...creatorSlots];
+                        next[editingSlotIdx] = { ...activeSlot, type: 'image' };
+                        setCreatorSlots(next);
+                      }} style={{ flex: 1, padding: 8, background: activeSlot.type === 'image' ? 'rgba(0, 242, 254, 0.15)' : 'rgba(255,255,255,0.02)', border: activeSlot.type === 'image' ? '1px solid #00f2fe' : '1px solid rgba(255,255,255,0.05)', color: activeSlot.type === 'image' ? '#00f2fe' : '#94a3b8', borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: 'pointer' }}>Image Frame</button>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      <div>
+                        <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 4 }}>SLOT TITLE</label>
+                        <input 
+                          type="text" 
+                          value={activeSlot.title || ''} 
+                          onChange={(e) => {
+                            const next = [...creatorSlots];
+                            next[editingSlotIdx] = { ...activeSlot, title: e.target.value };
+                            setCreatorSlots(next);
+                          }}
+                          placeholder="e.g. TARGET GOAL" 
+                          style={{ width: '100%', padding: 10, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                        />
+                      </div>
+
+                      {activeSlot.type === 'text' ? (
+                        <>
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                              <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>AFFIRMATION TEXT</label>
+                              <span style={{ fontSize: 9, color: '#00f2fe', cursor: 'pointer', fontWeight: 800 }} onClick={() => {
+                                const cats = ['career', 'focus', 'power'];
+                                const cat = cats[Math.floor(Math.random() * cats.length)];
+                                const affs = AI_AFFIRMATIONS[cat];
+                                const randomAff = affs[Math.floor(Math.random() * affs.length)];
+                                const next = [...creatorSlots];
+                                next[editingSlotIdx] = { ...activeSlot, content: randomAff };
+                                setCreatorSlots(next);
+                              }}>🪄 AI Auto-Write</span>
+                            </div>
+                            <textarea 
+                              value={activeSlot.content || ''} 
+                              onChange={(e) => {
+                                const next = [...creatorSlots];
+                                next[editingSlotIdx] = { ...activeSlot, content: e.target.value };
+                                setCreatorSlots(next);
+                              }}
+                              placeholder="Type something powerful..." 
+                              style={{ width: '100%', height: 60, padding: 10, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 4 }}>FONT STYLE</label>
+                            <select 
+                              value={activeSlot.font || 'sans-serif'} 
+                              onChange={(e) => {
+                                const next = [...creatorSlots];
+                                next[editingSlotIdx] = { ...activeSlot, font: e.target.value };
+                                setCreatorSlots(next);
+                              }}
+                              style={{ width: '100%', padding: 10, background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                            >
+                              <option value="sans-serif">NEO GLOW (Cyber Sans)</option>
+                              <option value="serif">CHRONO CHIC (Serif Italic)</option>
+                              <option value="monospace">MONOSPACE PROTOCOL</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 6 }}>NEON GLOW HIGHLIGHT</label>
+                            <div style={{ display: 'flex', gap: 6 }}>
+                              {['#3bacd6', '#ef4444', '#f59e0b', '#10b981', '#a78bfa', '#ffffff'].map(col => (
+                                <div 
+                                  key={col}
+                                  onClick={() => {
+                                    const next = [...creatorSlots];
+                                    next[editingSlotIdx] = { ...activeSlot, glowColor: col };
+                                    setCreatorSlots(next);
+                                  }}
+                                  style={{ 
+                                    width: 22, 
+                                    height: 22, 
+                                    borderRadius: 6, 
+                                    background: col, 
+                                    border: activeSlot.glowColor === col ? '2px solid #00f2fe' : '1px solid rgba(255,255,255,0.2)', 
+                                    cursor: 'pointer' 
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div>
+                          <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 8 }}>IMAGE SOURCE</label>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => {
+                              const f = e.target.files[0];
+                              if (!f) return;
+                              const reader = new FileReader();
+                              reader.onload = (ev) => {
+                                const next = [...creatorSlots];
+                                next[editingSlotIdx] = { ...activeSlot, image: ev.target.result };
+                                setCreatorSlots(next);
+                              };
+                              reader.readAsDataURL(f);
+                            }}
+                            style={{ fontSize: 11, color: '#94a3b8' }}
+                          />
+                          {activeSlot.image && (
+                            <img src={activeSlot.image} alt="Preview" style={{ marginTop: 10, width: '100%', height: 100, objectFit: 'cover', borderRadius: 8, border: '1px dashed rgba(255,255,255,0.1)' }} />
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <button 
+                      onClick={() => setEditingSlotIdx(null)} 
+                      style={{ padding: 12, background: 'rgba(0, 242, 254, 0.2)', border: '1px solid #00f2fe', color: '#00f2fe', fontWeight: 900, borderRadius: 8, cursor: 'pointer', fontSize: 11 }}
+                    >
+                      CONFIRM & DISMISS
+                    </button>
+                  </Card>
                 </div>
-              ))}
-            </div>
-
-            <div style={{ position: 'absolute', bottom: 40, right: 40, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button onClick={() => setVision({...vision, zoom: Math.min(vision.zoom + 0.2, 3)})} style={circleBtn}>+</button>
-              <button onClick={() => setVision({...vision, zoom: Math.max(vision.zoom - 0.2, 0.5)})} style={circleBtn}>-</button>
-              <button onClick={() => setVision({...vision, zoom: 1})} style={circleBtn}>↺</button>
-            </div>
+              );
+            })()}
           </div>
+        ) : (
+          /* NORMAL VISION BOARD */
+          !vision.image ? (
+            /* Gateway choice screen */
+            <div style={{ padding: 60, textAlign: 'center', border: '2px dashed var(--border)', borderRadius: 30, margin: '20px auto', maxWidth: 800, backdropFilter: 'blur(10px)', background: 'rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+              <div style={{ fontSize: 60 }}>🖼️</div>
+              <h2 style={{ fontWeight: 900, margin: 0 }}>MANIFEST YOUR FUTURE</h2>
+              <p style={{ color: 'var(--text-dim)', margin: '0 0 10px 0', maxWidth: 500, lineHeight: 1.6 }}>Choose whether to upload an existing vision board or build a custom layout directly inside the studio.</p>
+              
+              <div style={{ display: 'flex', gap: 15 }}>
+                <input type="file" id="vb-upload" style={{ display: 'none' }} onChange={handleVBRoute} accept="image/*" />
+                <Btn onClick={() => document.getElementById('vb-upload').click()} style={{ padding: '15px 30px' }}>📤 Upload Board Image</Btn>
+                <Btn variant="secondary" onClick={() => setCreatorActive(true)} style={{ padding: '15px 30px', border: '1px solid #00f2fe', color: '#00f2fe' }}>🎨 Launch Creator Studio</Btn>
+              </div>
+            </div>
+          ) : (
+            <div style={{ animation: 'fadeIn 0.5s ease', position: 'relative', background: vision.isWarriorMode ? 'radial-gradient(circle, rgba(34,0,0,0.4) 0%, rgba(5,5,8,0.4) 100%)' : 'rgba(255,255,255,0.02)', borderRadius: 24, padding: 20, backdropFilter: 'blur(10px)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <div style={{ display: 'flex', gap: 10, background: 'rgba(0,0,0,0.3)', padding: 5, borderRadius: 12, border: '1px solid var(--border)' }}>
+                  <button onClick={() => setVision({...vision, isWarriorMode: false})} style={{ padding: '8px 15px', borderRadius: 8, border: 'none', background: !vision.isWarriorMode ? 'var(--accent)' : 'transparent', color: !vision.isWarriorMode ? '#fff' : 'var(--text-dim)', fontWeight: 800, cursor: 'pointer' }}>🌈 NORMAL</button>
+                  <button onClick={() => setVision({...vision, isWarriorMode: true})} style={{ padding: '8px 15px', borderRadius: 8, border: 'none', background: vision.isWarriorMode ? '#ef4444' : 'transparent', color: vision.isWarriorMode ? '#fff' : 'var(--text-dim)', fontWeight: 800, cursor: 'pointer' }}>⚔️ WARRIOR</button>
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <Btn small variant="secondary" onClick={() => { const a = document.createElement('a'); a.href = vision.image; a.download = 'VisionBoard.jpg'; a.click(); }}>📥 Download</Btn>
+                  <button onClick={() => setVision({...vision, image: null})} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>Delete</button>
+                </div>
+              </div>
+              
+              <div style={{ textAlign: 'center', fontSize: 11, color: '#38bdf8', fontWeight: 900, marginBottom: 12, letterSpacing: 1.5 }}>
+                🎯 TIP: CLICK ANYWHERE ON THE IMAGE TO PLACE A FUTURE TARGET PIN
+              </div>
+
+              <div 
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setTempCoords({ x, y });
+                  setShowPinModal(true);
+                }}
+                style={{ 
+                  flex: 1, 
+                  overflow: 'hidden', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  position: 'relative', 
+                  borderRadius: 16, 
+                  border: vision.isWarriorMode ? '3px solid #ef4444' : '1px solid var(--border)', 
+                  boxShadow: vision.isWarriorMode ? '0 0 40px rgba(239, 68, 68, 0.2)' : 'var(--shadow)',
+                  cursor: 'crosshair'
+                }}
+              >
+                {vision.isWarriorMode && (
+                  <>
+                    <div style={{ position: 'absolute', top: 30, width: '100%', textAlign: 'center', color: '#ef4444', fontWeight: 900, letterSpacing: 15, fontSize: 18, zIndex: 5, textShadow: '0 0 10px #000' }}>NO EXCUSES</div>
+                    <div style={{ position: 'absolute', bottom: 30, width: '100%', textAlign: 'center', color: '#ef4444', fontWeight: 900, letterSpacing: 15, fontSize: 18, zIndex: 5, textShadow: '0 0 10px #000' }}>STAY HARD</div>
+                  </>
+                )}
+                
+                <img src={vision.image} alt="Vision Board" style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', transform: `scale(${vision.zoom})`, transition: 'transform 0.3s ease', filter: vision.isWarriorMode ? 'contrast(1.2) saturate(1.1)' : 'none' }} />
+
+                {/* Render vision target pins */}
+                {visionPins.map((pin, index) => (
+                  <div 
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm(`Delete pin "${pin.name}"?`)) {
+                        setVisionPins(prev => prev.filter((_, idx) => idx !== index));
+                      }
+                    }}
+                    style={{
+                      position: 'absolute',
+                      left: `${pin.x}%`,
+                      top: `${pin.y}%`,
+                      transform: 'translate(-50%, -50%)',
+                      zIndex: 200,
+                      cursor: 'pointer'
+                    }}
+                    title="Click to delete this target pin"
+                  >
+                    {/* Glowing Reticle */}
+                    <div style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: '50%',
+                      border: '2px solid #00f2fe',
+                      background: 'rgba(0, 242, 254, 0.25)',
+                      boxShadow: '0 0 12px #00f2fe',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      animation: 'pulse 1.5s infinite ease-in-out'
+                    }}>
+                      <span style={{ fontSize: 10, fontWeight: 900, color: '#fff' }}>🎯</span>
+                    </div>
+
+                    {/* Glassmorphic hover card */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 28,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: 'rgba(10,10,15,0.9)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      padding: 12,
+                      borderRadius: 8,
+                      width: 180,
+                      pointerEvents: 'none',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: '0 10px 20px rgba(0,0,0,0.5)',
+                      display: 'none',
+                      flexDirection: 'column',
+                      gap: 4
+                    }} className="pin-hover-card">
+                      <div style={{ fontSize: 12, fontWeight: 900, color: '#00f2fe' }}>{pin.name}</div>
+                      <div style={{ fontSize: 10, color: '#94a3b8' }}>{pin.notes}</div>
+                      <div style={{ fontSize: 9, color: '#a78bfa', fontWeight: 800 }}>📅 BY {pin.deadline}</div>
+                      <div style={{ fontSize: 9, color: '#22c55e', fontWeight: 800 }}>⚡ DO: {pin.action}</div>
+                    </div>
+                    <style>{`
+                      div:hover > .pin-hover-card {
+                        display: flex !important;
+                      }
+                    `}</style>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ position: 'absolute', bottom: 40, right: 40, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <button onClick={() => setVision({...vision, zoom: Math.min(vision.zoom + 0.2, 3)})} style={circleBtn}>+</button>
+                <button onClick={() => setVision({...vision, zoom: Math.max(vision.zoom - 0.2, 0.5)})} style={circleBtn}>-</button>
+                <button onClick={() => setVision({...vision, zoom: 1})} style={circleBtn}>↺</button>
+              </div>
+            </div>
+          )
         )
       )}
 
