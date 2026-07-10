@@ -6233,6 +6233,67 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 ];
 
   const [tasks, setTasks] = useLS(`apx_tasks_${user?.id}`, []);
+  // ─── NEW WARRIOR STATE DECLARATIONS (10 PRODUCTIVITY FEATURES) ───
+  const [ikigai, setIkigai] = useLS(`apx_warrior_ikigai_${user?.id}`, { love: "", goodAt: "", paidFor: "", worldNeeds: "" });
+  const [stoicPlan, setStoicPlan] = useLS(`apx_stoic_plan_${user?.id}`, { goal: "", obstacle: "", response: "", date: "" });
+  const [commandments, setCommandments] = useLS(`apx_commandments_${user?.id}`, [
+    { id: 1, label: "Wake up by 6:00 AM", completed: false },
+    { id: 2, label: "No social media first hour", completed: false },
+    { id: 3, label: "15 minutes visualization", completed: false },
+    { id: 4, label: "Drink 3L of water", completed: false },
+    { id: 5, label: "Review daily main targets", completed: false },
+    { id: 6, label: "Read 10 pages of a book", completed: false },
+    { id: 7, label: "30 minutes physical training", completed: false },
+    { id: 8, label: "Complete primary Quest", completed: false },
+    { id: 9, label: "Clean work environment", completed: false },
+    { id: 10, label: "Log Nightly Combat Debrief", completed: false }
+  ]);
+  const [debrief, setDebrief] = useLS(`apx_debrief_${user?.id}`, { conquest: "", defeat: "", tomorrow: "", date: "" });
+  const [visionPins, setVisionPins] = useLS(`apx_vision_pins_${user?.id}`, []);
+  const [lastReflectedStoryDate, setLastReflectedStoryDate] = useLS(`apx_last_reflected_story_${user?.id}`, "");
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [tempCoords, setTempCoords] = useState(null);
+  const [newPin, setNewPin] = useState({ name: "", notes: "", deadline: "", action: "" });
+  const [pomoShieldBroke, setPomoShieldBroke] = useState(false);
+
+  const STORIES = [
+    {
+      title: "The Samurai's Focus",
+      story: "A young samurai asked his Zen master how to remain focused in battle. The master filled a cup to the brim with oil and told him to walk through a crowded marketplace without spilling a single drop. Behind the samurai walked two guards with drawn swords. If he spilled a drop, his head would be cut off. The samurai successfully completed the walk. The master asked: 'Did you see the musicians? The beggars? The shops?' The samurai replied: 'No, my mind was only on the oil.' The master smiled: 'That is focus. When your purpose is a matter of life and death, distractions disappear.'",
+      moral: "Ultimate focus is achieved when you treat your daily goals as non-negotiable priorities."
+    },
+    {
+      title: "The Carpenter's House",
+      story: "An elderly carpenter was ready to retire. He told his employer of his plans to leave the house-building business. The contractor was sorry to see his good worker go and asked if he could build just one more house as a personal favor. The carpenter agreed, but his heart was not in his work. He resorted to shoddy workmanship and used inferior materials. When the carpenter finished his work, the employer handed him the front-door key. 'This is your house,' he said, 'my gift to you!' The carpenter was shocked. Had he known he was building his own house, he would have done it so differently.",
+      moral: "You build your own life, one day at a time. Build with excellence, not shortcuts."
+    },
+    {
+      title: "The Two Wolves",
+      story: "An old Cherokee chief was teaching his grandson about life. 'A fight is going on inside me,' he said to the boy. 'It is a terrible fight between two wolves. One is evil - he is anger, envy, sorrow, regret, greed, arrogance, self-pity, guilt, resentment, inferiority, lies, false pride, superiority, and ego. The other is good - he is joy, peace, love, hope, serenity, humility, kindness, benevolence, empathy, generosity, truth, compassion, and faith. The same fight is going on inside you – and inside every other person, too.' The grandson thought about it for a minute and then asked his grandfather, 'Which wolf will win?' The old Cherokee simply replied, 'The one you feed.'",
+      moral: "Your mind becomes what you choose to feed it daily. Feed your discipline, starve your excuses."
+    },
+    {
+      title: "The Power of the Water Drop",
+      story: "A traveler saw water dripping slowly onto a hard rock in a cave. Over hundreds of years, the soft water had carved a deep hollow inside the solid stone. The traveler realized that strength is not about sudden bursts of force, but the relentless consistency of small efforts. The water drop does not break the stone by force, but by falling often.",
+      moral: "Consistency beats talent. Relentless daily repetition conquers the hardest obstacles."
+    },
+    {
+      title: "The Cracked Pot",
+      story: "A water bearer had two large pots. One pot was perfect, but the other had a crack and leaked half its water on the long walk home. The cracked pot felt ashamed of its imperfection. The bearer said to it: 'Look at the side of the path. Notice the beautiful flowers? They only grow on your side because I knew your leak and planted seeds there. You watered them every day.'",
+      moral: "Every flaw or struggle in your path is an opportunity to cultivate unique growth and beauty."
+    },
+    {
+      title: "The Zen Archer",
+      story: "An archer became famous for his perfect bullseyes. He challenged a Zen master to a test of skill. The master took him to a deep chasm bridged by a single slippery log. The master stepped onto the log, shot a perfect arrow into a far tree, and said: 'Now, you.' The archer was terrified of the drop and couldn't even draw his bow. The master said: 'You have great skill with the bow, but you have no skill with the mind that lets go of the fear of falling.'",
+      moral: "External skills are useless without the internal poise to face adversity and uncertainty."
+    },
+    {
+      title: "The Farmer's Horse",
+      story: "A farmer's horse ran away. Neighbors said, 'Such bad luck!' The farmer replied, 'Maybe.' The next day, the horse returned with three wild horses. Neighbors said, 'Wonderful luck!' The farmer replied, 'Maybe.' Then the farmer's son broke his leg taming one. Neighbors condoled. The next day, the army came to draft young men, but skipped the son. Neighbors cheered. The farmer said: 'Maybe.'",
+      moral: "Do not judge the temporary setbacks of your journey. Maintain neutral focus and keep executing."
+    }
+  ];
+
   const videoRef = React.useRef(null);
   const audioObjRef = React.useRef(null);
   
@@ -6351,29 +6412,55 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
   return (
     <div style={{ padding: "20px 30px", background: "transparent", minHeight: "100vh", backdropFilter: "blur(10px)" }}>
-      {/* 🧭 NAVIGATION */}
-      <div style={{ display: 'flex', gap: 25, marginBottom: 25, borderBottom: '1px solid var(--border)' }}>
-        <button onClick={() => setSubTab("battle")} style={{ padding: '15px 5px', background: 'none', border: 'none', borderBottom: subTab === "battle" ? '3px solid #3bacd6' : '3px solid transparent', color: subTab === "battle" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 800, cursor: 'pointer' }}>BATTLE STATION</button>
-        <button onClick={() => setSubTab("vision")} style={{ padding: '15px 5px', background: 'none', border: 'none', borderBottom: subTab === "vision" ? '3px solid #a78bfa' : '3px solid transparent', color: subTab === "vision" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 800, cursor: 'pointer' }}>VISION BOARD</button>
+      {/* 🧭 NAVIGATION OVERHAUL */}
+      <div style={{ display: 'flex', gap: 20, marginBottom: 25, borderBottom: '1px solid var(--border)', overflowX: 'auto', paddingBottom: 5 }}>
+        <button onClick={() => setSubTab("battle")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "battle" ? '3px solid #3bacd6' : '3px solid transparent', color: subTab === "battle" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>⚔️ BATTLE STATION</button>
+        <button onClick={() => setSubTab("quests")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "quests" ? '3px solid #38bdf8' : '3px solid transparent', color: subTab === "quests" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🛡️ QUEST DIRECTORY</button>
+        <button onClick={() => setSubTab("purpose")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "purpose" ? '3px solid #f59e0b' : '3px solid transparent', color: subTab === "purpose" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🌸 PURPOSE & STORY</button>
+        <button onClick={() => setSubTab("vision")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "vision" ? '3px solid #a78bfa' : '3px solid transparent', color: subTab === "vision" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🖼️ VISION BOARD</button>
       </div>
 
-      {subTab === "battle" ? (
+      {subTab === "battle" && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
           {/* LEVEL BAR & WARRIOR RANK */}
           <div style={{ gridColumn: 'span 3', background: 'radial-gradient(circle at top right, rgba(0, 184, 217, 0.08), transparent 45%), rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px 30px', backdropFilter: 'blur(20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <span style={{ fontSize: 10, fontWeight: 900, color: rank.color, letterSpacing: 2 }}>{rank.title}</span>
-                <h2 style={{ margin: '4px 0 0 0', fontSize: 24, fontWeight: 900, color: '#fff' }}>LEVEL {level}</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
+                {/* 🛡️ DYNAMIC POMODORO FOCUS SHIELD */}
+                <div style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: pomoShieldBroke ? 'rgba(239, 68, 68, 0.15)' : pomo.active ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255,255,255,0.02)',
+                  border: pomoShieldBroke ? '2px dashed #ef4444' : pomo.active ? '2px solid #22c55e' : '1px solid rgba(255,255,255,0.1)',
+                  boxShadow: pomoShieldBroke ? 'none' : pomo.active ? '0 0 15px rgba(34, 197, 94, 0.4)' : 'none',
+                  animation: pomo.active && !pomoShieldBroke ? 'pulse 2s infinite' : 'none'
+                }}>
+                  <span style={{ fontSize: 20 }}>{pomoShieldBroke ? "⚠️" : pomo.active ? "🛡️" : "⚔️"}</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 10, fontWeight: 900, color: rank.color, letterSpacing: 2 }}>{rank.title}</span>
+                  <h2 style={{ margin: '4px 0 0 0', fontSize: 24, fontWeight: 900, color: '#fff' }}>LEVEL {level}</h2>
+                </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: '#475569', letterSpacing: 1 }}>EXPERIENCE POINTS</span>
                 <div style={{ fontSize: 18, fontWeight: 900, color: EH_PRIMARY }}>{exp} <span style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>/ {level * 1000}</span></div>
               </div>
             </div>
+            
             <div style={{ width: '100%', height: 8, background: '#000', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)' }}>
               <div style={{ height: '100%', width: `${(exp % 1000) / 10}%`, background: `linear-gradient(90deg, ${EH_PRIMARY}, #8b5cf6)`, boxShadow: `0 0 12px ${EH_PRIMARY}`, borderRadius: 4, transition: 'width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)' }} />
             </div>
+
+            {pomoShieldBroke && (
+              <div style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', animation: 'pulse 1.5s infinite', display: 'flex', alignItems: 'center', gap: 6 }}>
+                ❌ FOCUS SHIELD SHATTERED (PENALTY APPLIED - ENGAGE TIMER TO RESTORE SHIELD)
+              </div>
+            )}
             
             {/* Quick stats indicators */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 8, borderTop: '1px dashed rgba(255,255,255,0.05)', paddingTop: 16 }}>
@@ -6392,13 +6479,25 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             </div>
           </div>
 
-          {/* Pomodoro Timer */}
-          <Card style={{ background: 'rgba(15, 23, 42, 0.35)', border: pomo.active ? '1px solid #6c63ff' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transition: 'border 0.3s' }}>
+          {/* Pomodoro Timer with interactive penalties */}
+          <Card style={{ background: 'rgba(15, 23, 42, 0.35)', border: pomo.active ? '1px solid #6c63ff' : pomoShieldBroke ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transition: 'all 0.3s' }}>
             <div style={{ fontSize: 10, fontWeight: 900, color: '#6c63ff', marginBottom: 15, letterSpacing: 1.5 }}>T-MINUS (POMODORO)</div>
             <div style={{ fontSize: 48, fontWeight: 900, fontFamily: 'monospace', color: '#fff', letterSpacing: 2, textShadow: pomo.active ? '0 0 15px rgba(108, 99, 255, 0.4)' : 'none' }}>{fmt(pomo.time)}</div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
-              <button onClick={() => setPomo({ ...pomo, active: !pomo.active, lastTick: Date.now() })} style={{ flex: 1, padding: '10px 16px', background: pomo.active ? 'rgba(239, 68, 68, 0.2)' : 'rgba(108, 99, 255, 0.2)', border: pomo.active ? '1px solid #ef4444' : '1px solid #6c63ff', borderRadius: 10, color: pomo.active ? '#ef4444' : '#c084fc', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: 'all 0.2s' }}>{pomo.active ? "PAUSE" : "ENGAGE"}</button>
-              <button onClick={() => setPomo({ ...pomo, time: 1500, active: false, lastTick: Date.now() })} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>RESET</button>
+              <button onClick={() => {
+                if (pomo.active) {
+                  setPomoShieldBroke(true);
+                  setExp(e => Math.max(0, e - 50));
+                } else {
+                  setPomoShieldBroke(false);
+                }
+                setPomo({ ...pomo, active: !pomo.active, lastTick: Date.now() });
+              }} style={{ flex: 1, padding: '10px 16px', background: pomo.active ? 'rgba(239, 68, 68, 0.2)' : 'rgba(108, 99, 255, 0.2)', border: pomo.active ? '1px solid #ef4444' : '1px solid #6c63ff', borderRadius: 10, color: pomo.active ? '#ef4444' : '#c084fc', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: 'all 0.2s' }}>{pomo.active ? "PAUSE SHIELD" : "ENGAGE TIMER"}</button>
+              <button onClick={() => {
+                setPomoShieldBroke(true);
+                setExp(e => Math.max(0, e - 50));
+                setPomo({ ...pomo, time: 1500, active: false, lastTick: Date.now() });
+              }} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>RESET</button>
             </div>
           </Card>
 
@@ -6422,10 +6521,10 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             </div>
           </Card>
 
-          {/* Focus Audio Center */}
+          {/* Focus Audio Center with Binaural Beats */}
           <Card style={{ background: 'rgba(10,10,15,0.6)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>🔊 CYBER-AMBIENT STATION</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>🔊 CYBER-AMBIENT SOUND DECK</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
               {FOCUS_TRACKS.map(track => {
                 const isActive = playingAudio === track.id;
                 return (
@@ -6436,16 +6535,16 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'space-between', 
-                      padding: '12px 16px', 
+                      padding: '10px 14px', 
                       background: isActive ? 'rgba(167, 139, 250, 0.15)' : 'rgba(255,255,255,0.02)', 
                       border: isActive ? '1px solid #a78bfa' : '1px solid rgba(255,255,255,0.05)', 
-                      borderRadius: 12, 
+                      borderRadius: 10, 
                       cursor: 'pointer',
                       transition: 'all 0.2s' 
                     }}
                   >
-                    <span style={{ fontSize: 13, fontWeight: 700, color: isActive ? '#fff' : '#94a3b8' }}>{track.label}</span>
-                    <span style={{ fontSize: 14 }}>{isActive ? "⏸️" : "▶️"}</span>
+                    <span style={{ fontSize: 12, fontWeight: 800, color: isActive ? '#fff' : '#94a3b8' }}>{track.label}</span>
+                    <span style={{ fontSize: 12 }}>{isActive ? "⏸️" : "▶️"}</span>
                   </div>
                 );
               })}
@@ -6470,8 +6569,8 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             
             <div style={{ 
               position: 'relative', 
-              width: 140, 
-              height: 140, 
+              width: 130, 
+              height: 130, 
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -6612,8 +6711,280 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             <textarea placeholder="Immediate thoughts here..." style={{ width: '100%', height: 80, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)', padding: 15, outline: 'none' }} />
           </Card>
         </div>
-      ) : (
-        /* ─── VISION BOARD CONTENT ─── */
+      )}
+
+      {/* 🛡️ QUEST DIRECTORY SUBTAB (Commandments, Stoic Plan, Boss Health, Debrief) */}
+      {subTab === "quests" && (() => {
+        const completedCount = tasks.filter(t => t.completed).length;
+        const totalCount = tasks.length;
+        const bossHP = totalCount === 0 ? 100 : Math.max(0, Math.round(((totalCount - completedCount) / totalCount) * 100));
+
+        // Count completed commandments
+        const commCompletedCount = commandments.filter(c => c.completed).length;
+
+        return (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {/* Challenger Boss Health card */}
+            <div style={{ gridColumn: 'span 3', background: 'radial-gradient(circle at top right, rgba(239, 68, 68, 0.08), transparent 45%), rgba(10,10,15,0.85)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 16, padding: '24px 30px', backdropFilter: 'blur(20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <span style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', letterSpacing: 2 }}>CHALLENGER BOSS</span>
+                  <h2 style={{ margin: '4px 0 0 0', fontSize: 20, fontWeight: 900, color: '#fff' }}>🐉 THE PROCRASTINATOR DRAGON</h2>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: 10, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>BOSS INTEGRITY</span>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: '#ef4444' }}>{bossHP}% <span style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>HP</span></div>
+                </div>
+              </div>
+              
+              <div style={{ width: '100%', height: 12, background: '#000', borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)' }}>
+                <div style={{ height: '100%', width: `${bossHP}%`, background: 'linear-gradient(90deg, #ef4444, #f59e0b)', boxShadow: '0 0 15px rgba(239, 68, 68, 0.5)', borderRadius: 6, transition: 'width 0.6s ease' }} />
+              </div>
+              
+              <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.5 }}>
+                ⚔️ **Tactical Directive:** Complete your daily Timetable tasks to inflict damage on the dragon. When the boss HP reaches **0%**, you will conquer the weekly battle and claim a massive **+300 EXP** bonus!
+                {bossHP === 0 && (
+                  <button onClick={() => {
+                    setExp(e => e + 300);
+                    // Reset completed task statuses to prevent double claims
+                    setTasks(prev => prev.map(t => ({ ...t, completed: false })));
+                    new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+                    alert("⚔️ VICTORY ACHIEVED! You received +300 EXP.");
+                  }} style={{ display: 'block', marginTop: 10, padding: '8px 16px', background: '#22c55e', color: '#000', fontWeight: 900, border: 'none', borderRadius: 6, cursor: 'pointer' }}>CLAIM VICTORY REWARD</button>
+                )}
+              </p>
+            </div>
+
+            {/* Daily Commandments */}
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}>⚔️ 10 COMMANDMENTS</div>
+                <span style={{ fontSize: 11, fontWeight: 800, color: commCompletedCount === 10 ? '#22c55e' : '#64748b' }}>{commCompletedCount}/10</span>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto', maxHeight: 280, paddingRight: 4 }}>
+                {commandments.map(c => (
+                  <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <input 
+                      type="checkbox" 
+                      checked={c.completed} 
+                      onChange={(e) => {
+                        const updated = commandments.map(item => item.id === c.id ? { ...item, completed: e.target.checked } : item);
+                        setCommandments(updated);
+                        if (updated.filter(x => x.completed).length === 10) {
+                          setExp(exp => exp + 100);
+                          new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+                        }
+                      }}
+                      style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
+                    />
+                    <span style={{ fontSize: 12, color: c.completed ? 'var(--text-dim)' : '#f1f5f9', textDecoration: c.completed ? 'line-through' : 'none', fontWeight: 700 }}>
+                      {c.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {commCompletedCount === 10 && (
+                <div style={{ padding: 10, background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22c55e', borderRadius: 8, fontSize: 10, color: '#4ade80', fontWeight: 900, textAlign: 'center' }}>
+                  🛡️ COMMANDMENTS COMMENDED (+100 EXP CLAIMED)
+                </div>
+              )}
+            </Card>
+
+            {/* Stoic Obstacles Planner */}
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🛡️ PREMEDITATIO MALORUM</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>TARGET GOAL</label>
+                  <input 
+                    type="text" 
+                    value={stoicPlan.goal} 
+                    onChange={(e) => setStoicPlan({ ...stoicPlan, goal: e.target.value, date: new Date().toLocaleDateString() })}
+                    placeholder="What must be conquered today?" 
+                    style={{ width: '100%', padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>WORST OBSTACLE / DISTRACTION</label>
+                  <input 
+                    type="text" 
+                    value={stoicPlan.obstacle} 
+                    onChange={(e) => setStoicPlan({ ...stoicPlan, obstacle: e.target.value })}
+                    placeholder="What might pull you away?" 
+                    style={{ width: '100%', padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>DISCIPLINED COUNTER-RESPONSE</label>
+                  <textarea 
+                    value={stoicPlan.response} 
+                    onChange={(e) => setStoicPlan({ ...stoicPlan, response: e.target.value })}
+                    placeholder="How will you bypass this?" 
+                    style={{ width: '100%', height: 60, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* Nightly Combat Debrief */}
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>📓 NIGHTLY COMBAT DEBRIEF</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>WHAT DID I CONQUER? (WINS)</label>
+                  <input 
+                    type="text" 
+                    value={debrief.conquest} 
+                    onChange={(e) => setDebrief({ ...debrief, conquest: e.target.value, date: new Date().toLocaleDateString() })}
+                    placeholder="Identify today's wins..." 
+                    style={{ width: '100%', padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>WHERE DID I FALL SHORT? (LESSONS)</label>
+                  <input 
+                    type="text" 
+                    value={debrief.defeat} 
+                    onChange={(e) => setDebrief({ ...debrief, defeat: e.target.value })}
+                    placeholder="Identify weaknesses..." 
+                    style={{ width: '100%', padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>TOMORROW'S PRIMARY DIRECTIVE</label>
+                  <input 
+                    type="text" 
+                    value={debrief.tomorrow} 
+                    onChange={(e) => setDebrief({ ...debrief, tomorrow: e.target.value })}
+                    placeholder="The single main target..." 
+                    style={{ width: '100%', padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                  />
+                </div>
+                
+                <button onClick={() => {
+                  if (!debrief.conquest || !debrief.tomorrow) return alert("Please fill wins & tomorrow's directive.");
+                  setExp(e => e + 50);
+                  new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+                  alert("📓 COMBAT DEBRIEF SIGNED & LOGGED (+50 EXP)");
+                }} style={{ marginTop: 5, width: '100%', padding: 12, background: 'rgba(167, 139, 250, 0.2)', border: '1px solid #a78bfa', borderRadius: 8, color: '#c084fc', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: '0.2s' }}>
+                  SIGN & CLOSE COMBAT LOG
+                </button>
+              </div>
+            </Card>
+          </div>
+        );
+      })()}
+
+      {/* 🌸 PURPOSE & STORY TAB (Ikigai Finder & Daily moral stories) */}
+      {subTab === "purpose" && (() => {
+        const activeStory = STORIES[dayOfYear % STORIES.length];
+        const isAlreadyClaimed = lastReflectedStoryDate === new Date().toDateString();
+
+        return (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {/* Interactive Ikigai Finder */}
+            <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🌸 INTERACTIVE IKIGAI FINDER</div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#f59e0b', display: 'block', marginBottom: 4 }}>❤️ WHAT YOU LOVE</label>
+                  <textarea 
+                    value={ikigai.love} 
+                    onChange={(e) => setIkigai({ ...ikigai, love: e.target.value })}
+                    placeholder="Your passions, hobbies, what makes you feel alive..." 
+                    style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#10b981', display: 'block', marginBottom: 4 }}>💪 WHAT YOU ARE GOOD AT</label>
+                  <textarea 
+                    value={ikigai.goodAt} 
+                    onChange={(e) => setIkigai({ ...ikigai, goodAt: e.target.value })}
+                    placeholder="Your talents, unique skills, execution strengths..." 
+                    style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#38bdf8', display: 'block', marginBottom: 4 }}>🪙 WHAT YOU CAN GET PAID FOR</label>
+                  <textarea 
+                    value={ikigai.paidFor} 
+                    onChange={(e) => setIkigai({ ...ikigai, paidFor: e.target.value })}
+                    placeholder="Skills you possess that hold monetary/market value..." 
+                    style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#a78bfa', display: 'block', marginBottom: 4 }}>🌍 WHAT THE WORLD NEEDS</label>
+                  <textarea 
+                    value={ikigai.worldNeeds} 
+                    onChange={(e) => setIkigai({ ...ikigai, worldNeeds: e.target.value })}
+                    placeholder="Problems you want to solve, contributions you want to make..." 
+                    style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                  />
+                </div>
+              </div>
+
+              {/* Intersected Statement Generator */}
+              <div style={{ marginTop: 12, padding: 16, background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, transparent 100%)', border: '1px dashed rgba(245, 158, 11, 0.2)', borderRadius: 12 }}>
+                <span style={{ fontSize: 9, fontWeight: 900, color: '#f59e0b', display: 'block', letterSpacing: 1 }}>INTERSECTED IKIGAI DIRECTIVE</span>
+                <p style={{ margin: '6px 0 0 0', fontSize: 13, color: '#f8fafc', fontWeight: 700, fontStyle: 'italic', lineHeight: 1.5 }}>
+                  {ikigai.love || ikigai.goodAt || ikigai.paidFor || ikigai.worldNeeds ? (
+                    `I will conquer my objectives by leveraging my skill in ${ikigai.goodAt || "..."} to support my love for ${ikigai.love || "..."} while serving ${ikigai.worldNeeds || "..."} and building a career in ${ikigai.paidFor || "..."}.`
+                  ) : "Declare your Ikigai components above to unlock your purpose directive."}
+                </p>
+              </div>
+            </Card>
+
+            {/* Daily Character Story Card */}
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#10b981', letterSpacing: 1.5 }}>📖 DAILY FORGE OF CHARACTER</div>
+              
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <h3 style={{ margin: 0, fontSize: 16, color: '#fff', fontWeight: 900 }}>{activeStory.title}</h3>
+                <p style={{ margin: 0, fontSize: 11, color: '#94a3b8', lineHeight: 1.6, fontStyle: 'italic', overflowY: 'auto', maxHeight: 180 }}>
+                  "{activeStory.story}"
+                </p>
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}>
+                  <span style={{ fontSize: 9, fontWeight: 900, color: '#10b981', display: 'block', letterSpacing: 1 }}>MORAL DIRECTIVE</span>
+                  <p style={{ margin: '4px 0 0 0', fontSize: 11, color: '#e2e8f0', fontWeight: 800 }}>{activeStory.moral}</p>
+                </div>
+              </div>
+
+              <button 
+                disabled={isAlreadyClaimed}
+                onClick={() => {
+                  setExp(e => e + 50);
+                  setLastReflectedStoryDate(new Date().toDateString());
+                  new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+                  alert("🌟 STORY REFLECTED! +50 EXP rewarded.");
+                }}
+                style={{ 
+                  width: '100%', 
+                  padding: 12, 
+                  background: isAlreadyClaimed ? 'rgba(255,255,255,0.02)' : 'rgba(16, 185, 129, 0.2)', 
+                  border: isAlreadyClaimed ? '1px solid rgba(255,255,255,0.05)' : '1px solid #10b981', 
+                  color: isAlreadyClaimed ? '#475569' : '#34d399', 
+                  fontWeight: 900, 
+                  fontSize: 11, 
+                  borderRadius: 8, 
+                  cursor: isAlreadyClaimed ? 'default' : 'pointer',
+                  transition: '0.2s'
+                }}
+              >
+                {isAlreadyClaimed ? "DIRECTIVE REFLECTED FOR TODAY" : "REFLECT & CLAIM EXP (+50 EXP)"}
+              </button>
+            </Card>
+          </div>
+        );
+      })()}
+
+      {/* 🖼️ VISION BOARD SUBTAB (With clickable Coordinate Pin Dropping!) */}
+      {subTab === "vision" && (
         !vision.image ? (
           <div style={{ padding: 60, textAlign: 'center', border: '2px dashed var(--border)', borderRadius: 30, margin: '20px auto', maxWidth: 800, backdropFilter: 'blur(10px)', background: 'rgba(255,255,255,0.02)' }}>
             <div style={{ fontSize: 60, marginBottom: 20 }}>🖼️</div>
@@ -6634,15 +7005,109 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 <button onClick={() => setVision({...vision, image: null})} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>Delete</button>
               </div>
             </div>
-            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderRadius: 16, border: vision.isWarriorMode ? '3px solid #ef4444' : '1px solid var(--border)', boxShadow: vision.isWarriorMode ? '0 0 40px rgba(239, 68, 68, 0.2)' : 'var(--shadow)' }}>
+            
+            <div style={{ textAlign: 'center', fontSize: 11, color: '#38bdf8', fontWeight: 900, marginBottom: 12, letterSpacing: 1.5 }}>
+              🎯 TIP: CLICK ANYWHERE ON THE IMAGE TO PLACE A FUTURE TARGET PIN
+            </div>
+
+            <div 
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                setTempCoords({ x, y });
+                setShowPinModal(true);
+              }}
+              style={{ 
+                flex: 1, 
+                overflow: 'hidden', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'relative', 
+                borderRadius: 16, 
+                border: vision.isWarriorMode ? '3px solid #ef4444' : '1px solid var(--border)', 
+                boxShadow: vision.isWarriorMode ? '0 0 40px rgba(239, 68, 68, 0.2)' : 'var(--shadow)',
+                cursor: 'crosshair'
+              }}
+            >
               {vision.isWarriorMode && (
                 <>
                   <div style={{ position: 'absolute', top: 30, width: '100%', textAlign: 'center', color: '#ef4444', fontWeight: 900, letterSpacing: 15, fontSize: 18, zIndex: 5, textShadow: '0 0 10px #000' }}>NO EXCUSES</div>
                   <div style={{ position: 'absolute', bottom: 30, width: '100%', textAlign: 'center', color: '#ef4444', fontWeight: 900, letterSpacing: 15, fontSize: 18, zIndex: 5, textShadow: '0 0 10px #000' }}>STAY HARD</div>
                 </>
               )}
+              
               <img src={vision.image} alt="Vision Board" style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', transform: `scale(${vision.zoom})`, transition: 'transform 0.3s ease', filter: vision.isWarriorMode ? 'contrast(1.2) saturate(1.1)' : 'none' }} />
+
+              {/* Render vision target pins */}
+              {visionPins.map((pin, index) => (
+                <div 
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (confirm(`Delete pin "${pin.name}"?`)) {
+                      setVisionPins(prev => prev.filter((_, idx) => idx !== index));
+                    }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    left: `${pin.x}%`,
+                    top: `${pin.y}%`,
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 200,
+                    cursor: 'pointer'
+                  }}
+                  title="Click to delete this target pin"
+                >
+                  {/* Glowing Reticle */}
+                  <div style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '50%',
+                    border: '2px solid #00f2fe',
+                    background: 'rgba(0, 242, 254, 0.25)',
+                    boxShadow: '0 0 12px #00f2fe',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    animation: 'pulse 1.5s infinite ease-in-out'
+                  }}>
+                    <span style={{ fontSize: 10, fontWeight: 900, color: '#fff' }}>🎯</span>
+                  </div>
+
+                  {/* Glassmorphic hover card */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 28,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(10,10,15,0.9)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    padding: 12,
+                    borderRadius: 8,
+                    width: 180,
+                    pointerEvents: 'none',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 10px 20px rgba(0,0,0,0.5)',
+                    display: 'none',
+                    flexDirection: 'column',
+                    gap: 4
+                  }} className="pin-hover-card">
+                    <div style={{ fontSize: 12, fontWeight: 900, color: '#00f2fe' }}>{pin.name}</div>
+                    <div style={{ fontSize: 10, color: '#94a3b8' }}>{pin.notes}</div>
+                    <div style={{ fontSize: 9, color: '#a78bfa', fontWeight: 800 }}>📅 BY {pin.deadline}</div>
+                    <div style={{ fontSize: 9, color: '#22c55e', fontWeight: 800 }}>⚡ DO: {pin.action}</div>
+                  </div>
+                  <style>{`
+                    div:hover > .pin-hover-card {
+                      display: flex !important;
+                    }
+                  `}</style>
+                </div>
+              ))}
             </div>
+
             <div style={{ position: 'absolute', bottom: 40, right: 40, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button onClick={() => setVision({...vision, zoom: Math.min(vision.zoom + 0.2, 3)})} style={circleBtn}>+</button>
               <button onClick={() => setVision({...vision, zoom: Math.max(vision.zoom - 0.2, 0.5)})} style={circleBtn}>-</button>
@@ -6650,6 +7115,80 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             </div>
           </div>
         )
+      )}
+
+      {/* Target Pin Creation Modal */}
+      {showPinModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(5,5,8,0.7)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000000 }}>
+          <Card style={{ width: 360, background: 'rgba(10,10,15,0.95)', border: '1px solid rgba(255,255,255,0.1)', padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 900, color: '#00f2fe', letterSpacing: 1 }}>📌 DEFINE MANIFEST TARGET</div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div>
+                <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 4 }}>TARGET NAME</label>
+                <input 
+                  type="text" 
+                  value={newPin.name} 
+                  onChange={(e) => setNewPin({ ...newPin, name: e.target.value })}
+                  placeholder="e.g. Dream Job Offer" 
+                  style={{ width: '100%', padding: 10, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 4 }}>TARGET DEADLINE</label>
+                <input 
+                  type="text" 
+                  value={newPin.deadline} 
+                  onChange={(e) => setNewPin({ ...newPin, deadline: e.target.value })}
+                  placeholder="e.g. Dec 2026" 
+                  style={{ width: '100%', padding: 10, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 4 }}>DAILY MANDATORY ACTION</label>
+                <input 
+                  type="text" 
+                  value={newPin.action} 
+                  onChange={(e) => setNewPin({ ...newPin, action: e.target.value })}
+                  placeholder="e.g. Code 2 hours" 
+                  style={{ width: '100%', padding: 10, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 10, color: '#64748b', fontWeight: 800, display: 'block', marginBottom: 4 }}>MANIFESTATION DETAILS</label>
+                <textarea 
+                  value={newPin.notes} 
+                  onChange={(e) => setNewPin({ ...newPin, notes: e.target.value })}
+                  placeholder="Detailed visual description..." 
+                  style={{ width: '100%', height: 60, padding: 10, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+              <button 
+                onClick={() => {
+                  if (!newPin.name) return alert("Pin name required.");
+                  setVisionPins([...visionPins, { ...newPin, x: tempCoords.x, y: tempCoords.y }]);
+                  setNewPin({ name: "", notes: "", deadline: "", action: "" });
+                  setShowPinModal(false);
+                }} 
+                style={{ flex: 1, padding: 12, background: '#00f2fe', color: '#000', fontWeight: 900, border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 11 }}
+              >
+                PLACE PIN
+              </button>
+              <button 
+                onClick={() => {
+                  setNewPin({ name: "", notes: "", deadline: "", action: "" });
+                  setShowPinModal(false);
+                }} 
+                style={{ padding: 12, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontWeight: 900, borderRadius: 8, cursor: 'pointer', fontSize: 11 }}
+              >
+                CANCEL
+              </button>
+            </div>
+          </Card>
+        </div>
       )}
 
       {showLevelUpAlert && (
