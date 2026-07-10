@@ -6232,8 +6232,9 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   "Stay the course."
 ];
 
-  const [tasks] = useLS(`apx_tasks_${user?.id}`, []);
+  const [tasks, setTasks] = useLS(`apx_tasks_${user?.id}`, []);
   const videoRef = React.useRef(null);
+  const audioObjRef = React.useRef(null);
   
   const [vision, setVision] = useLS(`apx_vboard_v3_${user?.id}`, { image: null, isWarriorMode: false, zoom: 1 });
 
@@ -6241,13 +6242,71 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   const [showMotivation, setShowMotivation] = useState(true);
   const [breath, setBreath] = useState("Inhale");
   const [subTab, setSubTab] = useState("battle");
+  const [playingAudio, setPlayingAudio] = useState(null);
+  const [showLevelUpAlert, setShowLevelUpAlert] = useState(false);
+
+  // Looping Cyber-ambient soundtrack loops
+  const FOCUS_TRACKS = [
+    { id: "rain", label: "🌧️ Cyber Rain Focus", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+    { id: "drone", label: "🌌 Deep Space Drone", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+    { id: "drums", label: "🥁 Cinematic Battle Drums", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+  ];
+
+  const playTrack = (track) => {
+    if (playingAudio === track.id) {
+      if (audioObjRef.current) {
+        audioObjRef.current.pause();
+      }
+      setPlayingAudio(null);
+    } else {
+      if (audioObjRef.current) {
+        audioObjRef.current.pause();
+      }
+      audioObjRef.current = new Audio(track.url);
+      audioObjRef.current.loop = true;
+      audioObjRef.current.volume = 0.4;
+      audioObjRef.current.play().catch(e => console.log("Audio play error", e));
+      setPlayingAudio(track.id);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioObjRef.current) {
+        audioObjRef.current.pause();
+      }
+    };
+  }, []);
 
   // ─── ENGINE LOGIC ───
   const level = Math.floor((exp || 0) / 1000) + 1;
   const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
   const quote = WARRIOR_QUOTES[dayOfYear % WARRIOR_QUOTES.length];
 
-  useEffect(() => {}, []);
+  const getRank = (lvl) => {
+    if (lvl <= 2) return { title: "RECRUIT IN TRAINING", color: "#94a3b8" };
+    if (lvl <= 5) return { title: "BATTLE-HARDENED KNIGHT", color: "#38bdf8" };
+    if (lvl <= 9) return { title: "GLADIATOR OF FOCUS", color: "#f59e0b" };
+    if (lvl <= 14) return { title: "CYBER ELITE COMMANDER", color: "#ec4899" };
+    return { title: "SHOGUN OF THE DIGITAL WARPLANE", color: "#10b981" };
+  };
+  const rank = getRank(level);
+
+  const completeQuest = (tId) => {
+    setExp(prev => {
+      const nextExp = prev + 100;
+      const prevLvl = Math.floor(prev / 1000) + 1;
+      const nextLvl = Math.floor(nextExp / 1000) + 1;
+      if (nextLvl > prevLvl) {
+        setShowLevelUpAlert(true);
+        setTimeout(() => setShowLevelUpAlert(false), 4000);
+      }
+      return nextExp;
+    });
+    new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(e=>{});
+    setTasks(prev => prev.filter(t => t.id !== tId));
+    setActiveTask(null);
+  };
 
   useEffect(() => {
     const cycle = setInterval(() => setBreath(prev => prev === "Inhale" ? "Hold" : prev === "Hold" ? "Exhale" : "Inhale"), 4000);
@@ -6277,13 +6336,35 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   };
 
   if (showMotivation) return (
-    <div style={{ padding: 40, textAlign: 'center', minHeight: '94vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#050508', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `url('/samurai.png')`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.4, zIndex: 0 }}></div>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, #050508 90%)', zIndex: 1 }}></div>
-      <div style={{ maxWidth: 800, zIndex: 2, position: 'relative' }}>
-        <div style={{ fontSize: 14, fontWeight: 900, color: '#3bacd6', letterSpacing: 8, marginBottom: 30, textShadow: '0 0 15px #1e6fa8' }}>BATTLE COMMENCE</div>
-        <h1 style={{ fontSize: 42, color: '#fff', fontStyle: 'italic', fontWeight: 200, lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>"{quote}"</h1>
-        <button onClick={() => setShowMotivation(false)} style={{ marginTop: 60, padding: '18px 50px', background: 'rgba(59, 172, 214, 0.1)', border: '1px solid #3bacd6', borderRadius: 4, color: '#3bacd6', fontWeight: 900, cursor: 'pointer', letterSpacing: 3, textTransform: 'uppercase', transition: '0.3s', backdropFilter: 'blur(5px)' }}>Initialize Command Center</button>
+    <div className="cyber-grid" style={{ padding: 40, textAlign: 'center', minHeight: '94vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#050508', position: 'relative', overflow: 'hidden' }}>
+      <style>{`
+        @keyframes gridScroll { from { background-position: 0 0; } to { background-position: 0 40px; } }
+        .cyber-grid {
+          background-image: linear-gradient(rgba(108, 99, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(108, 99, 255, 0.04) 1px, transparent 1px);
+          background-size: 40px 40px;
+          animation: gridScroll 6s linear infinite;
+        }
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 0 20px rgba(59, 172, 214, 0.15), inset 0 0 10px rgba(59, 172, 214, 0.1); }
+          50% { box-shadow: 0 0 40px rgba(59, 172, 214, 0.5), inset 0 0 20px rgba(59, 172, 214, 0.2); }
+        }
+        .gateway-btn {
+          animation: pulseGlow 3s infinite ease-in-out;
+        }
+        .gateway-btn:hover {
+          transform: translateY(-2px) scale(1.02);
+          background: rgba(59, 172, 214, 0.25) !important;
+          border-color: #00f2fe !important;
+          color: #fff !important;
+          box-shadow: 0 0 50px rgba(0, 242, 254, 0.6) !important;
+        }
+      `}</style>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `url('/samurai.png')`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.15, zIndex: 0 }}></div>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, #050508 85%)', zIndex: 1 }}></div>
+      <div style={{ maxWidth: 850, zIndex: 2, position: 'relative', background: 'rgba(5, 5, 8, 0.65)', border: '1px solid rgba(255,255,255,0.03)', padding: '60px 40px', borderRadius: 24, backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+        <div style={{ fontSize: 13, fontWeight: 900, color: '#3bacd6', letterSpacing: 8, marginBottom: 35, textShadow: '0 0 20px rgba(59, 172, 214, 0.5)' }}>BATTLE COMMENCE</div>
+        <h1 style={{ fontSize: 34, color: '#f1f5f9', fontStyle: 'italic', fontWeight: 300, lineHeight: 1.6, textShadow: '0 2px 10px rgba(0,0,0,0.9)', marginBottom: 50, fontFamily: 'serif' }}>"{quote}"</h1>
+        <button className="gateway-btn" onClick={() => setShowMotivation(false)} style={{ padding: '20px 60px', background: 'rgba(59, 172, 214, 0.15)', border: '1px solid #3bacd6', borderRadius: 8, color: '#3bacd6', fontWeight: 900, cursor: 'pointer', letterSpacing: 3, textTransform: 'uppercase', transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)' }}>Initialize Command Center</button>
       </div>
     </div>
   );
@@ -6291,7 +6372,6 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   const circleBtn = { width: 40, height: 40, borderRadius: '50%', background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)', cursor: 'pointer', fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' };
 
   return (
-    /* 🟢 MODIFIED: Removed var(--bg) and added transparency + backdrop filter to match App wallpaper */
     <div style={{ padding: "20px 30px", background: "transparent", minHeight: "100vh", backdropFilter: "blur(10px)" }}>
       {/* 🧭 NAVIGATION */}
       <div style={{ display: 'flex', gap: 25, marginBottom: 25, borderBottom: '1px solid var(--border)' }}>
@@ -6301,118 +6381,254 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
       {subTab === "battle" ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-          {/* LEVEL BAR */}
-          <div style={{ gridColumn: 'span 3', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 25px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: 12, backdropFilter: 'blur(10px)' }}>
-            <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: '#3bacd6' }}>LEVEL {level} WARRIOR</div>
-              <div style={{ width: 300, height: 6, background: '#000', borderRadius: 3 }}><div style={{ height: '100%', width: `${(exp % 1000) / 10}%`, background: '#3bacd6', boxShadow: '0 0 10px #3bacd6' }} /></div>
+          {/* LEVEL BAR & WARRIOR RANK */}
+          <div style={{ gridColumn: 'span 3', background: 'radial-gradient(circle at top right, rgba(0, 184, 217, 0.08), transparent 45%), rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px 30px', backdropFilter: 'blur(20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <span style={{ fontSize: 10, fontWeight: 900, color: rank.color, letterSpacing: 2 }}>{rank.title}</span>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: 24, fontWeight: 900, color: '#fff' }}>LEVEL {level}</h2>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: 10, fontWeight: 900, color: '#475569', letterSpacing: 1 }}>EXPERIENCE POINTS</span>
+                <div style={{ fontSize: 18, fontWeight: 900, color: EH_PRIMARY }}>{exp} <span style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>/ {level * 1000}</span></div>
+              </div>
             </div>
-            <div style={{ fontSize: 14, fontWeight: 700 }}>EXP: {exp}</div>
+            <div style={{ width: '100%', height: 8, background: '#000', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)' }}>
+              <div style={{ height: '100%', width: `${(exp % 1000) / 10}%`, background: `linear-gradient(90deg, ${EH_PRIMARY}, #8b5cf6)`, boxShadow: `0 0 12px ${EH_PRIMARY}`, borderRadius: 4, transition: 'width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)' }} />
+            </div>
+            
+            {/* Quick stats indicators */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 8, borderTop: '1px dashed rgba(255,255,255,0.05)', paddingTop: 16 }}>
+              <div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>⚔️ STRENGTH STAT</div>
+                <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{Math.round(exp / 4)} XP</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>👁️ FOCUS RATIO</div>
+                <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{Math.round(pomo.time / 60)} MINS</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>⚡ AGILITY STAT</div>
+                <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{counter} REPS</div>
+              </div>
+            </div>
           </div>
 
-          <Card style={{ background: 'rgba(15, 23, 42, 0.4)', border: pomo.active ? '1px solid #6c63ff' : '1px solid var(--border)', textAlign: 'center', backdropFilter: 'blur(10px)' }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--text-dim)', marginBottom: 15 }}>T-MINUS (POMODORO)</div>
-            <div style={{ fontSize: 64, fontWeight: 900, fontFamily: 'monospace' }}>{fmt(pomo.time)}</div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <Btn style={{ flex: 1 }} onClick={() => setPomo({ ...pomo, active: !pomo.active, lastTick: Date.now() })}>{pomo.active ? "PAUSE" : "ENGAGE"}</Btn>
-              <Btn variant="secondary" onClick={() => setPomo({ ...pomo, time: 1500, active: false, lastTick: Date.now() })}>RESET</Btn>
+          {/* Pomodoro Timer */}
+          <Card style={{ background: 'rgba(15, 23, 42, 0.35)', border: pomo.active ? '1px solid #6c63ff' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transition: 'border 0.3s' }}>
+            <div style={{ fontSize: 10, fontWeight: 900, color: '#6c63ff', marginBottom: 15, letterSpacing: 1.5 }}>T-MINUS (POMODORO)</div>
+            <div style={{ fontSize: 48, fontWeight: 900, fontFamily: 'monospace', color: '#fff', letterSpacing: 2, textShadow: pomo.active ? '0 0 15px rgba(108, 99, 255, 0.4)' : 'none' }}>{fmt(pomo.time)}</div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+              <button onClick={() => setPomo({ ...pomo, active: !pomo.active, lastTick: Date.now() })} style={{ flex: 1, padding: '10px 16px', background: pomo.active ? 'rgba(239, 68, 68, 0.2)' : 'rgba(108, 99, 255, 0.2)', border: pomo.active ? '1px solid #ef4444' : '1px solid #6c63ff', borderRadius: 10, color: pomo.active ? '#ef4444' : '#c084fc', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: 'all 0.2s' }}>{pomo.active ? "PAUSE" : "ENGAGE"}</button>
+              <button onClick={() => setPomo({ ...pomo, time: 1500, active: false, lastTick: Date.now() })} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>RESET</button>
             </div>
           </Card>
 
-          <Card style={{ background: 'rgba(0,0,0,0.4)', border: stopwatch.active ? '1px solid #22c55e' : '1px solid var(--border)', textAlign: 'center', backdropFilter: 'blur(10px)' }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--text-dim)', marginBottom: 15 }}>MISSION DURATION</div>
-            <div style={{ fontSize: 64, fontWeight: 900, color: '#22c55e', fontFamily: 'monospace' }}>{fmt(stopwatch.time)}</div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button onClick={() => setStopwatch({ ...stopwatch, active: !stopwatch.active, lastTick: Date.now() })} style={{ flex: 1, padding: 10, background: stopwatch.active ? '#ef4444' : '#22c55e', color: '#000', fontWeight: 900, border: 'none', borderRadius: 8 }}>{stopwatch.active ? "STOP" : "RECORD"}</button>
-              <Btn variant="secondary" onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false, lastTick: Date.now() })}>CLEAR</Btn>
+          {/* Stopwatch */}
+          <Card style={{ background: 'rgba(5, 46, 22, 0.15)', border: stopwatch.active ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transition: 'border 0.3s' }}>
+            <div style={{ fontSize: 10, fontWeight: 900, color: '#22c55e', marginBottom: 15, letterSpacing: 1.5 }}>MISSION DURATION</div>
+            <div style={{ fontSize: 48, fontWeight: 900, color: '#22c55e', fontFamily: 'monospace', letterSpacing: 2, textShadow: stopwatch.active ? '0 0 15px rgba(34, 197, 94, 0.4)' : 'none' }}>{fmt(stopwatch.time)}</div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+              <button onClick={() => setStopwatch({ ...stopwatch, active: !stopwatch.active, lastTick: Date.now() })} style={{ flex: 1, padding: '10px 16px', background: stopwatch.active ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)', border: stopwatch.active ? '1px solid #ef4444' : '1px solid #22c55e', borderRadius: 10, color: stopwatch.active ? '#ef4444' : '#4ade80', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: 'all 0.2s' }}>{stopwatch.active ? "STOP" : "RECORD"}</button>
+              <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false, lastTick: Date.now() })} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>CLEAR</button>
             </div>
           </Card>
 
-          <Card style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border)', textAlign: 'center', backdropFilter: 'blur(10px)' }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--text-dim)', marginBottom: 15 }}>REP/ACTION COUNTER</div>
-            <div style={{ fontSize: 64, fontWeight: 900, color: '#f59e0b' }}>{counter}</div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button onClick={() => setCounter(counter + 1)} style={{ flex: 1, padding: 10, fontSize: 24, background: '#f59e0b', color: '#000', border: 'none', borderRadius: 8 }}>+</button>
-              <button onClick={() => setCounter(0)} style={{ flex: 1, background: 'var(--border)', color: 'var(--text)', border: 'none', borderRadius: 8 }}>0</button>
+          {/* Rep Counter */}
+          <Card style={{ background: 'rgba(120, 53, 4, 0.15)', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+            <div style={{ fontSize: 10, fontWeight: 900, color: '#f59e0b', marginBottom: 15, letterSpacing: 1.5 }}>REP/ACTION COUNTER</div>
+            <div style={{ fontSize: 48, fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace' }}>{counter}</div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+              <button onClick={() => setCounter(counter + 1)} style={{ flex: 1, padding: '10px 16px', fontSize: 18, background: 'rgba(245, 158, 11, 0.2)', border: '#f59e0b 1px solid', borderRadius: 10, color: '#fbbf24', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s' }}>+</button>
+              <button onClick={() => setCounter(0)} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, cursor: 'pointer' }}>0</button>
             </div>
           </Card>
 
-         
-<Card style={{ 
-  textAlign: 'center', 
-  background: 'radial-gradient(circle, rgba(30, 27, 75, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%)', 
-  backdropFilter: 'blur(10px)',
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '40px 20px'
-}}>
-  <div style={{ fontSize: 11, fontWeight: 900, color: '#3bacd6', marginBottom: 25, letterSpacing: 2 }}>CALM COMPOSE COOL</div>
-  
-  <div style={{ 
-    position: 'relative', 
-    width: 240, 
-    height: 240, 
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }}>
-    {/* 🧬 PRECISION GLOW RING */}
-    <div style={{
-      position: 'absolute',
-      inset: -2,
-      borderRadius: '50%',
-      border: '2px solid #3bacd6',
-      boxShadow: '0 0 25px rgba(59, 172, 214, 0.6), inset 0 0 20px rgba(59, 172, 214, 0.3)',
-      animation: 'pulse 4s infinite ease-in-out',
-      zIndex: 2,
-      pointerEvents: 'none' 
-    }} />
-
-    {/* 📹 SEAMLESS LOOP FEED */}
-    <video 
-      ref={videoRef}
-      autoPlay 
-      loop 
-      muted 
-      playsInline
-      disablePictureInPicture
-      controls={false}
-      controlsList="nodownload nofullscreen noremoteplayback"
-      onContextMenu={(e) => e.preventDefault()}
-      /* Forces video to keep playing if browser tries to pause it */
-      onPause={(e) => e.target.play()} 
-      style={{ 
-        width: '100%', 
-        height: '100%', 
-        borderRadius: '50%', 
-        objectFit: 'cover',
-        zIndex: 1,
-        filter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
-        pointerEvents: 'none',
-        userSelect: 'none',
-        background: 'transparent'
-      }}
-    >
-      <source src="/breath-visual.mp4" type="video/mp4" />
-    </video>
-  </div>
-  
-  <div style={{ marginTop: 20, fontSize: 12, color: 'rgba(59, 172, 214, 0.5)', fontWeight: 800 }}>YOU CAN DO IT </div>
-</Card>
-
-          <Card style={{ gridColumn: 'span 2', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--text-dim)', marginBottom: 15 }}>CHOOSE TARGET OBJECTIVE</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              {tasks.slice(0, 6).map(t => (
-                <div key={t.id} onClick={() => setActiveTask(t)} style={{ padding: 12, borderRadius: 8, background: activeTask?.id === t.id ? '#3bacd6' : 'rgba(34,34,34,0.6)', color: activeTask?.id === t.id ? '#000' : '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 13 }}>{t.name}</div>
-              ))}
+          {/* Focus Audio Center */}
+          <Card style={{ background: 'rgba(10,10,15,0.6)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>🔊 CYBER-AMBIENT STATION</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {FOCUS_TRACKS.map(track => {
+                const isActive = playingAudio === track.id;
+                return (
+                  <div 
+                    key={track.id} 
+                    onClick={() => playTrack(track)} 
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      padding: '12px 16px', 
+                      background: isActive ? 'rgba(167, 139, 250, 0.15)' : 'rgba(255,255,255,0.02)', 
+                      border: isActive ? '1px solid #a78bfa' : '1px solid rgba(255,255,255,0.05)', 
+                      borderRadius: 12, 
+                      cursor: 'pointer',
+                      transition: 'all 0.2s' 
+                    }}
+                  >
+                    <span style={{ fontSize: 13, fontWeight: 700, color: isActive ? '#fff' : '#94a3b8' }}>{track.label}</span>
+                    <span style={{ fontSize: 14 }}>{isActive ? "⏸️" : "▶️"}</span>
+                  </div>
+                );
+              })}
             </div>
           </Card>
 
+          {/* Breathing Visualizer */}
+          <Card style={{ 
+            textAlign: 'center', 
+            background: 'radial-gradient(circle, rgba(30, 27, 75, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)', 
+            border: '1px solid rgba(255,255,255,0.05)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 16,
+            padding: '24px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative'
+          }}>
+            <div style={{ fontSize: 10, fontWeight: 900, color: '#3bacd6', marginBottom: 20, letterSpacing: 2 }}>CALM COMPOSE COOL</div>
+            
+            <div style={{ 
+              position: 'relative', 
+              width: 140, 
+              height: 140, 
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden'
+            }}>
+              {/* 🧬 PRECISION GLOW RING */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '50%',
+                border: '2px solid #3bacd6',
+                boxShadow: '0 0 20px rgba(59, 172, 214, 0.5), inset 0 0 15px rgba(59, 172, 214, 0.2)',
+                animation: 'pulse 4s infinite ease-in-out',
+                zIndex: 2,
+                pointerEvents: 'none' 
+              }} />
+
+              {/* 📹 SEAMLESS LOOP FEED */}
+              <video 
+                ref={videoRef}
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                disablePictureInPicture
+                controls={false}
+                controlsList="nodownload nofullscreen noremoteplayback"
+                onContextMenu={(e) => e.preventDefault()}
+                onPause={(e) => e.target.play()} 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  borderRadius: '50%', 
+                  objectFit: 'cover',
+                  zIndex: 1,
+                  filter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                  background: 'transparent'
+                }}
+              >
+                <source src="/breath-visual.mp4" type="video/mp4" />
+              </video>
+            </div>
+            
+            <div style={{ marginTop: 16, fontSize: 12, color: '#3bacd6', fontWeight: 900, letterSpacing: 1.5, textTransform: 'uppercase', animation: 'pulse 2s infinite' }}>{breath}</div>
+          </Card>
+
+          {/* Active Quest & Targets list */}
+          <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}>⚔️ ACTIVE QUEST DIARY</div>
+            
+            {activeTask ? (
+              <div style={{ 
+                background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, transparent 100%)', 
+                border: '1px solid rgba(56, 189, 248, 0.15)', 
+                borderRadius: 14, 
+                padding: '20px', 
+                position: 'relative',
+                animation: 'fadeIn 0.3s ease-out'
+              }}>
+                <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                  <div>
+                    <span style={{ fontSize: 9, fontWeight: 900, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: 1 }}>CURRENT QUEST</span>
+                    <h3 style={{ margin: '4px 0 0 0', fontSize: 18, color: '#fff', fontWeight: 900 }}>{activeTask.name}</h3>
+                  </div>
+                  <button onClick={() => setActiveTask(null)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Deselect</button>
+                </div>
+                
+                <p style={{ fontSize: 12, color: '#94a3b8', margin: '0 0 20px 0', lineHeight: 1.5 }}>{activeTask.notes || "No extra directives provided for this mission."}</p>
+                
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  <button 
+                    onClick={() => completeQuest(activeTask.id)} 
+                    style={{ 
+                      flex: 1, 
+                      padding: '14px 20px', 
+                      background: 'linear-gradient(135deg, #00f2fe, #4facfe)', 
+                      border: 'none', 
+                      borderRadius: 10, 
+                      color: '#000', 
+                      fontWeight: 900, 
+                      fontSize: 12, 
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 20px rgba(0, 242, 254, 0.35)',
+                      transition: 'all 0.2s' 
+                    }}
+                    onMouseEnter={e=>e.currentTarget.style.transform='scale(1.02)'}
+                    onMouseLeave={e=>e.currentTarget.style.transform='none'}
+                  >
+                    COMPLETE QUEST (+100 EXP)
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: 160, border: '2px dashed rgba(255,255,255,0.03)', borderRadius: 14, padding: '20px' }}>
+                <span style={{ fontSize: 24, marginBottom: 8 }}>⚔️</span>
+                <span style={{ fontSize: 12, color: '#475569', fontWeight: 800 }}>NO QUEST SELECTED</span>
+                <span style={{ fontSize: 10, color: '#3bacd6', cursor: 'pointer', marginTop: 4, fontWeight: 700 }}>Select a target below to begin</span>
+              </div>
+            )}
+
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 16 }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#475569', marginBottom: 12, letterSpacing: 1 }}>CHOOSE TARGET OBJECTIVE</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {tasks.slice(0, 6).map(t => (
+                  <div 
+                    key={t.id} 
+                    onClick={() => setActiveTask(t)} 
+                    style={{ 
+                      padding: '12px 16px', 
+                      borderRadius: 10, 
+                      background: activeTask?.id === t.id ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255,255,255,0.02)', 
+                      border: activeTask?.id === t.id ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.05)', 
+                      color: activeTask?.id === t.id ? '#38bdf8' : '#e2e8f0', 
+                      cursor: 'pointer', 
+                      fontWeight: 800, 
+                      fontSize: 12,
+                      transition: 'all 0.2s' 
+                    }}
+                    onMouseEnter={e => { if (activeTask?.id !== t.id) e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                    onMouseLeave={e => { if (activeTask?.id !== t.id) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
+                  >
+                    {t.name}
+                  </div>
+                ))}
+                {tasks.length === 0 && (
+                  <div style={{ gridColumn: 'span 2', textAlign: 'center', fontSize: 11, color: '#475569', fontWeight: 800, padding: 12 }}>YOUR TIMETABLE LOG IS CLEAR.</div>
+                )}
+              </div>
+            </div>
+          </Card>
+
+          {/* Brain Dump Card */}
           <Card style={{ gridColumn: 'span 3', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}>
             <div style={{ fontSize: 11, fontWeight: 900, color: "var(--text-dim)", marginBottom: 10 }}>WARRIOR BRAIN DUMP</div>
             <textarea placeholder="Immediate thoughts here..." style={{ width: '100%', height: 80, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)', padding: 15, outline: 'none' }} />
@@ -6456,6 +6672,26 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             </div>
           </div>
         )
+      )}
+
+      {showLevelUpAlert && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(5,5,8,0.85)", backdropFilter: "blur(20px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 100000, animation: "fadeIn 0.3s ease" }}>
+          <div style={{ 
+            background: 'radial-gradient(circle, rgba(167, 139, 250, 0.15) 0%, rgba(10,10,15,0.95) 100%)', 
+            border: '2px solid #a78bfa', 
+            boxShadow: '0 0 50px rgba(167, 139, 250, 0.4), inset 0 0 30px rgba(167, 139, 250, 0.2)',
+            borderRadius: 24, 
+            padding: '40px 60px', 
+            textAlign: 'center',
+            maxWidth: 500,
+            animation: "msgSlide 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+          }}>
+            <div style={{ fontSize: 50, marginBottom: 20 }}>⚔️</div>
+            <h1 style={{ margin: 0, fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: 2 }}>LEVEL UP!</h1>
+            <p style={{ fontSize: 14, color: '#a78bfa', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1.5, marginTop: 10 }}>WARRIOR RANKS COMMENDED</p>
+            <p style={{ fontSize: 13, color: '#94a3b8', margin: '20px 0 0 0', lineHeight: 1.6 }}>You have advanced to Level {level}! Your power ratio and efficiency metrics have been elevated.</p>
+          </div>
+        </div>
       )}
     </div>
   );
