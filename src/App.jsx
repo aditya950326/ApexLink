@@ -3452,6 +3452,14 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
   const mediaRecorderRef = useRef(null);
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
+  const roomChatTextareaRef = useRef(null);
+
+  useEffect(() => {
+    if (roomChatTextareaRef.current) {
+      roomChatTextareaRef.current.style.height = 'auto';
+      roomChatTextareaRef.current.style.height = roomChatTextareaRef.current.scrollHeight + 'px';
+    }
+  }, [msg]);
 
   const restorePrice = (() => {
     if (!room.restoreState) return 0;
@@ -3884,12 +3892,32 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
             <div style={{ flex: 1, background: "#1e293b", borderRadius: 24, padding: "8px 18px", display: "flex", alignItems: "center", gap: 14, minHeight: 48, border: "1px solid rgba(255,255,255,0.05)" }}>
                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>📎</button>
                <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-               <input 
-                 value={msg} 
-                 onChange={e => setMsg(e.target.value)} 
-                 onKeyDown={e => e.key === "Enter" && sendMsg()} 
-                 placeholder={editingMsgId ? "Revise message..." : "Type a message"} 
-                 style={{ flex: 1, background: "none", border: "none", color: "#f8fafc", outline: "none", fontSize: 15, padding: "4px 0" }} 
+               <textarea
+                 ref={roomChatTextareaRef}
+                 value={msg}
+                 onChange={e => setMsg(e.target.value)}
+                 onKeyDown={e => {
+                   if (e.key === "Enter" && !e.shiftKey) {
+                     e.preventDefault();
+                     sendMsg();
+                   }
+                 }}
+                 placeholder={editingMsgId ? "Revise message..." : "Type a message"}
+                 rows={1}
+                 style={{
+                   flex: 1,
+                   background: "none",
+                   border: "none",
+                   color: "#f8fafc",
+                   outline: "none",
+                   fontSize: 15,
+                   padding: "4px 0",
+                   resize: "none",
+                   maxHeight: 120,
+                   fontFamily: "inherit",
+                   boxSizing: "border-box",
+                   height: "auto"
+                 }}
                />
                <button onClick={recording ? stopRecording : startRecording} style={{ background: "none", border: "none", color: recording ? "#ef4444" : "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>
                  {recording ? "⏹" : "🎙️"}
