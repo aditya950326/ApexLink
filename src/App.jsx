@@ -11,6 +11,7 @@ const loadRazorpay = () => {
 
 // Combine everything into one single line at the very top
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { supabase } from "./supabaseClient";
 import { Canvas, PencilBrush, Rect, Circle } from "fabric";
 // DELETE THE OTHER "import React, { useState } from 'react';" LINE COMPLETELY
 function LandingPage({ onEnterAuth }) {
@@ -236,25 +237,115 @@ const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
  // For Thought Pattern Breaker
 
-// 1. UPDATED useLS HELPER (Ensure it's inside the file but outside components)
+// 1. UPDATED useLS HELPER WITH SUPABASE BACKGROUND SYNC
 function useLS(key, init) {
   const [v, setV] = useState(() => {
     try {
       const s = localStorage.getItem(key);
-      // Logic: If empty or "undefined" string, return init
       return (s && s !== "undefined") ? JSON.parse(s) : init;
     } catch (e) {
-      console.error("LS Read Error", e);
       return init;
     }
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(v));
-    } catch (e) {
-      console.error("LS Write Error", e);
-    }
+    localStorage.setItem(key, JSON.stringify(v));
+
+    const syncToSupabase = async () => {
+      try {
+        const userSession = await supabase.auth.getSession();
+        const userId = userSession?.data?.session?.user?.id;
+        if (!userId) return;
+
+        // Sync Tasks / Timetable Quests
+        if (key === `apx_tasks_${userId}` && Array.isArray(v)) {
+          const rows = v.map(t => ({
+            id: t.id,
+            user_id: userId,
+            name: t.name,
+            notes: t.notes || "",
+            completed: t.completed || false,
+            deadline: t.deadline || null
+          }));
+          const activeIds = v.map(t => t.id);
+          if (activeIds.length > 0) {
+            await supabase.from('tasks').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+          } else {
+            await supabase.from('tasks').delete().eq('user_id', userId);
+          }
+          if (rows.length > 0) {
+            await supabase.from('tasks').upsert(rows);
+          }
+        }
+
+        // Sync Notes
+        if (key === `apx_notes_v5_${userId}` && Array.isArray(v)) {
+          const rows = v.map(n => ({
+            id: n.id,
+            user_id: userId,
+            title: n.title,
+            content: n.content || "",
+            color: n.color || '#6c63ff'
+          }));
+          const activeIds = v.map(n => n.id);
+          if (activeIds.length > 0) {
+            await supabase.from('notes').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+          } else {
+            await supabase.from('notes').delete().eq('user_id', userId);
+          }
+          if (rows.length > 0) {
+            await supabase.from('notes').upsert(rows);
+          }
+        }
+
+        // Sync Reminders
+        if (key === `apx_rem_${userId}` && Array.isArray(v)) {
+          const rows = v.map(r => ({
+            id: r.id,
+            user_id: userId,
+            title: r.title,
+            description: r.description || "",
+            datetime: r.datetime,
+            urgency: r.urgency || 'normal'
+          }));
+          const activeIds = v.map(r => r.id);
+          if (activeIds.length > 0) {
+            await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+          } else {
+            await supabase.from('reminders').delete().eq('user_id', userId);
+          }
+          if (rows.length > 0) {
+            await supabase.from('reminders').upsert(rows);
+          }
+        }
+
+        // Sync Habit Logs
+        if (key === `apx_habits_${userId}` && v && typeof v === 'object') {
+          const rows = [];
+          Object.entries(v).forEach(([dateStr, habitVals]) => {
+            if (habitVals && typeof habitVals === 'object') {
+              Object.entries(habitVals).forEach(([habitId, val]) => {
+                rows.push({
+                  user_id: userId,
+                  habit_id: habitId,
+                  log_date: dateStr,
+                  value: String(val)
+                });
+              });
+            }
+          });
+          await supabase.from('habit_logs').delete().eq('user_id', userId);
+          if (rows.length > 0) {
+            await supabase.from('habit_logs').upsert(rows);
+          }
+        }
+      } catch (err) {
+        console.error("Supabase useLS sync failure:", err);
+      }
+    };
+
+    const timer = setTimeout(syncToSupabase, 800);
+    return () => clearTimeout(timer);
   }, [key, v]);
 
   return [v, setV];
@@ -400,7 +491,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [err, setErr] = useState("");
 
-  const handle = () => {
+  const handle = async () => {
     setErr("");
     const emailLower = form.email.trim().toLowerCase();
     const pass = form.password.trim();
@@ -408,15 +499,23 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
     if (mode === "signup") {
       if (!form.name.trim()) return setErr("Name required.");
-      const exists = users.find(u => u.email.toLowerCase() === emailLower);
-      if (exists) return setErr("Email already registered.");
-      const newUser = { id: uid(), name: form.name.trim(), email: emailLower, password: pass, createdAt: new Date().toISOString() };
-      setUsers([...users, newUser]);
-      onLogin(newUser);
+      const { data, error } = await supabase.auth.signUp({
+        email: emailLower,
+        password: pass,
+        options: {
+          data: {
+            name: form.name.trim()
+          }
+        }
+      });
+      if (error) return setErr(error.message);
+      alert("Sign up successful! Please check your email to verify your account.");
     } else {
-      const foundUser = users.find(u => u.email.toLowerCase() === emailLower && u.password === pass);
-      if (!foundUser) return setErr("Invalid credentials.");
-      onLogin(foundUser);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailLower,
+        password: pass
+      });
+      if (error) return setErr(error.message);
     }
   };
 
@@ -7637,10 +7736,104 @@ function Settings({ user, users, setUsers, onLogout }) {
 }
 
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
+const mapSupabaseUser = (sbUser) => {
+  if (!sbUser) return null;
+  return {
+    id: sbUser.id,
+    email: sbUser.email,
+    name: sbUser.user_metadata?.name || sbUser.email.split('@')[0],
+    avatar: sbUser.user_metadata?.avatar || "🥷"
+  };
+};
+
 export default function App() {
   const [users, setUsers] = useLS("apx_users", []);
   const [currentUser, setCurrentUser] = useLS("apx_current_user", null);
   const [tab, setTab] = useState("dashboard");
+  const [session, setSession] = useState(null);
+
+  // Monitor Supabase Authentication state changes
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        setCurrentUser(mapSupabaseUser(session.user));
+        setView("app");
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        setCurrentUser(mapSupabaseUser(session.user));
+        setView("app");
+      } else {
+        setCurrentUser(null);
+        setView("landing");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch data tables on successful log in
+  useEffect(() => {
+    if (!currentUser?.id) return;
+
+    const pullData = async () => {
+      try {
+        // Pull Tasks
+        const { data: tasks } = await supabase.from('tasks').select('*').eq('user_id', currentUser.id);
+        if (tasks) {
+          localStorage.setItem(`apx_tasks_${currentUser.id}`, JSON.stringify(tasks.map(t => ({
+            id: t.id,
+            name: t.name,
+            notes: t.notes,
+            completed: t.completed,
+            deadline: t.deadline
+          }))));
+        }
+
+        // Pull Notes
+        const { data: notes } = await supabase.from('notes').select('*').eq('user_id', currentUser.id);
+        if (notes) {
+          localStorage.setItem(`apx_notes_v5_${currentUser.id}`, JSON.stringify(notes.map(n => ({
+            id: n.id,
+            title: n.title,
+            content: n.content,
+            color: n.color
+          }))));
+        }
+
+        // Pull Reminders
+        const { data: reminders } = await supabase.from('reminders').select('*').eq('user_id', currentUser.id);
+        if (reminders) {
+          localStorage.setItem(`apx_rem_${currentUser.id}`, JSON.stringify(reminders.map(r => ({
+            id: r.id,
+            title: r.title,
+            description: r.description,
+            datetime: r.datetime,
+            urgency: r.urgency
+          }))));
+        }
+
+        // Pull Habit Logs
+        const { data: logs } = await supabase.from('habit_logs').select('*').eq('user_id', currentUser.id);
+        if (logs) {
+          const logMap = {};
+          logs.forEach(row => {
+            if (!logMap[row.log_date]) logMap[row.log_date] = {};
+            logMap[row.log_date][row.habit_id] = row.value;
+          });
+          localStorage.setItem(`apx_habits_${currentUser.id}`, JSON.stringify(logMap));
+        }
+      } catch (err) {
+        console.error("Failed to pull data from Supabase:", err);
+      }
+    };
+
+    pullData();
+  }, [currentUser?.id]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -7729,7 +7922,8 @@ export default function App() {
     setView("app"); 
   };
   
-  const handleLogout = () => { 
+  const handleLogout = async () => { 
+    await supabase.auth.signOut();
     setCurrentUser(null); 
     setView("landing"); 
     setTab("dashboard"); 
