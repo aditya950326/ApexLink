@@ -207,22 +207,28 @@ function LandingPage({ onEnterAuth }) {
 
 // ─── UTILITY HELPERS ────────────────────────────────────────────────────────
 const uid = () => Math.random().toString(36).slice(2, 10);
+const toLocalDateStr = (dateObj) => {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const d = String(dateObj.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
 const today = () => {
   const offset = Number(localStorage.getItem("apx_date_offset") || 0);
   const d = new Date();
   d.setDate(d.getDate() + offset);
-  return d.toISOString().slice(0, 10);
+  return toLocalDateStr(d);
 };
 const yesterday = () => {
   const offset = Number(localStorage.getItem("apx_date_offset") || 0);
   const d = new Date();
   d.setDate(d.getDate() - 1 + offset);
-  return d.toISOString().slice(0, 10);
+  return toLocalDateStr(d);
 };
 const addDays = (dateStr, days) => {
   const d = new Date(dateStr);
   d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
+  return toLocalDateStr(d);
 };
 const fmtDate = (d) => new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
 const fmtTime = (d) => new Date(d).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
@@ -6060,20 +6066,30 @@ function HabitTracker({ user }) {
   };
 
   const getStreak = (habitId) => {
-    let streak = 0; let checkDate = new Date();
+    let streak = 0;
+    const offset = Number(localStorage.getItem("apx_date_offset") || 0);
+    let checkDate = new Date();
+    checkDate.setDate(checkDate.getDate() + offset);
+    
     while (true) {
-      const dateStr = checkDate.toISOString().split('T')[0];
+      const dateStr = toLocalDateStr(checkDate);
       const val = logs[dateStr]?.[habitId] ?? 0;
       const h = myHabits.find(x => x.id === habitId);
-      if (h && calculatePct(h, val) === 100) { streak++; checkDate.setDate(checkDate.getDate() - 1); } 
-      else break;
+      if (h && calculatePct(h, val) === 100) { 
+        streak++; 
+        checkDate.setDate(checkDate.getDate() - 1); 
+      } else {
+        break;
+      }
     }
     return streak;
   };
 
   // Get Monday-to-Sunday dates for the current week
   const getWeekDates = () => {
+    const offset = Number(localStorage.getItem("apx_date_offset") || 0);
     const current = new Date();
+    current.setDate(current.getDate() + offset);
     const day = current.getDay();
     const diff = current.getDate() - day + (day === 0 ? -6 : 1);
     return Array.from({ length: 7 }, (_, i) => {
@@ -6087,10 +6103,11 @@ function HabitTracker({ user }) {
   const getAverageScoreForDays = (daysAgoStart, daysAgoEnd) => {
     let totalScore = 0;
     let daysCount = 0;
+    const offset = Number(localStorage.getItem("apx_date_offset") || 0);
     for (let i = daysAgoStart; i <= daysAgoEnd; i++) {
       const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
+      date.setDate(date.getDate() - i + offset);
+      const dateStr = toLocalDateStr(date);
       const dailyScore = myHabits.length ? myHabits.reduce((sum, h) => sum + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length : 0;
       totalScore += dailyScore;
       daysCount++;
@@ -6140,7 +6157,7 @@ function HabitTracker({ user }) {
           <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 12, paddingLeft: 10, borderBottom: '1px solid #222' }}>
             {chartView === "day" ? (
               weekDates.map((dateObj, i) => {
-                const dateStr = dateObj.toISOString().split('T')[0];
+                const dateStr = toLocalDateStr(dateObj);
                 const score = myHabits.length ? Math.round(myHabits.reduce((s, h) => s + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length) : 0;
                 const isToday = dateStr === d;
                 const dayLabel = dateObj.toLocaleDateString("en-IN", { weekday: 'short' });
@@ -6220,7 +6237,7 @@ function HabitTracker({ user }) {
                 <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", marginBottom: 12, letterSpacing: 0.5 }}>WEEKLY PROGRESSION</div>
                 <div style={{ display: "flex", gap: 6, height: 40, alignItems: "flex-end" }}>
                   {weekDates.map((dateObj, idx) => {
-                    const dateStr = dateObj.toISOString().split('T')[0];
+                    const dateStr = toLocalDateStr(dateObj);
                     const dayVal = logs[dateStr]?.[h.id] ?? 0;
                     const dayPct = calculatePct(h, dayVal);
                     const isToday = dateStr === d;
@@ -7171,7 +7188,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           </Card>
 
           {/* Focus Audio Center with Binaural Beats */}
-          <Card style={{ background: 'rgba(10,10,15,0.6)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.6)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>🔊 CYBER-AMBIENT SOUND DECK</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
               {FOCUS_TRACKS.map(track => {
@@ -7269,91 +7286,6 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             <div style={{ marginTop: 16, fontSize: 12, color: '#3bacd6', fontWeight: 900, letterSpacing: 1.5, textTransform: 'uppercase', animation: 'pulse 2s infinite' }}>{breath}</div>
           </Card>
 
-          {/* Active Quest & Targets list */}
-          <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}>⚔️ ACTIVE QUEST DIARY</div>
-            
-            {activeTask ? (
-              <div style={{ 
-                background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, transparent 100%)', 
-                border: '1px solid rgba(56, 189, 248, 0.15)', 
-                borderRadius: 14, 
-                padding: '20px', 
-                position: 'relative',
-                animation: 'fadeIn 0.3s ease-out'
-              }}>
-                <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                  <div>
-                    <span style={{ fontSize: 9, fontWeight: 900, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: 1 }}>CURRENT QUEST</span>
-                    <h3 style={{ margin: '4px 0 0 0', fontSize: 18, color: '#fff', fontWeight: 900 }}>{activeTask.name}</h3>
-                  </div>
-                  <button onClick={() => setActiveTask(null)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>Deselect</button>
-                </div>
-                
-                <p style={{ fontSize: 12, color: '#94a3b8', margin: '0 0 20px 0', lineHeight: 1.5 }}>{activeTask.notes || "No extra directives provided for this mission."}</p>
-                
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <button 
-                    onClick={() => completeQuest(activeTask.id)} 
-                    style={{ 
-                      flex: 1, 
-                      padding: '14px 20px', 
-                      background: 'linear-gradient(135deg, #00f2fe, #4facfe)', 
-                      border: 'none', 
-                      borderRadius: 10, 
-                      color: '#000', 
-                      fontWeight: 900, 
-                      fontSize: 12, 
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 20px rgba(0, 242, 254, 0.35)',
-                      transition: 'all 0.2s' 
-                    }}
-                    onMouseEnter={e=>e.currentTarget.style.transform='scale(1.02)'}
-                    onMouseLeave={e=>e.currentTarget.style.transform='none'}
-                  >
-                    COMPLETE QUEST (+100 EXP)
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: 160, border: '2px dashed rgba(255,255,255,0.03)', borderRadius: 14, padding: '20px' }}>
-                <span style={{ fontSize: 24, marginBottom: 8 }}>⚔️</span>
-                <span style={{ fontSize: 12, color: '#475569', fontWeight: 800 }}>NO QUEST SELECTED</span>
-                <span style={{ fontSize: 10, color: '#3bacd6', cursor: 'pointer', marginTop: 4, fontWeight: 700 }}>Select a target below to begin</span>
-              </div>
-            )}
-
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 16 }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#475569', marginBottom: 12, letterSpacing: 1 }}>CHOOSE TARGET OBJECTIVE</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {tasks.slice(0, 6).map(t => (
-                  <div 
-                    key={t.id} 
-                    onClick={() => setActiveTask(t)} 
-                    style={{ 
-                      padding: '12px 16px', 
-                      borderRadius: 10, 
-                      background: activeTask?.id === t.id ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255,255,255,0.02)', 
-                      border: activeTask?.id === t.id ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.05)', 
-                      color: activeTask?.id === t.id ? '#38bdf8' : '#e2e8f0', 
-                      cursor: 'pointer', 
-                      fontWeight: 800, 
-                      fontSize: 12,
-                      transition: 'all 0.2s' 
-                    }}
-                    onMouseEnter={e => { if (activeTask?.id !== t.id) e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
-                    onMouseLeave={e => { if (activeTask?.id !== t.id) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
-                  >
-                    {t.name}
-                  </div>
-                ))}
-                {tasks.length === 0 && (
-                  <div style={{ gridColumn: 'span 2', textAlign: 'center', fontSize: 11, color: '#475569', fontWeight: 800, padding: 12 }}>YOUR TIMETABLE LOG IS CLEAR.</div>
-                )}
-              </div>
-            </div>
-          </Card>
-
           {/* Brain Dump Card */}
           <Card style={{ gridColumn: 'span 3', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}>
             <div style={{ fontSize: 11, fontWeight: 900, color: "var(--text-dim)", marginBottom: 10 }}>WARRIOR BRAIN DUMP</div>
@@ -7373,37 +7305,6 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
         return (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-            {/* Challenger Boss Health card */}
-            <div style={{ gridColumn: 'span 3', background: 'radial-gradient(circle at top right, rgba(239, 68, 68, 0.08), transparent 45%), rgba(10,10,15,0.85)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 16, padding: '24px 30px', backdropFilter: 'blur(20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <span style={{ fontSize: 10, fontWeight: 900, color: '#ef4444', letterSpacing: 2 }}>CHALLENGER BOSS</span>
-                  <h2 style={{ margin: '4px 0 0 0', fontSize: 20, fontWeight: 900, color: '#fff' }}>🐉 THE PROCRASTINATOR DRAGON</h2>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: 10, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>BOSS INTEGRITY</span>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: '#ef4444' }}>{bossHP}% <span style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>HP</span></div>
-                </div>
-              </div>
-              
-              <div style={{ width: '100%', height: 12, background: '#000', borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)' }}>
-                <div style={{ height: '100%', width: `${bossHP}%`, background: 'linear-gradient(90deg, #ef4444, #f59e0b)', boxShadow: '0 0 15px rgba(239, 68, 68, 0.5)', borderRadius: 6, transition: 'width 0.6s ease' }} />
-              </div>
-              
-              <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.5 }}>
-                ⚔️ **Tactical Directive:** Complete your daily Timetable tasks to inflict damage on the dragon. When the boss HP reaches **0%**, you will conquer the weekly battle and claim a massive **+300 EXP** bonus!
-                {bossHP === 0 && (
-                  <button onClick={() => {
-                    setExp(e => e + 300);
-                    // Reset completed task statuses to prevent double claims
-                    setTasks(prev => prev.map(t => ({ ...t, completed: false })));
-                    new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
-                    alert("⚔️ VICTORY ACHIEVED! You received +300 EXP.");
-                  }} style={{ display: 'block', marginTop: 10, padding: '8px 16px', background: '#22c55e', color: '#000', fontWeight: 900, border: 'none', borderRadius: 6, cursor: 'pointer' }}>CLAIM VICTORY REWARD</button>
-                )}
-              </p>
-            </div>
-
             {/* Daily Commandments */}
             <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -7536,7 +7437,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
         return (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {/* Interactive Ikigai Finder */}
-            <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Card style={{ gridColumn: 'span 3', background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🌸 INTERACTIVE IKIGAI FINDER</div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -7587,46 +7488,6 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                   ) : "Declare your Ikigai components above to unlock your purpose directive."}
                 </p>
               </div>
-            </Card>
-
-            {/* Daily Character Story Card */}
-            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 900, color: '#10b981', letterSpacing: 1.5 }}>📖 DAILY FORGE OF CHARACTER</div>
-              
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <h3 style={{ margin: 0, fontSize: 16, color: '#fff', fontWeight: 900 }}>{activeStory.title}</h3>
-                <p style={{ margin: 0, fontSize: 11, color: '#94a3b8', lineHeight: 1.6, fontStyle: 'italic', overflowY: 'auto', maxHeight: 180 }}>
-                  "{activeStory.story}"
-                </p>
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}>
-                  <span style={{ fontSize: 9, fontWeight: 900, color: '#10b981', display: 'block', letterSpacing: 1 }}>MORAL DIRECTIVE</span>
-                  <p style={{ margin: '4px 0 0 0', fontSize: 11, color: '#e2e8f0', fontWeight: 800 }}>{activeStory.moral}</p>
-                </div>
-              </div>
-
-              <button 
-                disabled={isAlreadyClaimed}
-                onClick={() => {
-                  setExp(e => e + 50);
-                  setLastReflectedStoryDate(new Date().toDateString());
-                  new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
-                  alert("🌟 STORY REFLECTED! +50 EXP rewarded.");
-                }}
-                style={{ 
-                  width: '100%', 
-                  padding: 12, 
-                  background: isAlreadyClaimed ? 'rgba(255,255,255,0.02)' : 'rgba(16, 185, 129, 0.2)', 
-                  border: isAlreadyClaimed ? '1px solid rgba(255,255,255,0.05)' : '1px solid #10b981', 
-                  color: isAlreadyClaimed ? '#475569' : '#34d399', 
-                  fontWeight: 900, 
-                  fontSize: 11, 
-                  borderRadius: 8, 
-                  cursor: isAlreadyClaimed ? 'default' : 'pointer',
-                  transition: '0.2s'
-                }}
-              >
-                {isAlreadyClaimed ? "DIRECTIVE REFLECTED FOR TODAY" : "REFLECT & CLAIM EXP (+50 EXP)"}
-              </button>
             </Card>
           </div>
         );
