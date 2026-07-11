@@ -3447,9 +3447,10 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
   const [showAddTask, setShowAddTask] = useState(false);
   const [taskForm, setTaskForm] = useState({ title: "", type: "daily", deadline: "" });
   const [contextMenu, setContextMenu] = useState(null);
-  const [recording, setRecording] = useState(false);
+  const [recordingMode, setRecordingMode] = useState(null); // null | 'audio' | 'transcribe'
   const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
+  const recognitionRef = useRef(null);
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
   const roomChatTextareaRef = useRef(null);
@@ -3600,7 +3601,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
     rzp1.open();
   };
 
-  // --- 🎤 MIC RECORDING (As it was) ---
+  // --- 🎤 MIC RECORDING & TRANSCRIPTION ---
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -3611,13 +3612,62 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'audio/webm' });
         setAudioBlob(blob);
-        setRecording(false);
+        setRecordingMode(null);
       };
       mediaRecorder.start();
-      setRecording(true);
+      setRecordingMode('audio');
     } catch (err) { alert("Microphone access denied."); }
   };
-  const stopRecording = () => { if (mediaRecorderRef.current) mediaRecorderRef.current.stop(); };
+
+  const startTranscribing = async () => {
+    try {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition is not supported in this browser.");
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const rec = new SpeechRecognition();
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.lang = 'en-US';
+      
+      let finalTranscript = "";
+      rec.onresult = (event) => {
+        let interimTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcriptText = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcriptText + " ";
+          } else {
+            interimTranscript += transcriptText;
+          }
+        }
+        setMsg((finalTranscript + interimTranscript).trim());
+      };
+      rec.onend = () => {
+        setRecordingMode(null);
+      };
+      rec.onerror = () => {};
+      
+      recognitionRef.current = rec;
+      rec.start();
+      setRecordingMode('transcribe');
+    } catch (err) {
+      alert("Microphone access denied or error starting speech recognition.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (recordingMode === 'audio') {
+      if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
+    } else if (recordingMode === 'transcribe') {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch(e){}
+      }
+    }
+  };
+
   const sendAudio = () => {
     if (!audioBlob) return;
     const reader = new FileReader();
@@ -3919,8 +3969,34 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                    height: "auto"
                  }}
                />
-               <button onClick={recording ? stopRecording : startRecording} style={{ background: "none", border: "none", color: recording ? "#ef4444" : "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>
-                 {recording ? "⏹" : "🎙️"}
+               {/* Direct Audio Mic */}
+               <button 
+                 onClick={recordingMode === 'audio' ? stopRecording : startRecording} 
+                 disabled={recordingMode === 'transcribe'}
+                 style={{ 
+                   background: "none", border: "none", 
+                   color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "rgba(255,255,255,0.15)" : "#64748b"), 
+                   cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer", 
+                   fontSize: 20, padding: 0 
+                 }}
+                 title="Direct Voice Comment"
+               >
+                 {recordingMode === 'audio' ? "⏹" : "🎙️"}
+               </button>
+
+               {/* Transcription Dictation Button */}
+               <button 
+                 onClick={recordingMode === 'transcribe' ? stopRecording : startTranscribing} 
+                 disabled={recordingMode === 'audio'}
+                 style={{ 
+                   background: "none", border: "none", 
+                   color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "rgba(255,255,255,0.15)" : "#64748b"), 
+                   cursor: recordingMode === 'audio' ? "not-allowed" : "pointer", 
+                   fontSize: 20, padding: 0 
+                 }}
+                 title="Voice to Text Dictation"
+               >
+                 {recordingMode === 'transcribe' ? "🛑" : "📝"}
                </button>
             </div>
             <button 
