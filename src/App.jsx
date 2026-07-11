@@ -7668,22 +7668,18 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                     width: 80,
                     height: 80,
                     borderRadius: '50%',
-                    background: 'rgba(0,0,0,0.1)',
+                    background: 'linear-gradient(135deg, var(--accent) 0%, #1e1b4b 100%)',
                     border: '3px solid var(--accent)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: 40,
+                    color: '#fff',
+                    fontWeight: 900,
+                    fontSize: 28,
                     overflow: 'hidden',
-                    boxShadow: '0 0 15px var(--accent)'
+                    boxShadow: '0 0 20px var(--accent-border)'
                   }}>
-                    {user.avatar ? (
-                      user.avatar.length > 2 ? (
-                        <img src={user.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : (
-                        user.avatar
-                      )
-                    ) : "🥷"}
+                    {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : "AP"}
                   </div>
                 </div>
                 
@@ -7694,60 +7690,17 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
                 </div>
               </Card>
 
-              {/* Avatar Preset Grid */}
-              <Card>
-                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 12, letterSpacing: 1 }}>SELECT SYSTEM AVATAR</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 15 }}>
-                  {PRESET_AVATARS.map(pres => (
-                    <div 
-                      key={pres.label}
-                      onClick={() => saveProfile({ avatar: pres.emoji })}
-                      style={{ 
-                        padding: 16, 
-                        background: 'var(--code-bg)', 
-                        border: user.avatar === pres.emoji ? `2px solid ${pres.color}` : '1px solid var(--border)', 
-                        borderRadius: 12, 
-                        textAlign: 'center', 
-                        cursor: 'pointer',
-                        transition: '0.2s'
-                      }}
-                      onMouseEnter={e=>e.currentTarget.style.background='rgba(255,255,255,0.05)'}
-                      onMouseLeave={e=>e.currentTarget.style.background='var(--code-bg)'}
-                    >
-                      <div style={{ fontSize: 32, marginBottom: 8 }}>{pres.emoji}</div>
-                      <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text-h)' }}>{pres.label.toUpperCase()}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ borderTop: '1px solid var(--border)', marginTop: 20, paddingTop: 20 }}>
-                  <label style={{ fontSize: 11, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 10 }}>UPLOAD CUSTOM AVATAR</label>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (!file) return;
-                      const reader = new FileReader();
-                      reader.onload = (ev) => saveProfile({ avatar: ev.target.result });
-                      reader.readAsDataURL(file);
-                    }}
-                    style={{ fontSize: 12, color: 'var(--text)' }}
-                  />
-                </div>
-              </Card>
-
               {/* Profile details */}
-              <Card>
+              <Card style={{ padding: '24px 28px' }}>
                 <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>ACCOUNT INFORMATION</div>
                 <Field label="Full Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
                 <Field label="Email"><Inp value={form.email} onChange={() => {}} style={{ opacity: 0.5 }} disabled /></Field>
-                <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 12, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
+                <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 16, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
                 <Btn onClick={() => saveProfile({ name: form.name })}>Save Profile</Btn>
               </Card>
 
               {/* Change Password Card */}
-              <Card>
+              <Card style={{ padding: '24px 28px' }}>
                 <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>AUTHENTICATION PASSWORD</div>
                 <Field label="Current Password"><Inp type="password" value={pwForm.current} onChange={v => setPwForm({...pwForm, current: v})} /></Field>
                 <Field label="New Password"><Inp type="password" value={pwForm.newPw} onChange={v => setPwForm({...pwForm, newPw: v})} /></Field>
