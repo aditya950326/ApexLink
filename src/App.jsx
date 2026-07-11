@@ -3668,7 +3668,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
     if (m.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 18 }}>🎧</span>
-        <audio src={m.file} controls style={{ flex: 1, height: 32 }} />
+        <audio src={m.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ flex: 1, height: 32 }} />
       </div>
     );
     return (
@@ -4747,6 +4747,10 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const mediaRecorderRef = useRef(null);
   const recognitionRef = useRef(null);
 
+  const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
+
   const startAudioRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -4918,7 +4922,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
     if (c.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 18 }}>🎧</span>
-        <audio src={c.file} controls style={{ flex: 1, height: 32 }} />
+        <audio src={c.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ flex: 1, height: 32 }} />
       </div>
     );
     return (
@@ -4986,33 +4990,182 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
         </div>
       </div>
 
-      {drawerTab === "details" ? (
-        <div style={{ flex: 1, overflowY: "auto", padding: "30px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "24px 10px", marginBottom: 30, borderBottom: `1px solid ${EH_BORDER}`, paddingBottom: 30 }}>
-              <EHLabel>ASSIGNEE</EHLabel>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <EHAvatar name={assignee?.name||"?"} />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{assignee?.name || "UNASSIGNED"}</span>
+      {drawerTab === "details" ? (() => {
+        const dlStats = (() => {
+          if (!task.deadline) return { label: "No deadline set", color: "#64748b" };
+          const diff = new Date(task.deadline) - new Date(today());
+          const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+          if (days < 0) return { label: `⚠️ Overdue by ${Math.abs(days)} day${Math.abs(days) > 1 ? "s" : ""}`, color: "#ef4444" };
+          if (days === 0) return { label: "⏳ Due today", color: "#f59e0b" };
+          if (days === 1) return { label: "⏳ Due tomorrow", color: "#f59e0b" };
+          return { label: `⏳ ${days} days remaining`, color: "#3b82f6" };
+        })();
+
+        return (
+          <div style={{ flex: 1, overflowY: "auto", padding: "30px", display: "flex", flexDirection: "column", gap: 24 }}>
+            
+            {/* Horizontal Data Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div style={{ background: "rgba(255,255,255,0.01)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: "#64748b", letterSpacing: 1, marginBottom: 4 }}>TASK REF KEY</div>
+                <div style={{ fontSize: 13, fontWeight: 900, color: EH_PRIMARY, fontFamily: "monospace" }}>{task.key || `EH-${task.id.slice(0, 4).toUpperCase()}`}</div>
               </div>
-              <EHLabel>STATUS</EHLabel>
-              <select value={task.status} onChange={e=>updateStatus(e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: meta.color, fontWeight: 900, fontSize: 10, padding: "6px 12px", width: "fit-content", outline: "none" }}>
-                  {Object.keys(EH_STATUS).map(s => <option key={s} value={s}>{EH_STATUS[s].label}</option>)}
-              </select>
-              <EHLabel>PRIORITY</EHLabel>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ color: p.color, fontSize: 16 }}>{p.icon}</span>
-                  <span style={{ color: p.color, fontSize: 12, fontWeight: 900 }}>{p.label}</span>
+              <div style={{ background: "rgba(255,255,255,0.01)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: "#64748b", letterSpacing: 1, marginBottom: 4 }}>LAST CHRONICLE MOD</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#e2e8f0" }}>
+                  {task.updatedAt ? new Date(task.updatedAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : "Recently"}
+                </div>
               </div>
-              <EHLabel>DEADLINE</EHLabel>
-              <input type="date" value={task.deadline || ""} onChange={e=>updateField("deadline", e.target.value)} style={{ background: "#0c0e10", border: `1px solid ${EH_BORDER}`, borderRadius: 8, color: "#fff", fontWeight: 700, fontSize: 11, padding: "6px 12px", outline: "none", fontFamily: "monospace", width: "fit-content" }} />
+            </div>
+
+            {/* Main Cyber Attributes Dashboard */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 20, background: "rgba(255,255,255,0.01)", border: `1px solid ${EH_BORDER}`, borderRadius: 16, padding: 20 }}>
+              
+              {/* ASSIGNEE CONTAINER */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>ASSIGNEE</span>
+                <div style={{ position: "relative" }}>
+                  <div 
+                    onClick={() => { setShowAssigneeDropdown(!showAssigneeDropdown); setShowStatusDropdown(false); setShowPriorityDropdown(false); }} 
+                    style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.02)", padding: "10px 14px", borderRadius: 10, border: `1px solid ${EH_BORDER}`, cursor: "pointer", transition: "0.2s" }}
+                  >
+                    <EHAvatar name={assignee?.name||"?"} size={24} />
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", flex: 1 }}>{assignee?.name || "UNASSIGNED"}</span>
+                    <span style={{ fontSize: 10, color: "#475569" }}>▼</span>
+                  </div>
+                  {showAssigneeDropdown && (
+                    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#0d0f11", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", maxHeight: 180, overflowY: "auto" }}>
+                      <div 
+                        onClick={() => { updateField("assignedTo", null); setShowAssigneeDropdown(false); }}
+                        style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#ef4444", fontWeight: 700 }}
+                      >
+                        ❌ UNASSIGN TASK
+                      </div>
+                      {members.map(m => (
+                        <div 
+                          key={m.userId}
+                          onClick={() => { updateField("assignedTo", m.userId); setShowAssigneeDropdown(false); }}
+                          style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#e2e8f0", transition: "0.2s", background: task.assignedTo === m.userId ? "rgba(255,255,255,0.04)" : "transparent" }}
+                        >
+                          <EHAvatar name={m.name} size={20} />
+                          <span style={{ fontWeight: 600 }}>{m.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Grid block for status and priority */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                
+                {/* STATUS PICKER */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>STATUS</span>
+                  <div style={{ position: "relative" }}>
+                    <div 
+                      onClick={() => { setShowStatusDropdown(!showStatusDropdown); setShowAssigneeDropdown(false); setShowPriorityDropdown(false); }}
+                      style={{ display: "flex", alignItems: "center", gap: 8, background: `${meta.color}15`, border: `1.5px solid ${meta.color}`, borderRadius: 10, padding: "10px 14px", cursor: "pointer", transition: "all 0.2s", justifyContent: "space-between" }}
+                    >
+                      <span style={{ fontSize: 11, fontWeight: 900, color: meta.color, letterSpacing: 0.5 }}>{meta.label.toUpperCase()}</span>
+                      <span style={{ fontSize: 9, color: meta.color }}>▼</span>
+                    </div>
+                    {showStatusDropdown && (
+                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#0d0f11", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+                        {Object.keys(EH_STATUS).map(s => {
+                          const m = EH_STATUS[s];
+                          return (
+                            <div 
+                              key={s}
+                              onClick={() => { updateStatus(s); setShowStatusDropdown(false); }}
+                              style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 800, color: m.color, transition: "0.2s", background: task.status === s ? `${m.color}15` : "transparent" }}
+                            >
+                              {m.label.toUpperCase()}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* PRIORITY PICKER */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>PRIORITY</span>
+                  <div style={{ position: "relative" }}>
+                    <div 
+                      onClick={() => { setShowPriorityDropdown(!showPriorityDropdown); setShowAssigneeDropdown(false); setShowStatusDropdown(false); }}
+                      style={{ display: "flex", alignItems: "center", gap: 8, background: `${p.color}15`, border: `1.5px solid ${p.color}`, borderRadius: 10, padding: "10px 14px", cursor: "pointer", transition: "all 0.2s", justifyContent: "space-between" }}
+                    >
+                      <span style={{ fontSize: 11, fontWeight: 900, color: p.color, letterSpacing: 0.5 }}>{p.icon} {p.label.toUpperCase()}</span>
+                      <span style={{ fontSize: 9, color: p.color }}>▼</span>
+                    </div>
+                    {showPriorityDropdown && (
+                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#0d0f11", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+                        {Object.keys(EH_PRIORITY).map(key => {
+                          const pr = EH_PRIORITY[key];
+                          return (
+                            <div 
+                              key={key}
+                              onClick={() => { updateField("priority", key); setShowPriorityDropdown(false); }}
+                              style={{ padding: "8px 12px", borderRadius: 8, display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 11, fontWeight: 800, color: pr.color, transition: "0.2s", background: task.priority === key ? `${pr.color}15` : "transparent" }}
+                            >
+                              <span>{pr.icon}</span>
+                              <span>{pr.label.toUpperCase()}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* DEADLINE CONTAINER */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, borderTop: `1px solid rgba(255,255,255,0.03)`, paddingTop: 16 }}>
+                <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>DEADLINE LIMIT</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <input 
+                    type="date" 
+                    value={task.deadline || ""} 
+                    onChange={e => updateField("deadline", e.target.value)} 
+                    style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${EH_BORDER}`, borderRadius: 10, color: "#fff", fontWeight: 700, fontSize: 12, padding: "10px 14px", outline: "none", fontFamily: "monospace" }} 
+                  />
+                  <span style={{ fontSize: 12, color: dlStats.color, fontWeight: 800, letterSpacing: 0.5 }}>{dlStats.label}</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* DESCRIPTION PORT */}
+            <div style={{ border: `1px solid ${EH_BORDER}`, borderRadius: 16, background: "rgba(255,255,255,0.01)", overflow: "hidden", position: "relative" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.02)", padding: "12px 18px", borderBottom: `1px solid ${EH_BORDER}` }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>:: DESCRIPTION_MODULE_0x9A ::</div>
+                {!editing && <button onClick={() => setEditing(true)} style={{ background: "none", border: "none", color: EH_PRIMARY, fontSize: 11, fontWeight: 900, cursor: "pointer", letterSpacing: 0.5 }}>EDIT</button>}
+              </div>
+              {editing ? (
+                <textarea 
+                  value={editDesc} 
+                  onChange={e => setEditDesc(e.target.value)} 
+                  onBlur={saveDesc} 
+                  autoFocus 
+                  rows={6} 
+                  style={{ width: "100%", background: "#0c0e10", border: "none", padding: "18px", color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box" }} 
+                />
+              ) : (
+                <div 
+                  onClick={() => setEditing(true)} 
+                  style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, padding: "18px", cursor: "text", minHeight: 120, wordBreak: "break-word" }}
+                >
+                  {task.description || <span style={{ color: "#475569", fontStyle: "italic" }}>No description recorded. Click to write details.</span>}
+                </div>
+              )}
+            </div>
+
           </div>
-          <div style={{ marginBottom: 30 }}>
-              <EHLabel>DESCRIPTION</EHLabel>
-              {editing ? <textarea value={editDesc} onChange={e=>setEditDesc(e.target.value)} onBlur={saveDesc} autoFocus rows={8} style={{ width:"100%", background:"#0c0e10", border:`1px solid ${EH_PRIMARY}`, borderRadius:12, padding:"16px", color:"#fff", fontSize:14, outline:"none", fontFamily: "inherit", lineHeight: 1.6 }} /> : 
-              <div onClick={()=>setEditing(true)} style={{ fontSize: 14, color: "#94a3b8", lineHeight: 1.7, background: "rgba(255,255,255,0.01)", padding: "20px", borderRadius: 12, border: `1px solid ${EH_BORDER}`, cursor: "text", minHeight: 150 }}>{task.description || "Intelligence missing..."}</div>}
-          </div>
-        </div>
-      ) : (
+        );
+      })() : (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
           <style>{`
             .cyber-chat-pane::-webkit-scrollbar { width: 6px; }
@@ -5276,7 +5429,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
     if (m.fType?.startsWith("image/")) return <img src={m.file} style={{ ...s, cursor: "zoom-in" }} alt={m.fName} onClick={() => window.setGlobalLightboxImg?.(m.file)} />;
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
-    if (m.fType?.startsWith("audio/")) return <audio src={m.file} controls style={{ ...s, width: "100%" }} />;
+    if (m.fType?.startsWith("audio/")) return <audio src={m.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ ...s, width: "100%" }} />;
     return (
       <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
         <span style={{ fontSize: 20 }}>📄</span>
