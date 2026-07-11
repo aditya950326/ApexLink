@@ -600,6 +600,21 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
     if (mode === "signup") {
       if (!form.name.trim()) return setErr("Name required.");
+      
+      // Password Complexity Validation
+      if (pass.length < 8) {
+        return setErr("Password must be at least 8 characters long.");
+      }
+      if (!/[A-Z]/.test(pass)) {
+        return setErr("Password must contain at least one uppercase letter.");
+      }
+      if (!/[0-9]/.test(pass)) {
+        return setErr("Password must contain at least one number.");
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) {
+        return setErr("Password must contain at least one special character.");
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: emailLower,
         password: pass,
