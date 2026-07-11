@@ -5089,7 +5089,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
     if (!audioBlob) return;
     const reader = new FileReader();
     reader.onload = () => { 
-      send(null, 'audio/webm', `Voice_Note_${Date.now()}.webm`, reader.result); 
+      send("", 'audio/webm', `Voice_Note_${Date.now()}.webm`, reader.result); 
       setAudioBlob(null); 
     };
     reader.readAsDataURL(audioBlob);
@@ -5146,12 +5146,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
     if (m.fType?.startsWith("image/")) return <img src={m.file} style={{ ...s, cursor: "zoom-in" }} alt={m.fName} onClick={() => window.setGlobalLightboxImg?.(m.file)} />;
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
-    if (m.fType?.startsWith("audio/")) return (
-      <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 18 }}>🎧</span>
-        <audio src={m.file} controls style={{ flex: 1, height: 32 }} />
-      </div>
-    );
+    if (m.fType?.startsWith("audio/")) return <audio src={m.file} controls style={{ ...s, width: "100%" }} />;
     return (
       <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
         <span style={{ fontSize: 20 }}>📄</span>
