@@ -712,6 +712,53 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           <div className="btn-glow" />
         </button>
 
+        {/* OR divider */}
+        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: 10 }}>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          <span style={{ fontSize: 10, color: '#475569', fontWeight: 900, letterSpacing: 1 }}>OR SECURE CONNECT</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+        </div>
+
+        {/* Google Authentication Button */}
+        <button onClick={async () => {
+          setErr("");
+          const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: window.location.origin
+            }
+          });
+          if (error) setErr(error.message);
+        }} style={{
+          width: '100%',
+          padding: '12px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: 12,
+          color: '#fff',
+          fontWeight: 700,
+          fontSize: 13,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+          transition: 'all 0.2s',
+          letterSpacing: 0.5
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.07)';
+          e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+          e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+        }}
+        >
+          <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" style={{ width: 18, height: 18 }} alt="Google logo" />
+          Connect Google Session
+        </button>
+
         {/* SWITCH MODE */}
         <div style={{ textAlign: 'center', marginTop: 25 }}>
           <span style={{ color: '#64748b', fontSize: 13 }}>
