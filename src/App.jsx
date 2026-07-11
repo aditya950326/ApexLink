@@ -6297,6 +6297,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
   const WARRIOR_QUOTES = [
   // --- ANCIENT STRATEGY & BURN THE SHIPS (1-40) ---
+  "Pressure is a privilege. - Virat Kohli",
   "Jack of all is a Master of none",
   "If you want to take the island, burn the ships.",
   "The more you sweat in peace, the less you bleed in war.",
