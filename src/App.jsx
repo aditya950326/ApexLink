@@ -278,24 +278,53 @@ function useLS(key, init) {
           }
         }
 
-        // Sync Notes
+        // Sync Active Notes
         if (key === `apx_notes_v5_${userId}` && Array.isArray(v)) {
           const rows = v.map(n => ({
-            id: n.id,
+            id: String(n.id),
             user_id: userId,
             title: n.title,
             content: n.content || "",
-            color: n.color || '#6c63ff'
+            image: n.image || null,
+            color: n.color || '#6c63ff',
+            is_archived: false
           }));
-          const activeIds = v.map(n => n.id);
+          const activeIds = v.map(n => String(n.id));
           if (activeIds.length > 0) {
-            await supabase.from('notes').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
           } else {
-            await supabase.from('notes').delete().eq('user_id', userId);
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false);
           }
           if (rows.length > 0) {
             await supabase.from('notes').upsert(rows);
           }
+        }
+
+        // Sync Vault Archived Notes
+        if (key === `apx_vault_v5_${userId}` && Array.isArray(v)) {
+          const rows = v.map(n => ({
+            id: String(n.id),
+            user_id: userId,
+            title: n.title,
+            content: n.content || "",
+            image: n.image || null,
+            color: n.color || '#6c63ff',
+            is_archived: true
+          }));
+          const activeIds = v.map(n => String(n.id));
+          if (activeIds.length > 0) {
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+          } else {
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true);
+          }
+          if (rows.length > 0) {
+            await supabase.from('notes').upsert(rows);
+          }
+        }
+
+        // Sync Vault Password
+        if (key === `apx_vpass_v5_${userId}`) {
+          await supabase.from('profiles').update({ vault_password: v }).eq('id', userId);
         }
 
         // Sync Reminders
@@ -7866,15 +7895,34 @@ export default function App() {
           }))));
         }
 
-        // Pull Notes
-        const { data: notes } = await supabase.from('notes').select('*').eq('user_id', currentUser.id);
+        // Pull Active Notes
+        const { data: notes } = await supabase.from('notes').select('*').eq('user_id', currentUser.id).eq('is_archived', false);
         if (notes) {
           localStorage.setItem(`apx_notes_v5_${currentUser.id}`, JSON.stringify(notes.map(n => ({
-            id: n.id,
+            id: Number(n.id) || n.id,
             title: n.title,
             content: n.content,
+            image: n.image,
             color: n.color
           }))));
+        }
+
+        // Pull Vault Archived Notes
+        const { data: archivedNotes } = await supabase.from('notes').select('*').eq('user_id', currentUser.id).eq('is_archived', true);
+        if (archivedNotes) {
+          localStorage.setItem(`apx_vault_v5_${currentUser.id}`, JSON.stringify(archivedNotes.map(n => ({
+            id: Number(n.id) || n.id,
+            title: n.title,
+            content: n.content,
+            image: n.image,
+            color: n.color
+          }))));
+        }
+
+        // Pull Profiles Data & Vault Password
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        if (profile) {
+          localStorage.setItem(`apx_vpass_v5_${currentUser.id}`, JSON.stringify(profile.vault_password));
         }
 
         // Pull Reminders
