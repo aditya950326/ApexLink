@@ -28,3 +28,9 @@ build
 # System Files
 .DS_Store
 Thumbs.db
+
+# Secrets / Configs
+.env
+.env.local
+.env.*
+
