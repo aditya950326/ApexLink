@@ -339,6 +339,37 @@ function useLS(key, init) {
             await supabase.from('habit_logs').upsert(rows);
           }
         }
+
+        // Sync Execution Hub Chats
+        if (key === `apx_chats_${userId}` && Array.isArray(v)) {
+          const rows = v.map(c => ({
+            id: c.id,
+            user_id: userId,
+            title: c.title,
+            messages: c.messages || []
+          }));
+          const activeIds = v.map(c => c.id);
+          if (activeIds.length > 0) {
+            await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+          } else {
+            await supabase.from('chats').delete().eq('user_id', userId);
+          }
+          if (rows.length > 0) {
+            await supabase.from('chats').upsert(rows);
+          }
+        }
+
+        // Sync User Rooms Mappings
+        if (key === `apx_rooms_${userId}` && Array.isArray(v)) {
+          const rows = v.map(roomId => ({
+            user_id: userId,
+            room_id: roomId
+          }));
+          await supabase.from('user_rooms').delete().eq('user_id', userId);
+          if (rows.length > 0) {
+            await supabase.from('user_rooms').upsert(rows);
+          }
+        }
       } catch (err) {
         console.error("Supabase useLS sync failure:", err);
       }
@@ -443,6 +474,47 @@ function useShared(key, init) {
     }, 1500);
     return () => { window.removeEventListener("storage", onStorage); clearInterval(interval); };
   }, [key]);
+
+  // Sync Shared Rooms list to Supabase
+  useEffect(() => {
+    if (key !== "apx_all_rooms" || !Array.isArray(v)) return;
+    const syncRooms = async () => {
+      try {
+        const userSession = await supabase.auth.getSession();
+        const userId = userSession?.data?.session?.user?.id;
+        if (!userId) return;
+
+        const rows = v.map(r => ({
+          id: r.id,
+          name: r.name,
+          password: r.password || "",
+          creator_id: r.creator || userId,
+          members: r.members || [],
+          tasks: r.tasks || [],
+          messages: r.messages || [],
+          streak: r.streak || 0,
+          restore_state: r.restoreState || false,
+          previous_streak: r.previousStreak || 0
+        }));
+
+        const activeIds = v.map(r => r.id);
+        if (activeIds.length > 0) {
+          await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+        } else {
+          await supabase.from('rooms').delete().eq('creator_id', userId);
+        }
+        if (rows.length > 0) {
+          await supabase.from('rooms').upsert(rows);
+        }
+      } catch (e) {
+        console.error("Shared rooms sync failed:", e);
+      }
+    };
+
+    const timer = setTimeout(syncRooms, 1000);
+    return () => clearTimeout(timer);
+  }, [key, v]);
+
   return [v, write];
 }
 
@@ -7826,6 +7898,40 @@ export default function App() {
             logMap[row.log_date][row.habit_id] = row.value;
           });
           localStorage.setItem(`apx_habits_${currentUser.id}`, JSON.stringify(logMap));
+        }
+
+        // Pull Execution Hub Chats
+        const { data: chats } = await supabase.from('chats').select('*').eq('user_id', currentUser.id);
+        if (chats) {
+          localStorage.setItem(`apx_chats_${currentUser.id}`, JSON.stringify(chats.map(c => ({
+            id: c.id,
+            title: c.title,
+            messages: c.messages,
+            createdAt: c.created_at
+          }))));
+        }
+
+        // Pull User Rooms Mappings
+        const { data: userRooms } = await supabase.from('user_rooms').select('room_id').eq('user_id', currentUser.id);
+        if (userRooms) {
+          localStorage.setItem(`apx_rooms_${currentUser.id}`, JSON.stringify(userRooms.map(ur => ur.room_id)));
+        }
+
+        // Pull All Shared Rooms
+        const { data: allRooms } = await supabase.from('rooms').select('*');
+        if (allRooms) {
+          localStorage.setItem('apx_all_rooms', JSON.stringify(allRooms.map(r => ({
+            id: r.id,
+            name: r.name,
+            password: r.password,
+            creator: r.creator_id,
+            members: r.members,
+            tasks: r.tasks,
+            messages: r.messages,
+            streak: r.streak,
+            restoreState: r.restore_state,
+            previousStreak: r.previous_streak
+          }))));
         }
       } catch (err) {
         console.error("Failed to pull data from Supabase:", err);
