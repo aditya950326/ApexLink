@@ -4742,14 +4742,12 @@ function EHCard({ task, members, onSelect, active, onDragStart }) {
 // ═══ TASK DETAIL PANEL ═══════════════════════════════════════════════════════
 function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose }) {
   const [comment, setComment] = useState("");
-  const [recording, setRecording] = useState(false);
+  const [recordingMode, setRecordingMode] = useState(null); // null | 'audio' | 'transcribe'
   const [audioBlob, setAudioBlob] = useState(null);
-  const [transcript, setTranscript] = useState("");
-  const [transcribing, setTranscribing] = useState(false);
   const mediaRecorderRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  const startRecording = async () => {
+  const startAudioRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
@@ -4759,58 +4757,70 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'audio/webm' });
         setAudioBlob(blob);
-        setRecording(false);
+        setRecordingMode(null);
       };
-      
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        const rec = new SpeechRecognition();
-        rec.continuous = true;
-        rec.interimResults = false;
-        rec.lang = 'en-US';
-        
-        let localTranscript = "";
-        rec.onresult = (event) => {
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              localTranscript += event.results[i][0].transcript + " ";
-            }
-          }
-          setTranscript(localTranscript.trim());
-        };
-        rec.onerror = () => {};
-        rec.onend = () => { setTranscribing(false); };
-        
-        recognitionRef.current = rec;
-        rec.start();
-        setTranscribing(true);
-      } else {
-        setTranscript("Transcribing audio... (Mock: Task progress update completed successfully.)");
-      }
-
       mediaRecorder.start();
-      setRecording(true);
-      setTranscript("");
+      setRecordingMode('audio');
     } catch (err) { alert("Microphone access denied."); }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
-    if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch(e){}
+  const startTranscribing = async () => {
+    try {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition is not supported in this browser.");
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const rec = new SpeechRecognition();
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.lang = 'en-US';
+      
+      let finalTranscript = "";
+      rec.onresult = (event) => {
+        let interimTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcriptText = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcriptText + " ";
+          } else {
+            interimTranscript += transcriptText;
+          }
+        }
+        setComment((finalTranscript + interimTranscript).trim());
+      };
+      rec.onend = () => {
+        setRecordingMode(null);
+      };
+      rec.onerror = () => {};
+      
+      recognitionRef.current = rec;
+      rec.start();
+      setRecordingMode('transcribe');
+    } catch (err) {
+      alert("Microphone access denied or error starting speech recognition.");
     }
   };
 
-  const sendAudioComment = (includeTranscript = false) => {
+  const stopRecording = () => {
+    if (recordingMode === 'audio') {
+      if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
+    } else if (recordingMode === 'transcribe') {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch(e){}
+      }
+    }
+  };
+
+  const sendAudioComment = () => {
     if (!audioBlob) return;
     const reader = new FileReader();
     reader.onload = () => {
-      const finalCommentText = includeTranscript && transcript ? `[Vocal Transcript]: "${transcript}"` : "";
-      const c = { id: uid(), taskId: task.id, userId: user.id, userName: user.name, comment: finalCommentText, file: reader.result, fType: 'audio/webm', fName: `Voice_Note_${Date.now()}.webm`, createdAt: new Date().toISOString() };
+      const c = { id: uid(), taskId: task.id, userId: user.id, userName: user.name, comment: "", file: reader.result, fType: 'audio/webm', fName: `Voice_Note_${Date.now()}.webm`, createdAt: new Date().toISOString() };
       setEH(prev => ({ ...prev, comments: [...(prev.comments || []), c] }));
       addLog(`Transmitted voice report for: ${task.title}`);
       setAudioBlob(null);
-      setTranscript("");
     };
     reader.readAsDataURL(audioBlob);
   };
@@ -5108,15 +5118,9 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <span style={{ fontSize: 14 }}>🎙️</span>
                   <div style={{ flex: 1, fontSize: 11, color: '#00B8D9', fontWeight: 900, letterSpacing: 0.5 }}>VOCAL REPORT CAPTURED</div>
-                  <button onClick={() => { setAudioBlob(null); setTranscript(""); }} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 800, cursor: "pointer", fontSize: 11 }}>DISCARD</button>
-                  <button onClick={() => sendAudioComment(false)} style={{ background: "none", border: "none", color: '#00B8D9', fontWeight: 800, cursor: "pointer", fontSize: 11 }}>SEND AUDIO</button>
-                  <button onClick={() => sendAudioComment(true)} style={{ background: '#00B8D9', border: "none", padding: "6px 12px", borderRadius: 6, color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 11 }}>SEND + TRANSCRIPT</button>
+                  <button onClick={() => { setAudioBlob(null); }} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 800, cursor: "pointer", fontSize: 11 }}>DISCARD</button>
+                  <button onClick={sendAudioComment} style={{ background: EH_PRIMARY, border: "none", padding: "6px 16px", borderRadius: 6, color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 11 }}>SEND AUDIO COMMENT</button>
                 </div>
-                {transcript && (
-                  <div style={{ fontSize: 11, color: '#94a3b8', fontStyle: 'italic', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 6, marginTop: 4 }}>
-                    <strong>Transcript:</strong> "{transcript}"
-                  </div>
-                )}
               </div>
             )}
 
@@ -5125,8 +5129,38 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                 <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
                 <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise transmission report..." : "Transmit intelligence report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
                 
-                <button onClick={recording ? stopRecording : startRecording} style={{ background: "none", border: "none", color: recording ? "#ef4444" : "#475569", cursor: "pointer", fontSize: 18, transition: "0.2s", paddingRight: 6 }} onMouseEnter={e=>e.currentTarget.style.color=recording?"#ef4444":EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color=recording?"#ef4444":"#475569"}>
-                  {recording ? "⏹" : "🎙️"}
+                {/* Direct Audio Mic */}
+                <button 
+                  onClick={recordingMode === 'audio' ? stopRecording : startAudioRecording} 
+                  disabled={recordingMode === 'transcribe'}
+                  style={{ 
+                    background: "none", border: "none", 
+                    color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "rgba(255,255,255,0.15)" : "#475569"), 
+                    cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer", 
+                    fontSize: 18, transition: "0.2s" 
+                  }} 
+                  title="Direct Voice Comment"
+                  onMouseEnter={e=>{ if (recordingMode !== 'transcribe') e.currentTarget.style.color=recordingMode==='audio'?"#ef4444":EH_PRIMARY; }} 
+                  onMouseLeave={e=>{ if (recordingMode !== 'transcribe') e.currentTarget.style.color=recordingMode==='audio'?"#ef4444":"#475569"; }}
+                >
+                  {recordingMode === 'audio' ? "⏹" : "🎙️"}
+                </button>
+
+                {/* Transcription Button */}
+                <button 
+                  onClick={recordingMode === 'transcribe' ? stopRecording : startTranscribing} 
+                  disabled={recordingMode === 'audio'}
+                  style={{ 
+                    background: "none", border: "none", 
+                    color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "rgba(255,255,255,0.15)" : "#475569"), 
+                    cursor: recordingMode === 'audio' ? "not-allowed" : "pointer", 
+                    fontSize: 18, transition: "0.2s", paddingRight: 6 
+                  }} 
+                  title="Voice to Text Dictation"
+                  onMouseEnter={e=>{ if (recordingMode !== 'audio') e.currentTarget.style.color=recordingMode==='transcribe'?"#22c55e":EH_PRIMARY; }} 
+                  onMouseLeave={e=>{ if (recordingMode !== 'audio') e.currentTarget.style.color=recordingMode==='transcribe'?"#22c55e":"#475569"; }}
+                >
+                  {recordingMode === 'transcribe' ? "🛑" : "📝"}
                 </button>
 
                 <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: "50%", background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow=`0 4px 20px ${EH_PRIMARY}66`;}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=`0 4px 15px ${EH_PRIMARY}44`;}}>{editingCommentId ? "✓" : "↵"}</button>
