@@ -7543,18 +7543,14 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 }
   
 // ─── SETTINGS ─────────────────────────────────────────────────────────────────
-function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlinesActive, appThemeAccent, setAppThemeAccent }) {
-  const [activeSetTab, setActiveSetTab] = useState("profile");
+function Settings({ user, users, setUsers, onLogout }) {
   const [form, setForm] = useState({ name: user.name, email: user.email });
   const [pwForm, setPwForm] = useState({ current: "", newPw: "", confirm: "" });
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
-  const [alarmVolume, setAlarmVolume] = useLS(`apx_alarm_volume_${user?.id}`, 0.8);
-  const [alarmSound, setAlarmSound] = useLS(`apx_alarm_sound_${user?.id}`, "siren");
 
   const saveProfile = (updatedFields = {}) => {
     setMsg(""); setErr("");
-    const updatedUser = { ...user, ...updatedFields };
     setUsers(users.map(u => u.id === user.id ? { ...u, ...updatedFields } : u));
     setMsg("Profile customized successfully!");
   };
@@ -7569,305 +7565,62 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
     setMsg("Password changed successfully!");
   };
 
-  // Preset Avatars Helper
-  const PRESET_AVATARS = [
-    { label: "🥷 Samurai", emoji: "🥷", color: "#3bacd6" },
-    { label: "Netrunner", emoji: "👩‍💻", color: "#c084fc" },
-    { label: "Gladiator", emoji: "👾", color: "#ef4444" },
-    { label: "Arch-Bot", emoji: "🤖", color: "#10b981" }
-  ];
-
-  // Sound Alarm Options
-  const ALARM_SOUNDS = [
-    { id: "siren", label: "🚨 Tactical Battle Siren", url: "https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3" },
-    { id: "laser", label: "🔫 Cyber Laser Pulse", url: "https://assets.mixkit.co/active_storage/sfx/1086/1086-preview.mp3" },
-    { id: "beep", label: "📟 Monospace Digital Alarm", url: "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" }
-  ];
-
-  // Backup Operations
-  const exportProfileBackup = () => {
-    const backupData = {
-      version: "1.0",
-      timestamp: Date.now(),
-      users: localStorage.getItem("apx_users"),
-      currentUser: localStorage.getItem("apx_current_user"),
-      tasks: localStorage.getItem(`apx_tasks_${user.id}`),
-      habits: localStorage.getItem(`apx_habits_${user.id}`),
-      vision: localStorage.getItem(`apx_vision_${user.id}`),
-      exp: localStorage.getItem(`apx_warrior_exp_${user.id}`)
-    };
-
-    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `ApexLink_Backup_${user.name}_${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    setMsg("Backup file downloaded successfully!");
-  };
-
-  const importProfileBackup = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const data = JSON.parse(event.target.result);
-        if (data.users) localStorage.setItem("apx_users", data.users);
-        if (data.currentUser) localStorage.setItem("apx_current_user", data.currentUser);
-        if (data.tasks) localStorage.setItem(`apx_tasks_${user.id}`, data.tasks);
-        if (data.habits) localStorage.setItem(`apx_habits_${user.id}`, data.habits);
-        if (data.vision) localStorage.setItem(`apx_vision_${user.id}`, data.vision);
-        if (data.exp) localStorage.setItem(`apx_warrior_exp_${user.id}`, data.exp);
-        alert("Restoration successful! The page will now reload.");
-        window.location.reload();
-      } catch (err) {
-        setErr("Invalid backup file structure.");
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  // LocalStorage capacity utility
-  const getStorageSize = () => {
-    let total = 0;
-    for (let x in localStorage) {
-      if (localStorage.hasOwnProperty(x)) {
-        total += (localStorage[x].length * 2);
-      }
-    }
-    return (total / 1024).toFixed(2);
-  };
-
   return (
     <div>
       <PageHeader title="Settings" subtitle="System Control Panel & Customization Desk" />
       
       <div style={{ padding: "0 32px 24px 32px" }}>
-        {/* Horizontal Navigation Menu */}
-        <div style={{ display: 'flex', gap: 20, marginBottom: 25, borderBottom: '1px solid var(--border)', overflowX: 'auto', paddingBottom: 5 }}>
-          <button onClick={() => setActiveSetTab("profile")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "profile" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "profile" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>👤 PROFILE CARD</button>
-          <button onClick={() => setActiveSetTab("themes")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "themes" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "themes" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🎨 NEON THEMES</button>
-          <button onClick={() => setActiveSetTab("sounds")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "sounds" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "sounds" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🔊 SOUND & ALARMS</button>
-          <button onClick={() => setActiveSetTab("backup")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "backup" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "backup" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>💾 DATA ARCHIVE</button>
-          <button onClick={() => setActiveSetTab("diagnostics")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: activeSetTab === "diagnostics" ? '3px solid var(--accent)' : '3px solid transparent', color: activeSetTab === "diagnostics" ? 'var(--text-h)' : '#64748b', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>⚙️ SYSTEM HEALTH</button>
-        </div>
-
         {/* Content Area */}
         <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
           {msg && <div style={{ background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e33", borderRadius: 12, padding: "12px 16px", color: "#22c55e", fontSize: 14, animation: 'fadeIn 0.2s' }}>{msg}</div>}
           {err && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid #ef444433", borderRadius: 12, padding: "12px 16px", color: "#f87171", fontSize: 14, animation: 'fadeIn 0.2s' }}>{err}</div>}
 
-          {/* tab: Profile Card */}
-          {activeSetTab === "profile" && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              {/* Profile Card Header */}
-              <Card style={{ display: 'flex', gap: 24, alignItems: 'center', background: 'radial-gradient(circle at top right, var(--accent-bg), transparent 60%), var(--code-bg)', padding: 24 }}>
-                <div style={{ position: 'relative' }}>
-                  <div style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--accent) 0%, #1e1b4b 100%)',
-                    border: '3px solid var(--accent)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff',
-                    fontWeight: 900,
-                    fontSize: 28,
-                    overflow: 'hidden',
-                    boxShadow: '0 0 20px var(--accent-border)'
-                  }}>
-                    {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : "AP"}
-                  </div>
-                </div>
-                
-                <div style={{ flex: 1 }}>
-                  <span style={{ fontSize: 10, fontWeight: 900, color: 'var(--accent)', letterSpacing: 1.5 }}>ACTIVE PILOT PROFILE</span>
-                  <h2 style={{ margin: '4px 0 6px 0', fontSize: 24, fontWeight: 900, color: 'var(--text-h)' }}>{user.name}</h2>
-                  <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 800 }}>ID: {user.email}</div>
-                </div>
-              </Card>
-
-              {/* Profile details */}
-              <Card style={{ padding: '24px 28px' }}>
-                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>ACCOUNT INFORMATION</div>
-                <Field label="Full Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
-                <Field label="Email"><Inp value={form.email} onChange={() => {}} style={{ opacity: 0.5 }} disabled /></Field>
-                <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 16, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
-                <Btn onClick={() => saveProfile({ name: form.name })}>Save Profile</Btn>
-              </Card>
-
-              {/* Change Password Card */}
-              <Card style={{ padding: '24px 28px' }}>
-                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>AUTHENTICATION PASSWORD</div>
-                <Field label="Current Password"><Inp type="password" value={pwForm.current} onChange={v => setPwForm({...pwForm, current: v})} /></Field>
-                <Field label="New Password"><Inp type="password" value={pwForm.newPw} onChange={v => setPwForm({...pwForm, newPw: v})} /></Field>
-                <Field label="Confirm New Password"><Inp type="password" value={pwForm.confirm} onChange={v => setPwForm({...pwForm, confirm: v})} /></Field>
-                <Btn onClick={changePassword}>Update Password</Btn>
-              </Card>
+          {/* Profile Card Header */}
+          <Card style={{ display: 'flex', gap: 24, alignItems: 'center', background: 'radial-gradient(circle at top right, var(--accent-bg), transparent 60%), var(--code-bg)', padding: 24 }}>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: 80,
+                height: 80,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, var(--accent) 0%, #1e1b4b 100%)',
+                border: '3px solid var(--accent)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#fff',
+                fontWeight: 900,
+                fontSize: 28,
+                overflow: 'hidden',
+                boxShadow: '0 0 20px var(--accent-border)'
+              }}>
+                {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : "AP"}
+              </div>
             </div>
-          )}
-
-          {/* tab: Themes */}
-          {activeSetTab === "themes" && (
-            <Card style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>INTERFACE COLOR SCHEME</div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 15 }}>
-                {[
-                  { name: '💜 Royal Violet', code: '#c084fc' },
-                  { name: '💙 Cyber Blue', code: '#3bacd6' },
-                  { name: '❤️ Blood Ruby', code: '#ef4444' },
-                  { name: '💚 Matrix Green', code: '#10b981' },
-                  { name: '💛 Amber Grid', code: '#f59e0b' }
-                ].map(theme => (
-                  <div 
-                    key={theme.code}
-                    onClick={() => setAppThemeAccent(theme.code)}
-                    style={{ 
-                      padding: 16, 
-                      background: 'var(--code-bg)', 
-                      border: appThemeAccent === theme.code ? `2px solid ${theme.code}` : '1px solid var(--border)', 
-                      borderRadius: 12, 
-                      textAlign: 'center', 
-                      cursor: 'pointer',
-                      boxShadow: appThemeAccent === theme.code ? `0 0 10px ${theme.code}44` : 'none'
-                    }}
-                  >
-                    <div style={{ width: 24, height: 24, borderRadius: '50%', background: theme.code, margin: '0 auto 8px' }} />
-                    <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text-h)' }}>{theme.name.toUpperCase()}</div>
-                  </div>
-                ))}
-              </div>
-
-
-
-              <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: 'var(--text-h)' }}>📟 CRT SCANLINE FILTER EFFECT</div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 4, fontWeight: 700 }}>Overlays a retro matrix display filter across the application interface.</div>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={scanlinesActive}
-                  onChange={(e) => setScanlinesActive(e.target.checked)}
-                  style={{ accentColor: 'var(--accent)', cursor: 'pointer', width: 20, height: 20 }}
-                />
-              </div>
-            </Card>
-          )}
-
-          {/* tab: Sounds */}
-          {activeSetTab === "sounds" && (
-            <Card style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>ALARM AUDIO ALERTS</div>
-
-              <div>
-                <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 8 }}>ALARM ALERT SOUND</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {ALARM_SOUNDS.map(sound => (
-                    <div 
-                      key={sound.id}
-                      onClick={() => setAlarmSound(sound.id)}
-                      style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center', 
-                        padding: '12px 16px', 
-                        background: alarmSound === sound.id ? 'var(--accent-bg)' : 'var(--code-bg)', 
-                        border: alarmSound === sound.id ? '1px solid var(--accent)' : '1px solid var(--border)', 
-                        borderRadius: 10, 
-                        cursor: 'pointer' 
-                      }}
-                    >
-                      <span style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-h)' }}>{sound.label}</span>
-                      <button onClick={(e) => {
-                        e.stopPropagation();
-                        new Audio(sound.url).play().catch(()=>{});
-                      }} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 12, cursor: 'pointer', fontWeight: 900 }}>⚡ TEST</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 6 }}>ALARM AUDIO VOLUME ({Math.round(alarmVolume * 100)}%)</label>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="1" 
-                  step="0.05"
-                  value={alarmVolume} 
-                  onChange={(e) => setAlarmVolume(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: 'var(--accent)' }}
-                />
-              </div>
-            </Card>
-          )}
-
-          {/* tab: Data backup */}
-          {activeSetTab === "backup" && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <Card style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
-                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>EXPORT DATA ARCHIVE</div>
-                <p style={{ fontSize: 12, color: 'var(--text)', margin: 0, lineHeight: 1.5 }}>
-                  Download a complete backup log of your profiles, active habits, timelines, and battle quest experience records to a JSON file.
-                </p>
-                <Btn onClick={exportProfileBackup} style={{ width: 'fit-content' }}>📤 Export Backup File</Btn>
-              </Card>
-
-              <Card style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
-                <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>IMPORT DATA ARCHIVE</div>
-                <p style={{ fontSize: 12, color: 'var(--text)', margin: 0, lineHeight: 1.5 }}>
-                  Upload a previously exported backup file to restore your full profile state.
-                </p>
-                <input 
-                  type="file" 
-                  accept=".json"
-                  onChange={importProfileBackup}
-                  style={{ fontSize: 12, color: 'var(--text)' }}
-                />
-              </Card>
-
-              <Card style={{ border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', flexDirection: 'column', gap: 15 }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: '#ef4444' }}>🚨 HARD RESET (NUKE DIRECTIVE)</div>
-                  <p style={{ fontSize: 11, color: '#64748b', marginTop: 4, fontWeight: 700 }}>Permanently erases all tasks, habits, and profile progress from your local storage.</p>
-                </div>
-                <Btn variant="danger" onClick={() => {
-                  if (confirm("Are you absolutely sure you want to nuke your entire local profile and erase all data? This cannot be undone.")) {
-                    localStorage.clear();
-                    onLogout();
-                  }
-                }} style={{ width: 'fit-content' }}>🧨 Nuke Local Profiles</Btn>
-              </Card>
+            
+            <div style={{ flex: 1 }}>
+              <span style={{ fontSize: 10, fontWeight: 900, color: 'var(--accent)', letterSpacing: 1.5 }}>ACTIVE PILOT PROFILE</span>
+              <h2 style={{ margin: '4px 0 6px 0', fontSize: 24, fontWeight: 900, color: 'var(--text-h)' }}>{user.name}</h2>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 800 }}>ID: {user.email}</div>
             </div>
-          )}
+          </Card>
 
-          {/* tab: Diagnostics */}
-          {activeSetTab === "diagnostics" && (
-            <Card style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', letterSpacing: 1 }}>SYSTEM DIAGNOSTICS & TELEMETRY</div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
-                {[
-                  ["LOCAL STORAGE USAGE", `${getStorageSize()} KB`],
-                  ["TIMETABLE QUESTS DEFINED", JSON.parse(localStorage.getItem(`apx_tasks_${user.id}`) || "[]").length],
-                  ["HABIT TRACKERS ENGAGED", JSON.parse(localStorage.getItem(`apx_habits_${user.id}`) || "[]").length],
-                  ["USER EXPERIENCE POINTS", `${localStorage.getItem(`apx_warrior_exp_${user.id}`) || 0} XP`],
-                  ["SYSTEM DRIVER VERSION", "v2.0.4 - Release (Stable)"],
-                  ["PILOT AUTHENTICATION", "Secure SSL Key Token"]
-                ].map(([label, value]) => (
-                  <div key={label} style={{ padding: 12, background: 'var(--code-bg)', border: '1px solid var(--border)', borderRadius: 10 }}>
-                    <div style={{ fontSize: 9, color: '#64748b', fontWeight: 900, letterSpacing: 1 }}>{label}</div>
-                    <div style={{ fontSize: 14, color: 'var(--text-h)', fontWeight: 800, marginTop: 4 }}>{value}</div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
+          {/* Profile details */}
+          <Card style={{ padding: '24px 28px' }}>
+            <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>ACCOUNT INFORMATION</div>
+            <Field label="Full Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
+            <Field label="Email"><Inp value={form.email} onChange={() => {}} style={{ opacity: 0.5 }} disabled /></Field>
+            <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 16, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
+            <Btn onClick={() => saveProfile({ name: form.name })}>Save Profile</Btn>
+          </Card>
+
+          {/* Change Password Card */}
+          <Card style={{ padding: '24px 28px' }}>
+            <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>AUTHENTICATION PASSWORD</div>
+            <Field label="Current Password"><Inp type="password" value={pwForm.current} onChange={v => setPwForm({...pwForm, current: v})} /></Field>
+            <Field label="New Password"><Inp type="password" value={pwForm.newPw} onChange={v => setPwForm({...pwForm, newPw: v})} /></Field>
+            <Field label="Confirm New Password"><Inp type="password" value={pwForm.confirm} onChange={v => setPwForm({...pwForm, confirm: v})} /></Field>
+            <Btn onClick={changePassword}>Update Password</Btn>
+          </Card>
 
           {/* Sign Out Trigger */}
           <Card style={{ background: 'rgba(239, 68, 68, 0.05)', border: "1px solid rgba(239,68,68,0.2)", display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px' }}>
@@ -7877,13 +7630,12 @@ function Settings({ user, users, setUsers, onLogout, scanlinesActive, setScanlin
             </div>
             <Btn variant="danger" onClick={onLogout}>Sign Out</Btn>
           </Card>
-
         </div>
-
       </div>
     </div>
   );
 }
+
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [users, setUsers] = useLS("apx_users", []);
