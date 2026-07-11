@@ -4837,6 +4837,14 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   const [drawerTab, setDrawerTab] = useState("chat");
   const fileInputRef = useRef(null);
   const chatEndRef = useRef(null);
+  const commentTextareaRef = useRef(null);
+
+  useEffect(() => {
+    if (commentTextareaRef.current) {
+      commentTextareaRef.current.style.height = 'auto';
+      commentTextareaRef.current.style.height = commentTextareaRef.current.scrollHeight + 'px';
+    }
+  }, [comment]);
 
   const comments = (eh.comments||[]).filter(c=>c.taskId===task.id);
   const meta = EH_STATUS[task.status]||EH_STATUS.Backlog;
@@ -5280,7 +5288,34 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             <div className="cyber-input" style={{ display: "flex", gap: 12, background: "#06080a", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 18, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.6)", transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}>
                 <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#475569"}>📎</button>
                 <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-                <input value={comment} onChange={e=>setComment(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendComment()} placeholder={editingCommentId ? "Revise transmission report..." : "Transmit intelligence report..."} style={{ flex: 1, background: "transparent", border: "none", color: "#fff", fontSize: 13, outline: "none", padding: "8px", fontWeight: 500 }} />
+                <textarea
+                  ref={commentTextareaRef}
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendComment();
+                    }
+                  }}
+                  placeholder={editingCommentId ? "Revise transmission report..." : "Transmit intelligence report..."}
+                  rows={1}
+                  style={{
+                    flex: 1,
+                    background: "transparent",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: 13,
+                    outline: "none",
+                    padding: "8px",
+                    fontWeight: 500,
+                    resize: "none",
+                    maxHeight: 120,
+                    fontFamily: "inherit",
+                    boxSizing: "border-box",
+                    height: "auto"
+                  }}
+                />
                 
                 {/* Direct Audio Mic */}
                 <button 
@@ -5348,6 +5383,14 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
   const fileInputRef = useRef(null);
   const bottomRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+  const chatTextareaRef = useRef(null);
+
+  useEffect(() => {
+    if (chatTextareaRef.current) {
+      chatTextareaRef.current.style.height = 'auto';
+      chatTextareaRef.current.style.height = chatTextareaRef.current.scrollHeight + 'px';
+    }
+  }, [msg]);
 
   const roomMsgs = (eh.chat || []).filter(c => c.workspaceId === ws.id);
 
@@ -5491,10 +5534,34 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
         <div style={{ display: "flex", gap: 12, background: "#111316", padding: "8px 16px", borderRadius: 18, border: `1px solid rgba(255,255,255,0.05)`, alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.3)" }}>
           <button onClick={()=>fileInputRef.current.click()} style={{ background:"none", border:"none", color:"#475569", cursor:"pointer", fontSize:20 }}>📎</button>
           <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-          <input 
-            value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send(null)}
-            placeholder={editingMsgId ? "REVISE MISSION REPORT..." : "TYPE MISSION REPORT..."} 
-            style={{ flex: 1, background: "none", border: "none", color: "#fff", outline: "none", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, padding: "8px 0" }} 
+          <textarea
+            ref={chatTextareaRef}
+            value={msg}
+            onChange={e => setMsg(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                send(null);
+              }
+            }}
+            placeholder={editingMsgId ? "REVISE MISSION REPORT..." : "TYPE MISSION REPORT..."}
+            rows={1}
+            style={{
+              flex: 1,
+              background: "none",
+              border: "none",
+              color: "#fff",
+              outline: "none",
+              fontSize: 14,
+              fontWeight: 600,
+              letterSpacing: 0.5,
+              padding: "8px 0",
+              resize: "none",
+              maxHeight: 120,
+              fontFamily: "inherit",
+              boxSizing: "border-box",
+              height: "auto"
+            }}
           />
           <button onClick={recording ? stopRecording : startRecording} style={{ background: "none", border: "none", color: recording ? "#ef4444" : "#475569", cursor: "pointer", fontSize: 20 }}>
             {recording ? "⏹" : "🎙️"}
