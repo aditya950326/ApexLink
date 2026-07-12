@@ -43,7 +43,7 @@ function LandingPage({ onEnterAuth }) {
         inset: 0,
         zIndex: 0,
         opacity: bgVideoReady ? 0 : 1,
-        transition: "opacity 1.2s ease-out",
+        transition: "opacity 0.3s ease-out",
         background: "linear-gradient(135deg, #020205 0%, #0a1628 25%, #0d1f3c 50%, #091a2a 75%, #020205 100%)",
         backgroundSize: "400% 400%",
         animation: "authGradientShift 8s ease infinite"
@@ -65,7 +65,7 @@ function LandingPage({ onEnterAuth }) {
         loop
         playsInline
         preload="auto"
-        onCanPlayThrough={() => setBgVideoReady(true)}
+        onCanPlay={() => setBgVideoReady(true)}
         style={{
           position: 'absolute',
           inset: 0,
@@ -75,7 +75,7 @@ function LandingPage({ onEnterAuth }) {
           zIndex: 0,
           filter: 'brightness(0.5)', // Keeps the background dark for text contrast
           opacity: bgVideoReady ? 1 : 0,
-          transition: "opacity 1.2s ease-in"
+          transition: "opacity 0.3s ease-in"
         }}
       >
         <source src="/landing-bg.mp4" type="video/mp4" />
@@ -681,7 +681,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         inset: 0,
         zIndex: 0,
         opacity: videoReady ? 0 : 1,
-        transition: "opacity 1.2s ease-out",
+        transition: "opacity 0.3s ease-out",
         background: "linear-gradient(135deg, #020205 0%, #0a1628 25%, #0d1f3c 50%, #091a2a 75%, #020205 100%)",
         backgroundSize: "400% 400%",
         animation: "authGradientShift 8s ease infinite"
@@ -703,7 +703,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         loop
         playsInline
         preload="auto"
-        onCanPlayThrough={() => setVideoReady(true)}
+        onCanPlay={() => setVideoReady(true)}
         style={{
           position: "absolute",
           top: "50%",
@@ -715,7 +715,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           zIndex: 0,
           filter: "brightness(0.7) saturate(1.1)",
           opacity: videoReady ? 1 : 0,
-          transition: "opacity 1.2s ease-in"
+          transition: "opacity 0.3s ease-in"
         }}
       >
         <source src="/auth-video.mp4" type="video/mp4" />
