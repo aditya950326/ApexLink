@@ -16,6 +16,7 @@ import { Canvas, PencilBrush, Rect, Circle } from "fabric";
 // DELETE THE OTHER "import React, { useState } from 'react';" LINE COMPLETELY
 function LandingPage({ onEnterAuth }) {
   const [showVideo, setShowVideo] = useState(false);
+  const [bgVideoReady, setBgVideoReady] = useState(false);
 
   const features = [
     { title: 'Neural Timetable', icon: '📅', color: '#6c63ff' },
@@ -35,13 +36,36 @@ function LandingPage({ onEnterAuth }) {
       overflow: 'hidden', 
       position: 'relative' 
     }}>
+
+      {/* 🎨 LAYER 0: ANIMATED GRADIENT PLACEHOLDER (visible while background video loads) */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 0,
+        opacity: bgVideoReady ? 0 : 1,
+        transition: "opacity 1.2s ease-out",
+        background: "linear-gradient(135deg, #020205 0%, #0a1628 25%, #0d1f3c 50%, #091a2a 75%, #020205 100%)",
+        backgroundSize: "400% 400%",
+        animation: "authGradientShift 8s ease infinite"
+      }}>
+        {/* Subtle particle dots overlay */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "radial-gradient(circle, rgba(59,172,214,0.15) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          animation: "authParticleDrift 20s linear infinite"
+        }} />
+      </div>
       
-      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO */}
+      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO — fades in when ready */}
       <video
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
+        onCanPlayThrough={() => setBgVideoReady(true)}
         style={{
           position: 'absolute',
           inset: 0,
@@ -49,7 +73,9 @@ function LandingPage({ onEnterAuth }) {
           height: '100%',
           objectFit: 'cover',
           zIndex: 0,
-          filter: 'brightness(0.5)' // Keeps the background dark for text contrast
+          filter: 'brightness(0.5)', // Keeps the background dark for text contrast
+          opacity: bgVideoReady ? 1 : 0,
+          transition: "opacity 1.2s ease-in"
         }}
       >
         <source src="/landing-bg.mp4" type="video/mp4" />
