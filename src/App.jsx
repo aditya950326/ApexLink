@@ -6425,27 +6425,45 @@ function HabitTracker({ user }) {
   };
   const weekDates = getWeekDates();
 
-  const getAverageScoreForDays = (daysAgoStart, daysAgoEnd) => {
-    let totalScore = 0;
-    let daysCount = 0;
+  const getWeeklyComparisonForMonth = () => {
     const offset = Number(localStorage.getItem("apx_date_offset") || 0);
-    for (let i = daysAgoStart; i <= daysAgoEnd; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() - i + offset);
-      const dateStr = toLocalDateStr(date);
-      const dailyScore = myHabits.length ? myHabits.reduce((sum, h) => sum + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length : 0;
-      totalScore += dailyScore;
-      daysCount++;
+    const current = new Date();
+    current.setDate(current.getDate() + offset);
+    
+    const year = current.getFullYear();
+    const month = current.getMonth();
+    const totalDaysInMonth = daysInMonth(year, month);
+    
+    const getWeekAvg = (startDay, endDay) => {
+      let totalScore = 0;
+      let count = 0;
+      for (let day = startDay; day <= endDay; day++) {
+        const dateObj = new Date(year, month, day);
+        const dateStr = toLocalDateStr(dateObj);
+        const dailyScore = myHabits.length 
+          ? myHabits.reduce((sum, h) => sum + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length 
+          : 0;
+        totalScore += dailyScore;
+        count++;
+      }
+      return count ? Math.round(totalScore / count) : 0;
+    };
+
+    const list = [
+      { label: "Week 1 (1-7)", score: getWeekAvg(1, 7) },
+      { label: "Week 2 (8-14)", score: getWeekAvg(8, 14) },
+      { label: "Week 3 (15-21)", score: getWeekAvg(15, 21) },
+      { label: "Week 4 (22-28)", score: getWeekAvg(22, 28) }
+    ];
+
+    if (totalDaysInMonth > 28) {
+      list.push({ label: `Week 5 (29-${totalDaysInMonth})`, score: getWeekAvg(29, totalDaysInMonth) });
     }
-    return daysCount ? Math.round(totalScore / daysCount) : 0;
+
+    return list;
   };
 
-  const weeklyComparison = [
-    { label: "3 Weeks Ago", score: getAverageScoreForDays(21, 27) },
-    { label: "2 Weeks Ago", score: getAverageScoreForDays(14, 20) },
-    { label: "1 Week Ago", score: getAverageScoreForDays(7, 13) },
-    { label: "Current Week", score: getAverageScoreForDays(0, 6) }
-  ];
+  const weeklyComparison = getWeeklyComparisonForMonth();
 
   return (
     <div style={{ padding: "24px 32px", background: "#050508", minHeight: "100vh" }}>
@@ -8004,7 +8022,10 @@ export default function App() {
 
   // Fetch data tables on successful log in
   useEffect(() => {
-    if (!currentUser?.id) return;
+    if (!currentUser?.id) {
+      setIsDataLoaded(false);
+      return;
+    }
 
     const pullData = async () => {
       try {
@@ -8106,8 +8127,10 @@ export default function App() {
             previousStreak: r.previous_streak
           }))));
         }
+        setIsDataLoaded(true);
       } catch (err) {
         console.error("Failed to pull data from Supabase:", err);
+        setIsDataLoaded(true);
       }
     };
 
@@ -8195,6 +8218,7 @@ export default function App() {
   // NEW VIEW ENGINE
   const [view, setView] = useState(currentUser ? "app" : "landing");
   const [authMode, setAuthMode] = useState("login");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const handleLogin = (user) => { 
     setCurrentUser(user); 
@@ -8204,6 +8228,7 @@ export default function App() {
   const handleLogout = async () => { 
     await supabase.auth.signOut();
     setCurrentUser(null); 
+    setIsDataLoaded(false);
     setView("landing"); 
     setTab("dashboard"); 
   };
@@ -8219,6 +8244,50 @@ export default function App() {
   if (view === "landing") return <LandingPage onEnterAuth={handleEnterAuth} />;
   
   if (view === "auth") return <AuthPage onLogin={handleLogin} users={users} setUsers={setUsers} initialMode={authMode} />;
+
+  if (view === "app" && !isDataLoaded) {
+    return (
+      <div style={{
+        height: '100vh',
+        background: '#020205',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: "'Inter', sans-serif",
+        color: '#fff',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Subtle grid background */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "radial-gradient(circle, rgba(59,172,214,0.08) 1px, transparent 1px)",
+          backgroundSize: "30px 30px",
+          zIndex: 0
+        }} />
+        
+        <div style={{ zIndex: 1, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <img src="/logo.png" alt="Logo" style={{ height: 120, filter: 'drop-shadow(0 0 15px rgba(59,172,214,0.3))', animation: 'pulse 2s infinite ease-in-out' }} />
+          <h2 style={{ fontSize: 13, fontWeight: 900, letterSpacing: 3, textTransform: 'uppercase', margin: '20px 0 10px', color: '#3bacd6' }}>
+            CONNECTING SECURE SESSION
+          </h2>
+          <div style={{ width: 180, height: 2, background: 'rgba(255,255,255,0.05)', borderRadius: 1, overflow: 'hidden', position: 'relative', margin: '15px 0' }}>
+            <div style={{
+              position: 'absolute',
+              height: '100%',
+              width: '50%',
+              background: '#3bacd6',
+              borderRadius: 1,
+              animation: 'sweep 1.5s infinite ease-in-out'
+            }} />
+          </div>
+          <span style={{ fontSize: 9, color: '#4b5563', letterSpacing: 1 }}>SYNCING WARRIOR ARCHIVES</span>
+        </div>
+      </div>
+    );
+  }
 
   const renderTab = () => {
     switch (tab) {
