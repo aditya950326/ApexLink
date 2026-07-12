@@ -591,6 +591,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
   const [mode, setMode] = useState(initialMode);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [err, setErr] = useState("");
+  const [videoReady, setVideoReady] = useState(false);
 
   const handle = async () => {
     setErr("");
@@ -647,13 +648,36 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
       fontFamily: "'Inter', sans-serif",
       background: "#020205" 
     }}>
+
+      {/* 🎨 LAYER 0: ANIMATED GRADIENT PLACEHOLDER (visible while video loads) */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 0,
+        opacity: videoReady ? 0 : 1,
+        transition: "opacity 1.2s ease-out",
+        background: "linear-gradient(135deg, #020205 0%, #0a1628 25%, #0d1f3c 50%, #091a2a 75%, #020205 100%)",
+        backgroundSize: "400% 400%",
+        animation: "authGradientShift 8s ease infinite"
+      }}>
+        {/* Subtle particle dots overlay */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "radial-gradient(circle, rgba(59,172,214,0.15) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          animation: "authParticleDrift 20s linear infinite"
+        }} />
+      </div>
       
-      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO (MUTED) */}
+      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO (MUTED) — fades in when ready */}
       <video
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
+        onCanPlayThrough={() => setVideoReady(true)}
         style={{
           position: "absolute",
           top: "50%",
@@ -663,7 +687,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           objectFit: "cover",
           transform: "translate(-50%, -50%)",
           zIndex: 0,
-          filter: "brightness(0.7) saturate(1.1)"
+          filter: "brightness(0.7) saturate(1.1)",
+          opacity: videoReady ? 1 : 0,
+          transition: "opacity 1.2s ease-in"
         }}
       >
         <source src="/auth-video.mp4" type="video/mp4" />
@@ -842,6 +868,17 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
         @keyframes sweep { 100% { left: 100%; } }
         @keyframes slideIn { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        @keyframes authGradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        @keyframes authParticleDrift {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-40px); }
+        }
       `}</style>
     </div>
   );
