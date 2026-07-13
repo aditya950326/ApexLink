@@ -6365,10 +6365,15 @@ function HabitTracker({ user }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newHabit, setNewHabit] = useState({ label: "", icon: "🎯", type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
   const [chartView, setChartView] = useState("week"); // "day" or "week"
-  const d = today();
+  const [selectedDateStr, setSelectedDateStr] = useState(today());
+
+  // Sync selectedDateStr when logs reset or simulated date fast-forwards
+  useEffect(() => {
+    setSelectedDateStr(today());
+  }, [logs]);
 
   const getVal = (date, id) => logs[date]?.[id] ?? 0;
-  const updateHabit = (id, val) => setLogs(prev => ({ ...prev, [d]: { ...(prev[d] || {}), [id]: val } }));
+  const updateHabit = (id, val) => setLogs(prev => ({ ...prev, [selectedDateStr]: { ...(prev[selectedDateStr] || {}), [id]: val } }));
 
   const calculatePct = (h, val) => {
     if (h.type === "numeric") return Math.min(100, Math.round((val / h.target) * 100));
@@ -6410,16 +6415,14 @@ function HabitTracker({ user }) {
     return streak;
   };
 
-  // Get Monday-to-Sunday dates for the current week
+  // Get rolling 7 days ending today
   const getWeekDates = () => {
     const offset = Number(localStorage.getItem("apx_date_offset") || 0);
     const current = new Date();
     current.setDate(current.getDate() + offset);
-    const day = current.getDay();
-    const diff = current.getDate() - day + (day === 0 ? -6 : 1);
     return Array.from({ length: 7 }, (_, i) => {
       const dateObj = new Date(current);
-      dateObj.setDate(diff + i);
+      dateObj.setDate(current.getDate() - 6 + i);
       return dateObj;
     });
   };
@@ -6502,19 +6505,22 @@ function HabitTracker({ user }) {
               weekDates.map((dateObj, i) => {
                 const dateStr = toLocalDateStr(dateObj);
                 const score = myHabits.length ? Math.round(myHabits.reduce((s, h) => s + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length) : 0;
-                const isToday = dateStr === d;
+                const isSelected = dateStr === selectedDateStr;
+                const isToday = dateStr === today();
                 const dayLabel = dateObj.toLocaleDateString("en-IN", { weekday: 'short' });
                 return (
-                  <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative' }}>
+                  <div key={i} onClick={() => setSelectedDateStr(dateStr)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative', cursor: 'pointer' }}>
                     <div style={{ 
                       width: "100%", height: `${Math.max(score, 2)}%`, 
                       background: score === 100 ? "#22c55e" : `linear-gradient(to top, #6c63ff, #3b82f6)`, 
-                      borderRadius: "4px 4px 0 0", transition: "height 0.8s ease",
-                      opacity: isToday ? 1 : 0.6,
-                      boxShadow: isToday ? `0 0 15px #6c63ff55` : "none"
+                      borderRadius: "4px 4px 0 0", transition: "all 0.3s ease",
+                      opacity: isSelected ? 1 : 0.5,
+                      boxShadow: isSelected ? `0 0 15px ${score === 100 ? '#22c55e' : '#6c63ff'}` : "none",
+                      border: isSelected ? "1.5px solid #fff" : "none",
+                      boxSizing: 'border-box'
                     }} />
                     {/* Horizontal X-Axis (Day of Month + Name) */}
-                    <div style={{ fontSize: 9, fontWeight: 800, color: isToday ? EH_PRIMARY : "#444", marginTop: 10, position: 'absolute', bottom: -25, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <div style={{ fontSize: 9, fontWeight: 800, color: isSelected ? "#fff" : isToday ? "#3bacd6" : "#444", marginTop: 10, position: 'absolute', bottom: -25, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {dayLabel.toUpperCase()} {dateObj.getDate()}
                     </div>
                   </div>
@@ -6522,17 +6528,18 @@ function HabitTracker({ user }) {
               })
             ) : (
               weeklyComparison.map((item, i) => {
+                const isCurrent = i === weeklyComparison.length - 1;
                 return (
                   <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative' }}>
                     <div style={{ 
                       width: "100%", height: `${Math.max(item.score, 2)}%`, 
                       background: item.score === 100 ? "#22c55e" : `linear-gradient(to top, #8b5cf6, #3b82f6)`, 
                       borderRadius: "4px 4px 0 0", transition: "height 0.8s ease",
-                      opacity: i === 3 ? 1 : 0.6,
-                      boxShadow: i === 3 ? `0 0 15px #8b5cf655` : "none"
+                      opacity: isCurrent ? 1 : 0.6,
+                      boxShadow: isCurrent ? `0 0 15px #8b5cf655` : "none"
                     }} />
                     {/* Horizontal X-Axis (Week labels) */}
-                    <div style={{ fontSize: 9, fontWeight: 800, color: i === 3 ? EH_PRIMARY : "#444", marginTop: 10, position: 'absolute', bottom: -25, whiteSpace: 'nowrap' }}>
+                    <div style={{ fontSize: 9, fontWeight: 800, color: isCurrent ? EH_PRIMARY : "#444", marginTop: 10, position: 'absolute', bottom: -25, whiteSpace: 'nowrap' }}>
                       {item.label.toUpperCase()}
                     </div>
                   </div>
@@ -6544,10 +6551,48 @@ function HabitTracker({ user }) {
         <div style={{ marginTop: 30 }} /> {/* Spacer for X-axis labels */}
       </Card>
 
+      {/* Active date indicator banner if viewing past days */}
+      {selectedDateStr !== today() && (
+        <div style={{ 
+          background: "rgba(59,172,214,0.1)", 
+          border: "1px solid rgba(59,172,214,0.2)", 
+          borderRadius: 12, 
+          padding: "12px 20px", 
+          marginBottom: 20, 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          fontFamily: "'Inter', sans-serif"
+        }}>
+          <span style={{ fontSize: 13, color: "#3bacd6", fontWeight: 700 }}>
+            📅 Viewing and logging habits for: <strong style={{ color: '#fff' }}>{fmtDate(selectedDateStr)}</strong>
+          </span>
+          <button 
+            onClick={() => setSelectedDateStr(today())} 
+            style={{ 
+              background: "#3bacd6", 
+              border: "none", 
+              borderRadius: 8, 
+              color: "#fff", 
+              fontSize: 10, 
+              fontWeight: 900, 
+              padding: "6px 14px", 
+              cursor: "pointer",
+              letterSpacing: 0.5,
+              transition: '0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.1)'}
+            onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}
+          >
+            BACK TO TODAY
+          </button>
+        </div>
+      )}
+
       {/* ─── HABIT CARDS ─── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
         {myHabits.map(h => {
-          const val = getVal(d, h.id);
+          const val = getVal(selectedDateStr, h.id);
           const pct = calculatePct(h, val);
           const streak = getStreak(h.id);
           return (
