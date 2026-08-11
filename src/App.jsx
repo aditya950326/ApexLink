@@ -13,10 +13,177 @@ const loadRazorpay = () => {
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "./supabaseClient";
 import { Canvas, PencilBrush, Rect, Circle } from "fabric";
-// DELETE THE OTHER "import React, { useState } from 'react';" LINE COMPLETELY
+import { animate, createTimeline, stagger } from "animejs";
+
 function LandingPage({ onEnterAuth }) {
   const [showVideo, setShowVideo] = useState(false);
   const [bgVideoReady, setBgVideoReady] = useState(false);
+  const bgVideoRef = useRef(null);
+
+  const containerRef = useRef(null);
+  const overlayRef = useRef(null);
+  const hasAnimatedRef = useRef(false);
+
+  // Background Video readiness sync
+  useEffect(() => {
+    const video = bgVideoRef.current;
+    if (!video) return;
+
+    if (video.readyState >= 2) {
+      setBgVideoReady(true);
+    }
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        setBgVideoReady(true);
+      }).catch(() => {});
+    }
+  }, []);
+
+  // Anime.js Entrance Timeline & Ambient Motion
+  useEffect(() => {
+    if (hasAnimatedRef.current) return;
+    hasAnimatedRef.current = true;
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      const elementsToShow = containerRef.current?.querySelectorAll('.anime-reveal');
+      if (elementsToShow) {
+        elementsToShow.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+      }
+      return;
+    }
+
+    // 1. Ambient Background Glowing Spheres Motion
+    animate('.ambient-orb-1', {
+      translateY: [-25, 25],
+      translateX: [-15, 15],
+      scale: [0.9, 1.1],
+      opacity: [0.25, 0.45],
+      duration: 8000,
+      loop: true,
+      direction: 'alternate',
+      easing: 'easeInOutSine'
+    });
+
+    animate('.ambient-orb-2', {
+      translateY: [25, -25],
+      translateX: [20, -20],
+      scale: [1.1, 0.85],
+      opacity: [0.15, 0.35],
+      duration: 10000,
+      loop: true,
+      direction: 'alternate',
+      easing: 'easeInOutSine'
+    });
+
+    // 2. Coordinated Landing Entrance Timeline (Animates opacity & transform without altering position)
+    const tl = createTimeline({
+      defaults: {
+        easing: 'easeOutExpo'
+      }
+    });
+
+    tl.add(overlayRef.current, {
+      opacity: [0, 1],
+      duration: 600,
+    })
+    .add('.nav-item, .auth-trigger, .prime-trigger', {
+      translateY: [-20, 0],
+      opacity: [0, 1],
+      delay: stagger(60),
+      duration: 600,
+    }, '-=400')
+    .add('.cinematic-title', {
+      translateY: [30, 0],
+      opacity: [0, 1],
+      duration: 750,
+      easing: 'easeOutExpo'
+    }, '-=350')
+    .add('.warrior-slogan', {
+      translateY: [20, 0],
+      opacity: [0, 0.9],
+      duration: 650,
+      easing: 'easeOutQuad'
+    }, '-=400')
+    .add('.prime-cta, .video-trigger', {
+      translateY: [20, 0],
+      opacity: [0, 1],
+      delay: stagger(100),
+      duration: 600,
+      easing: 'easeOutCubic'
+    }, '-=300')
+    .add('.marquee-viewport-full', {
+      translateY: [25, 0],
+      opacity: [0, 1],
+      duration: 700,
+      easing: 'easeOutQuad'
+    }, '-=350');
+
+  }, []);
+
+  // Micro-interaction handlers for interactive elements
+  const handleBtnHoverEnter = useCallback((e) => {
+    animate(e.currentTarget, {
+      scale: 1.05,
+      translateY: -2,
+      boxShadow: '0 8px 25px rgba(255,255,255,0.2)',
+      duration: 250,
+      easing: 'easeOutQuad'
+    });
+  }, []);
+
+  const handleBtnHoverLeave = useCallback((e) => {
+    animate(e.currentTarget, {
+      scale: 1,
+      translateY: 0,
+      boxShadow: '0 0 0px rgba(0,0,0,0)',
+      duration: 250,
+      easing: 'easeOutQuad'
+    });
+  }, []);
+
+  const handleBtnClickDown = useCallback((e) => {
+    animate(e.currentTarget, {
+      scale: 0.95,
+      duration: 100,
+      easing: 'easeOutQuad'
+    });
+  }, []);
+
+  const handleBtnClickUp = useCallback((e) => {
+    animate(e.currentTarget, {
+      scale: 1.05,
+      duration: 150,
+      easing: 'easeOutQuad'
+    });
+  }, []);
+
+  const handleCardHoverEnter = useCallback((e) => {
+    animate(e.currentTarget, {
+      translateY: -6,
+      scale: 1.02,
+      borderColor: 'rgba(255,255,255,0.3)',
+      backgroundColor: 'rgba(255,255,255,0.05)',
+      boxShadow: '0 12px 30px rgba(0, 242, 255, 0.15)',
+      duration: 300,
+      easing: 'easeOutQuad'
+    });
+  }, []);
+
+  const handleCardHoverLeave = useCallback((e) => {
+    animate(e.currentTarget, {
+      translateY: 0,
+      scale: 1,
+      borderColor: 'rgba(255,255,255,0.06)',
+      backgroundColor: 'rgba(255,255,255,0.02)',
+      boxShadow: '0 0 0px rgba(0,0,0,0)',
+      duration: 300,
+      easing: 'easeOutQuad'
+    });
+  }, []);
 
   const features = [
     { title: 'Neural Timetable', icon: '📅', color: '#6c63ff' },
@@ -28,7 +195,7 @@ function LandingPage({ onEnterAuth }) {
   ];
 
   return (
-    <div style={{ 
+    <div ref={containerRef} style={{ 
       height: '100vh', 
       background: '#020205', 
       color: '#fff', 
@@ -37,35 +204,61 @@ function LandingPage({ onEnterAuth }) {
       position: 'relative' 
     }}>
 
-      {/* 🎨 LAYER 0: ANIMATED GRADIENT PLACEHOLDER (visible while background video loads) */}
+      {/* 🔮 AMBIENT GLOW SPHERES (Background Ambient Motion) */}
+      <div 
+        className="ambient-orb-1" 
+        style={{
+          position: 'absolute',
+          top: '15%',
+          left: '10%',
+          width: '350px',
+          height: '350px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(108, 99, 255, 0.25) 0%, rgba(0,0,0,0) 70%)',
+          filter: 'blur(50px)',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }} 
+      />
+      <div 
+        className="ambient-orb-2" 
+        style={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '15%',
+          width: '450px',
+          height: '450px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(0, 242, 255, 0.2) 0%, rgba(0,0,0,0) 70%)',
+          filter: 'blur(60px)',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }} 
+      />
+
+      {/* 🎨 LAYER 0: MATCHING BACKGROUND POSTER */}
       <div style={{
         position: "absolute",
         inset: 0,
         zIndex: 0,
-        opacity: bgVideoReady ? 0 : 1,
-        transition: "opacity 0.3s ease-out",
-        background: "linear-gradient(135deg, #020205 0%, #0a1628 25%, #0d1f3c 50%, #091a2a 75%, #020205 100%)",
-        backgroundSize: "400% 400%",
-        animation: "authGradientShift 8s ease infinite"
-      }}>
-        {/* Subtle particle dots overlay */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "radial-gradient(circle, rgba(59,172,214,0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          animation: "authParticleDrift 20s linear infinite"
-        }} />
-      </div>
+        backgroundImage: "url('/landing-poster.webp'), url('/landing-poster.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        filter: "brightness(0.5)",
+      }} />
       
-      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO — fades in when ready */}
+      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO */}
       <video
+        ref={bgVideoRef}
         autoPlay
         muted
         loop
         playsInline
         preload="auto"
+        poster="/landing-poster.webp"
         onCanPlay={() => setBgVideoReady(true)}
+        onLoadedData={() => setBgVideoReady(true)}
+        onPlaying={() => setBgVideoReady(true)}
         style={{
           position: 'absolute',
           inset: 0,
@@ -73,37 +266,62 @@ function LandingPage({ onEnterAuth }) {
           height: '100%',
           objectFit: 'cover',
           zIndex: 0,
-          filter: 'brightness(0.5)', // Keeps the background dark for text contrast
+          filter: 'brightness(0.5)',
           opacity: bgVideoReady ? 1 : 0,
-          transition: "opacity 0.3s ease-in"
+          transition: "opacity 0.6s ease-in-out"
         }}
       >
+        <source src="/landing-bg.webm" type="video/webm" />
         <source src="/landing-bg.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
-      {/* 🌫️ LAYER 1.5: GRADIENT MASK (Fades the video for the UI) */}
-      <div style={{ 
-        position: 'absolute', 
-        inset: 0, 
-        zIndex: 1,
-        background: 'linear-gradient(to right, rgba(2,2,5,0.8), transparent 40%, transparent 60%, rgba(2,2,5,0.8))',
-        pointerEvents: 'none'
-      }} />
+      {/* 🌫️ LAYER 1.5: GRADIENT MASK */}
+      <div 
+        ref={overlayRef}
+        style={{ 
+          position: 'absolute', 
+          inset: 0, 
+          zIndex: 1,
+          background: 'linear-gradient(to right, rgba(2,2,5,0.8), transparent 40%, transparent 60%, rgba(2,2,5,0.8))',
+          pointerEvents: 'none',
+          opacity: 0
+        }} 
+      />
 
       {/* 🧭 LAYER 2: NAVIGATION */}
       <nav style={{ position: 'absolute', top: 0, width: '100vw', padding: '25px 80px 25px 60px', display: 'flex', justifyContent: 'flex-end', zIndex: 1000, boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', gap: 30, alignItems: 'center' }}>
           {['ABOUT', 'COMMUNITY', 'SYSTEM'].map(t => (
-            <span key={t} className="nav-item">{t}</span>
+            <span key={t} className="nav-item anime-reveal" style={{ opacity: 0 }}>{t}</span>
           ))}
-          <div style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.15)' }} />
-          <button onClick={() => onEnterAuth('login')} className="auth-trigger">LOG IN</button>
-          <button onClick={() => onEnterAuth('signup')} className="prime-trigger">SIGN IN</button>
+          <div className="anime-reveal" style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.15)', opacity: 0 }} />
+          <button 
+            onClick={() => onEnterAuth('login')} 
+            onMouseEnter={handleBtnHoverEnter}
+            onMouseLeave={handleBtnHoverLeave}
+            onMouseDown={handleBtnClickDown}
+            onMouseUp={handleBtnClickUp}
+            className="auth-trigger anime-reveal"
+            style={{ opacity: 0 }}
+          >
+            LOG IN
+          </button>
+          <button 
+            onClick={() => onEnterAuth('signup')} 
+            onMouseEnter={handleBtnHoverEnter}
+            onMouseLeave={handleBtnHoverLeave}
+            onMouseDown={handleBtnClickDown}
+            onMouseUp={handleBtnClickUp}
+            className="prime-trigger anime-reveal"
+            style={{ opacity: 0 }}
+          >
+            SIGN IN
+          </button>
         </div>
       </nav>
 
-      {/* ⚔️ HERO MAIN VIEWPORT */}
+      {/* ⚔️ HERO MAIN VIEWPORT (Exact Original Layout Structure) */}
       <main style={{ 
         position: 'relative', 
         zIndex: 10, 
@@ -121,9 +339,9 @@ function LandingPage({ onEnterAuth }) {
           maxWidth: 800 
         }}>
           <div className="reveal-anim" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-            <h1 className="cinematic-title">ApexLink</h1>
+            <h1 className="cinematic-title anime-reveal" style={{ opacity: 0 }}>ApexLink</h1>
             
-            <h2 className="warrior-slogan" style={{ 
+            <h2 className="warrior-slogan anime-reveal" style={{ 
               fontSize: '22px', 
               fontWeight: 900, 
               color: '#7bcdf6', 
@@ -131,7 +349,7 @@ function LandingPage({ onEnterAuth }) {
               textTransform: 'uppercase', 
               letterSpacing: '14px', 
               paddingLeft: '14px', 
-              opacity: 0.9,
+              opacity: 0,
               textShadow: '0 0 25px rgba(252, 249, 254, 0.5)', 
               display: 'block',
               textAlign: 'center'
@@ -142,16 +360,42 @@ function LandingPage({ onEnterAuth }) {
             <div style={{ height: '40px' }} /> 
             
             <div style={{ display: 'flex', gap: 30, justifyContent: 'center' }}>
-              <button onClick={() => onEnterAuth('signup')} className="prime-cta">Start Mission</button>
-              <button onClick={() => setShowVideo(true)} className="video-trigger">Demo video</button>
+              <button 
+                onClick={() => onEnterAuth('signup')} 
+                onMouseEnter={handleBtnHoverEnter}
+                onMouseLeave={handleBtnHoverLeave}
+                onMouseDown={handleBtnClickDown}
+                onMouseUp={handleBtnClickUp}
+                className="prime-cta anime-reveal"
+                style={{ opacity: 0 }}
+              >
+                Start Mission
+              </button>
+              <button 
+                onClick={() => setShowVideo(true)} 
+                onMouseEnter={handleBtnHoverEnter}
+                onMouseLeave={handleBtnHoverLeave}
+                onMouseDown={handleBtnClickDown}
+                onMouseUp={handleBtnClickUp}
+                className="video-trigger anime-reveal"
+                style={{ opacity: 0 }}
+              >
+                Demo video
+              </button>
             </div>
           </div>
         </div>
 
-        <div className="marquee-viewport-full" style={{ marginBottom: '10px' }}>
+        <div className="marquee-viewport-full anime-reveal" style={{ marginBottom: '10px', opacity: 0 }}>
           <div className="marquee-content">
             {[...features, ...features, ...features].map((f, i) => (
-              <div key={i} className="feat-card" style={{ borderLeft: `3px solid ${f.color}` }}>
+              <div 
+                key={i} 
+                className="feat-card" 
+                style={{ borderLeft: `3px solid ${f.color}` }}
+                onMouseEnter={handleCardHoverEnter}
+                onMouseLeave={handleCardHoverLeave}
+              >
                 <span style={{ fontSize: 26 }}>{f.icon}</span>
                 <div style={{ fontWeight: 800, fontSize: 11, color: '#fff', letterSpacing: 1 }}>{f.title.toUpperCase()}</div>
               </div>
@@ -222,11 +466,9 @@ function LandingPage({ onEnterAuth }) {
         .feat-card { 
             width: 210px; padding: 22px; background: rgba(255,255,255,0.02); 
             backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 10px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; 
+            border-radius: 10px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden;
+            cursor: pointer;
         }
-        
-        .reveal-anim { animation: reveal 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
-        @keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   );
@@ -610,37 +852,300 @@ function ApexLogo({ size = 48, textSize = 20, showText = true }) {
   );
 }
 
-
-
 // ─── AUTH ────────────────────────────────────────────────────────────────────
 function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
   const [mode, setMode] = useState(initialMode);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [err, setErr] = useState("");
   const [videoReady, setVideoReady] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
+  const containerRef = useRef(null);
+  const cardRef = useRef(null);
+  const cursorGlowRef = useRef(null);
+  const logoRef = useRef(null);
+  const titleRef = useRef(null);
+  const submitBtnRef = useRef(null);
+  const introRunRef = useRef(false);
+
+  // Password Strength calculation for Sign Up
+  const getPasswordStrength = useCallback((pass) => {
+    if (!pass) return 0;
+    let score = 0;
+    if (pass.length >= 8) score += 25;
+    if (/[A-Z]/.test(pass)) score += 25;
+    if (/[0-9]/.test(pass)) score += 25;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(pass)) score += 25;
+    return score;
+  }, []);
+
+  const pwStrength = mode === "signup" ? getPasswordStrength(form.password) : 0;
+
+  // 1. Mouse movement tracking (Spotlight + 3D Tilt)
+  const handleMouseMove = useCallback((e) => {
+    if (!containerRef.current || !cardRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Move spotlight glow
+    if (cursorGlowRef.current) {
+      animate(cursorGlowRef.current, {
+        left: `${x}px`,
+        top: `${y}px`,
+        duration: 400,
+        easing: 'easeOutQuad'
+      });
+    }
+
+    // 3D Tilt calculation (max ±3.5deg)
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateY = ((x - centerX) / centerX) * 3.5;
+    const rotateX = -((y - centerY) / centerY) * 3.5;
+
+    animate(cardRef.current, {
+      rotateX: rotateX,
+      rotateY: rotateY,
+      duration: 500,
+      easing: 'easeOutQuad'
+    });
+
+    // Magnetic pull on primary button
+    if (submitBtnRef.current) {
+      const btnRect = submitBtnRef.current.getBoundingClientRect();
+      const btnCenterX = btnRect.left + btnRect.width / 2;
+      const btnCenterY = btnRect.top + btnRect.height / 2;
+      const dist = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
+
+      if (dist < 120) {
+        const pullX = (e.clientX - btnCenterX) * 0.15;
+        const pullY = (e.clientY - btnCenterY) * 0.15;
+        animate(submitBtnRef.current, {
+          translateX: pullX,
+          translateY: pullY,
+          duration: 300,
+          easing: 'easeOutQuad'
+        });
+      } else {
+        animate(submitBtnRef.current, {
+          translateX: 0,
+          translateY: 0,
+          duration: 300,
+          easing: 'easeOutQuad'
+        });
+      }
+    }
+  }, []);
+
+  const handleMouseLeaveContainer = useCallback(() => {
+    if (cardRef.current) {
+      animate(cardRef.current, {
+        rotateX: 0,
+        rotateY: 0,
+        duration: 800,
+        easing: 'easeOutQuad'
+      });
+    }
+    if (submitBtnRef.current) {
+      animate(submitBtnRef.current, {
+        translateX: 0,
+        translateY: 0,
+        duration: 400,
+        easing: 'easeOutQuad'
+      });
+    }
+  }, []);
+
+  // 2. Cinematic Entrance Timeline & Looping Animations
+  useEffect(() => {
+    if (introRunRef.current) return;
+    introRunRef.current = true;
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      const elList = containerRef.current?.querySelectorAll('.cinematic-entry');
+      if (elList) elList.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+      return;
+    }
+
+    // Ambient floating particles animation
+    animate('.auth-particle-node', {
+      translateY: () => [-30, 30],
+      translateX: () => [-20, 20],
+      opacity: [0.2, 0.7],
+      scale: [0.8, 1.2],
+      delay: stagger(150),
+      duration: () => 6000 + Math.random() * 4000,
+      direction: 'alternate',
+      loop: true,
+      easing: 'easeInOutSine'
+    });
+
+    // Logo gentle levitation loop
+    animate(logoRef.current, {
+      translateY: [-4, 4],
+      duration: 3500,
+      direction: 'alternate',
+      loop: true,
+      easing: 'easeInOutSine'
+    });
+
+    // Master Intro Timeline
+    const tl = createTimeline({
+      defaults: { easing: 'easeOutExpo' }
+    });
+
+    tl.add('.auth-grid-bg', {
+      opacity: [0, 0.4],
+      duration: 800
+    })
+    .add('.auth-svg-border', {
+      strokeDashoffset: [900, 0],
+      opacity: [0, 1],
+      duration: 1000,
+      easing: 'easeInOutCubic'
+    }, '-=500')
+    .add(logoRef.current, {
+      scale: [0.7, 1],
+      opacity: [0, 1],
+      duration: 700
+    }, '-=600')
+    .add(titleRef.current, {
+      translateY: [20, 0],
+      opacity: [0, 1],
+      duration: 600
+    }, '-=400')
+    .add('.auth-slogan-text', {
+      opacity: [0, 0.8],
+      letterSpacing: ['10px', '4px'],
+      duration: 500
+    }, '-=350')
+    .add('.auth-input-item', {
+      translateY: [20, 0],
+      opacity: [0, 1],
+      delay: stagger(80),
+      duration: 600
+    }, '-=300')
+    .add('.auth-utils-row', {
+      opacity: [0, 1],
+      duration: 400
+    }, '-=200')
+    .add(submitBtnRef.current, {
+      scale: [0.9, 1],
+      opacity: [0, 1],
+      duration: 600,
+      easing: 'easeOutBack'
+    }, '-=200')
+    .add('.auth-google-btn', {
+      translateY: [15, 0],
+      opacity: [0, 1],
+      duration: 500
+    }, '-=300')
+    .add('.auth-switch-row', {
+      opacity: [0, 1],
+      duration: 500
+    }, '-=200');
+
+  }, []);
+
+  // 3. Input Focus / Typing Micro-Animations
+  const handleInputFocus = useCallback((e) => {
+    const parent = e.currentTarget.parentElement;
+    if (parent) {
+      animate(parent, {
+        borderColor: 'rgba(59, 172, 214, 0.6)',
+        backgroundColor: 'rgba(15, 25, 45, 0.7)',
+        boxShadow: '0 0 20px rgba(59, 172, 214, 0.25)',
+        scale: 1.01,
+        duration: 250,
+        easing: 'easeOutQuad'
+      });
+      const icon = parent.querySelector('.input-icon');
+      if (icon) {
+        animate(icon, {
+          scale: 1.2,
+          rotate: [0, -10, 0],
+          duration: 300,
+          easing: 'easeOutBack'
+        });
+      }
+    }
+  }, []);
+
+  const handleInputBlur = useCallback((e) => {
+    const parent = e.currentTarget.parentElement;
+    if (parent) {
+      animate(parent, {
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: 'rgba(15, 15, 25, 0.5)',
+        boxShadow: '0 0 0px rgba(0,0,0,0)',
+        scale: 1,
+        duration: 250,
+        easing: 'easeOutQuad'
+      });
+      const icon = parent.querySelector('.input-icon');
+      if (icon) {
+        animate(icon, {
+          scale: 1,
+          rotate: 0,
+          duration: 200,
+          easing: 'easeOutQuad'
+        });
+      }
+    }
+  }, []);
+
+  const handleInputChange = useCallback((field, val) => {
+    setForm(prev => ({ ...prev, [field]: val }));
+    const activeEl = document.activeElement;
+    if (activeEl && activeEl.parentElement) {
+      animate(activeEl.parentElement, {
+        boxShadow: ['0 0 25px rgba(59, 172, 214, 0.4)', '0 0 15px rgba(59, 172, 214, 0.2)'],
+        duration: 200,
+        easing: 'easeOutQuad'
+      });
+    }
+  }, []);
+
+  // 4. Main Authentication Handler
   const handle = async () => {
     setErr("");
     const emailLower = form.email.trim().toLowerCase();
     const pass = form.password.trim();
-    if (!emailLower || !pass) return setErr("Fill all fields.");
+
+    if (!emailLower || !pass) {
+      triggerError("Fill all fields.");
+      return;
+    }
 
     if (mode === "signup") {
-      if (!form.name.trim()) return setErr("Name required.");
-      
-      // Password Complexity Validation
+      if (!form.name.trim()) {
+        triggerError("Name required.");
+        return;
+      }
       if (pass.length < 8) {
-        return setErr("Password must be at least 8 characters long.");
+        triggerError("Password must be at least 8 characters long.");
+        return;
       }
       if (!/[A-Z]/.test(pass)) {
-        return setErr("Password must contain at least one uppercase letter.");
+        triggerError("Password must contain at least one uppercase letter.");
+        return;
       }
       if (!/[0-9]/.test(pass)) {
-        return setErr("Password must contain at least one number.");
+        triggerError("Password must contain at least one number.");
+        return;
       }
       if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) {
-        return setErr("Password must contain at least one special character.");
+        triggerError("Password must contain at least one special character.");
+        return;
       }
+
+      setIsSubmitting(true);
+      animateSubmitBtn();
 
       const { data, error } = await supabase.auth.signUp({
         email: emailLower,
@@ -651,52 +1156,136 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           }
         }
       });
-      if (error) return setErr(error.message);
-      alert("Sign up successful! Please check your email to verify your account.");
+      setIsSubmitting(false);
+
+      if (error) {
+        triggerError(error.message);
+        return;
+      }
+      triggerSuccess("Sign up successful! Please check your email to verify your account.");
     } else {
+      setIsSubmitting(true);
+      animateSubmitBtn();
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: emailLower,
         password: pass
       });
-      if (error) return setErr(error.message);
+      setIsSubmitting(false);
+
+      if (error) {
+        triggerError(error.message);
+        return;
+      }
+      triggerSuccess();
+    }
+  };
+
+  const triggerError = (msg) => {
+    setErr(msg);
+    if (cardRef.current) {
+      // Sleek horizontal micro-shake animation
+      animate(cardRef.current, {
+        translateX: [-12, 12, -8, 8, -4, 4, 0],
+        duration: 500,
+        easing: 'easeInOutQuad'
+      });
+    }
+  };
+
+  const animateSubmitBtn = () => {
+    if (submitBtnRef.current) {
+      animate(submitBtnRef.current, {
+        scale: [0.95, 1],
+        duration: 200,
+        easing: 'easeOutQuad'
+      });
+    }
+  };
+
+  const triggerSuccess = (alertMsg) => {
+    if (cardRef.current) {
+      animate(cardRef.current, {
+        scale: [1, 1.02, 1],
+        boxShadow: '0 0 50px rgba(59, 172, 214, 0.4)',
+        duration: 400,
+        easing: 'easeOutQuad'
+      });
+    }
+    if (alertMsg) {
+      setTimeout(() => alert(alertMsg), 150);
     }
   };
 
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "flex-end", 
-      padding: "0 8%",
-      position: "relative",
-      overflow: "hidden",
-      fontFamily: "'Inter', sans-serif",
-      background: "#020205" 
-    }}>
+    <div 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeaveContainer}
+      style={{ 
+        minHeight: "100vh", 
+        width: "100vw",
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "flex-end", 
+        padding: "0 8%",
+        position: "relative",
+        overflow: "hidden",
+        fontFamily: "'Inter', sans-serif",
+        background: "#020205",
+        perspective: "1200px",
+        boxSizing: "border-box"
+      }}
+    >
 
-      {/* 🎨 LAYER 0: ANIMATED GRADIENT PLACEHOLDER (visible while video loads) */}
-      <div style={{
+      {/* 🌟 LAYER 0: CURSOR FOLLOW SPOTLIGHT GLOW */}
+      <div 
+        ref={cursorGlowRef}
+        style={{
+          position: "absolute",
+          width: "550px",
+          height: "550px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(59, 172, 214, 0.18) 0%, rgba(108, 99, 255, 0.08) 40%, transparent 70%)",
+          filter: "blur(60px)",
+          transform: "translate(-50%, -50%)",
+          pointerEvents: "none",
+          zIndex: 0
+        }}
+      />
+
+      {/* 🕸️ LAYER 0.5: ANIMATED FUTURISTIC DIGITAL GRID */}
+      <div className="auth-grid-bg" style={{
         position: "absolute",
         inset: 0,
         zIndex: 0,
-        opacity: videoReady ? 0 : 1,
-        transition: "opacity 0.3s ease-out",
-        background: "linear-gradient(135deg, #020205 0%, #0a1628 25%, #0d1f3c 50%, #091a2a 75%, #020205 100%)",
-        backgroundSize: "400% 400%",
-        animation: "authGradientShift 8s ease infinite"
-      }}>
-        {/* Subtle particle dots overlay */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "radial-gradient(circle, rgba(59,172,214,0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          animation: "authParticleDrift 20s linear infinite"
-        }} />
+        opacity: 0,
+        backgroundImage: "linear-gradient(rgba(59, 172, 214, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 172, 214, 0.07) 1px, transparent 1px)",
+        backgroundSize: "50px 50px",
+        pointerEvents: "none"
+      }} />
+
+      {/* 🔮 LAYER 0.7: FLOATING AMBIENT PARTICLE NODES */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}>
+        {[...Array(16)].map((_, i) => (
+          <div
+            key={i}
+            className="auth-particle-node"
+            style={{
+              position: "absolute",
+              top: `${15 + (i * 5.2) % 75}%`,
+              left: `${10 + (i * 5.8) % 80}%`,
+              width: `${4 + (i % 3) * 3}px`,
+              height: `${4 + (i % 3) * 3}px`,
+              borderRadius: "50%",
+              background: i % 2 === 0 ? "rgba(59, 172, 214, 0.6)" : "rgba(167, 139, 250, 0.6)",
+              boxShadow: i % 2 === 0 ? "0 0 10px rgba(59, 172, 214, 0.8)" : "0 0 10px rgba(167, 139, 250, 0.8)"
+            }}
+          />
+        ))}
       </div>
-      
-      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO (MUTED) — fades in when ready */}
+
+      {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO (MUTED) */}
       <video
         autoPlay
         muted
@@ -713,202 +1302,393 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           objectFit: "cover",
           transform: "translate(-50%, -50%)",
           zIndex: 0,
-          filter: "brightness(0.7) saturate(1.1)",
+          filter: "brightness(0.65) saturate(1.1)",
           opacity: videoReady ? 1 : 0,
-          transition: "opacity 0.3s ease-in"
+          transition: "opacity 0.6s ease-in"
         }}
       >
         <source src="/auth-video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
-      {/* 🌫️ LAYER 2: DARK EDGE VIGNETTE OVERLAY (Hides Logos) */}
+      {/* 🌫️ LAYER 2: DARK EDGE VIGNETTE OVERLAY */}
       <div style={{ 
         position: "absolute", inset: 0, zIndex: 1,
-        background: "radial-gradient(circle at center, transparent 0%, rgba(2,2,5,0.4) 60%, rgba(2,2,5,0.9) 100%)",
+        background: "radial-gradient(circle at center, transparent 0%, rgba(2,2,5,0.4) 55%, rgba(2,2,5,0.92) 100%)",
         pointerEvents: "none" 
       }} />
 
-      {/* 🛡️ LAYER 3: TRANSPARENT AUTH CARD */}
-      <div className="auth-card-mockup">
-        
-        {/* LOGO SECTION */}
-        <div style={{ textAlign: "center", marginBottom: 30 }}>
-           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: -20 }}>
-             <img src="/logo.png" alt="Logo" style={{ height: 230, filter: 'drop-shadow(0 0 20px rgba(59,172,214,0.4))' }} />
+      {/* 🛡️ LAYER 3: 3D ANIMATED TRANSLUCENT AUTH CARD */}
+      <div 
+        ref={cardRef} 
+        className="auth-card-mockup"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Animated SVG Border circuit overlay */}
+        <svg 
+          className="auth-svg-border"
+          viewBox="0 0 420 620" 
+          fill="none" 
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+            zIndex: 1,
+            strokeDasharray: 900,
+            strokeDashoffset: 0
+          }}
+        >
+          <rect 
+            x="2" y="2" width="416" height="616" rx="20" 
+            stroke="url(#authBorderGrad)" 
+            strokeWidth="1.5" 
+          />
+          <defs>
+            <linearGradient id="authBorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#3bacd6" stopOpacity="0.8" />
+              <stop offset="50%" stopColor="#6c63ff" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#3bacd6" stopOpacity="0.8" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        {/* Inner Light Sweep effect */}
+        <div className="auth-card-light-sweep" />
+
+        {/* LOGO & HEADING SECTION */}
+        <div style={{ textAlign: "center", marginBottom: 25, position: "relative", zIndex: 5 }}>
+           <div ref={logoRef} style={{ display: 'flex', justifyContent: 'center', marginBottom: -20, opacity: 0 }} className="cinematic-entry">
+             <img src="/logo.png" alt="Logo" style={{ height: 210, filter: 'drop-shadow(0 0 25px rgba(59,172,214,0.5))' }} />
            </div>
-           <h1 style={{ fontSize: 32, fontWeight: 900, color: "#fff", letterSpacing: 2, marginTop: -25 }}>APEXLINK</h1>
            
-           <h2 className="welcome-text">{mode === "login" ? "" : ""}</h2>
-           <p style={{ color: "#94a3b8", fontSize: 13, marginTop: -30 }}>FORGE . FOCUS . CONQUER</p>
+           <h1 
+             ref={titleRef} 
+             className="cinematic-entry"
+             style={{ 
+               fontSize: 32, 
+               fontWeight: 900, 
+               color: "#fff", 
+               letterSpacing: 3, 
+               marginTop: -25,
+               opacity: 0,
+               background: "linear-gradient(180deg, #ffffff 30%, #94a3b8 100%)",
+               WebkitBackgroundClip: "text",
+               WebkitTextFillColor: "transparent"
+             }}
+           >
+             APEXLINK
+           </h1>
+           
+           <p 
+             className="auth-slogan-text cinematic-entry" 
+             style={{ 
+               color: "#3bacd6", 
+               fontSize: 12, 
+               fontWeight: 800, 
+               marginTop: 6, 
+               letterSpacing: 4,
+               opacity: 0
+             }}
+           >
+             FORGE . FOCUS . CONQUER
+           </p>
         </div>
 
-        {/* INPUTS */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+        {/* INPUT FORM FIELDS */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, position: "relative", zIndex: 5 }}>
           {mode === "signup" && (
-            <div className="input-group">
+            <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0 }}>
               <span className="input-icon">👤</span>
-              <input placeholder="Name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+              <input 
+                placeholder="Name" 
+                value={form.name} 
+                onChange={e => handleInputChange('name', e.target.value)} 
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+              />
             </div>
           )}
 
-          <div className="input-group">
+          <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0 }}>
             <span className="input-icon">✉️</span>
-            <input placeholder="Email" type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+            <input 
+              placeholder="Email" 
+              type="email" 
+              value={form.email} 
+              onChange={e => handleInputChange('email', e.target.value)} 
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+            />
           </div>
 
-          <div className="input-group">
+          <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0, position: 'relative' }}>
             <span className="input-icon">🔒</span>
-            <input placeholder="Password" type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} onKeyDown={e => e.key === 'Enter' && handle()} />
+            <input 
+              placeholder="Password" 
+              type={showPassword ? "text" : "password"} 
+              value={form.password} 
+              onChange={e => handleInputChange('password', e.target.value)} 
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              onKeyDown={e => e.key === 'Enter' && handle()} 
+            />
+            <span 
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: 'pointer', opacity: 0.6, fontSize: 13, userSelect: 'none', paddingLeft: 8 }}
+            >
+              {showPassword ? "👁️" : "🙈"}
+            </span>
           </div>
+
+          {/* Password Complexity Bar on Signup */}
+          {mode === "signup" && form.password && (
+            <div style={{ padding: "0 4px", marginTop: -6 }}>
+              <div style={{ height: 3, width: "100%", background: "rgba(255,255,255,0.1)", borderRadius: 4, overflow: "hidden" }}>
+                <div style={{ 
+                  height: "100%", 
+                  width: `${pwStrength}%`, 
+                  background: pwStrength <= 25 ? "#f87171" : pwStrength <= 75 ? "#fbbf24" : "#34d399",
+                  transition: "width 0.3s ease, background 0.3s ease"
+                }} />
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* UTILS */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '15px 0', fontSize: 12, color: '#64748b' }}>
-           <label style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>
-             <input type="checkbox" /> Remember me
+        {/* UTILS ROW */}
+        <div 
+          className="auth-utils-row cinematic-entry" 
+          style={{ 
+            display: 'flex', 
+            justify: 'space-between', 
+            alignItems: 'center', 
+            gap: 12,
+            margin: '16px 0', 
+            fontSize: 12, 
+            color: '#64748b',
+            opacity: 0,
+            position: "relative",
+            zIndex: 5
+          }}
+        >
+           <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none' }}>
+             <input 
+               type="checkbox" 
+               checked={rememberMe} 
+               onChange={e => setRememberMe(e.target.checked)} 
+               style={{ accentColor: "#3bacd6", cursor: 'pointer' }}
+             /> 
+             <span>Remember me</span>
            </label>
-           <span style={{ cursor: 'pointer' }}>Forgot password?</span>
+           <span 
+             style={{ cursor: 'pointer', transition: 'color 0.2s', whiteSpace: 'nowrap' }}
+             onMouseEnter={e => e.currentTarget.style.color = '#3bacd6'}
+             onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
+           >
+             Forgot password?
+           </span>
         </div>
 
-        {err && <div style={{ color: "#f87171", fontSize: 12, marginBottom: 10, textAlign: "center", fontWeight: 700 }}>{err}</div>}
+        {/* ERROR MESSAGE DISPLAY */}
+        {err && (
+          <div style={{ 
+            color: "#f87171", 
+            fontSize: 12, 
+            marginBottom: 12, 
+            textAlign: "center", 
+            fontWeight: 700,
+            background: "rgba(248, 113, 113, 0.1)",
+            padding: "8px 12px",
+            borderRadius: 6,
+            border: "1px solid rgba(248, 113, 113, 0.2)",
+            position: "relative",
+            zIndex: 5
+          }}>
+            {err}
+          </div>
+        )}
 
-        {/* THE TERMINAL BUTTON */}
-        <button onClick={handle} className="enter-terminal-btn">
-          {mode === "login" ? "ENTER TERMINAL" : "INITIALIZE PROFILE"}
+        {/* MAGNETIC ENTER TERMINAL BUTTON */}
+        <button 
+          ref={submitBtnRef}
+          onClick={handle} 
+          disabled={isSubmitting}
+          className="enter-terminal-btn cinematic-entry"
+          style={{ opacity: 0, position: "relative", zIndex: 5 }}
+          onMouseEnter={(e) => {
+            animate(e.currentTarget, {
+              scale: 1.03,
+              boxShadow: '0 12px 30px rgba(59, 172, 214, 0.4)',
+              duration: 250,
+              easing: 'easeOutQuad'
+            });
+          }}
+          onMouseLeave={(e) => {
+            animate(e.currentTarget, {
+              scale: 1,
+              boxShadow: '0 10px 20px rgba(59, 172, 214, 0.2)',
+              duration: 250,
+              easing: 'easeOutQuad'
+            });
+          }}
+        >
+          {isSubmitting ? "AUTHENTICATING..." : (mode === "login" ? "ENTER TERMINAL" : "INITIALIZE PROFILE")}
           <div className="btn-glow" />
         </button>
 
-        {/* OR divider */}
-        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: 10 }}>
+        {/* OR DIVIDER */}
+        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: 10, position: "relative", zIndex: 5 }}>
           <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
           <span style={{ fontSize: 10, color: '#475569', fontWeight: 900, letterSpacing: 1 }}>OR SECURE CONNECT</span>
           <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
         </div>
 
-        {/* Google Authentication Button */}
-        <button onClick={async () => {
-          setErr("");
-          const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-              redirectTo: window.location.origin
-            }
-          });
-          if (error) setErr(error.message);
-        }} style={{
-          width: '100%',
-          padding: '12px',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          borderRadius: 12,
-          color: '#fff',
-          fontWeight: 700,
-          fontSize: 13,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 10,
-          transition: 'all 0.2s',
-          letterSpacing: 0.5
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.07)';
-          e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.15)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-          e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.08)';
-        }}
+        {/* GOOGLE OAUTH BUTTON */}
+        <button 
+          onClick={async () => {
+            setErr("");
+            const { data, error } = await supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                redirectTo: window.location.origin
+              }
+            });
+            if (error) triggerError(error.message);
+          }} 
+          className="auth-google-btn cinematic-entry"
+          style={{
+            width: '100%',
+            padding: '12px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: 10,
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: 13,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            opacity: 0,
+            position: "relative",
+            zIndex: 5
+          }}
+          onMouseEnter={(e) => {
+            animate(e.currentTarget, {
+              backgroundColor: 'rgba(255, 255, 255, 0.07)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              scale: 1.02,
+              duration: 200,
+              easing: 'easeOutQuad'
+            });
+          }}
+          onMouseLeave={(e) => {
+            animate(e.currentTarget, {
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              borderColor: 'rgba(255, 255, 255, 0.08)',
+              scale: 1,
+              duration: 200,
+              easing: 'easeOutQuad'
+            });
+          }}
         >
           <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" style={{ width: 18, height: 18 }} alt="Google logo" />
           Connect Google Session
         </button>
 
-        {/* SWITCH MODE */}
-        <div style={{ textAlign: 'center', marginTop: 25 }}>
+        {/* SWITCH MODE ROW */}
+        <div className="auth-switch-row cinematic-entry" style={{ textAlign: 'center', marginTop: 22, opacity: 0, position: "relative", zIndex: 5 }}>
           <span style={{ color: '#64748b', fontSize: 13 }}>
             {mode === "login" ? "New to the path?" : "Already a warrior?"} 
-            <button onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} style={{ background: 'none', border: 'none', color: '#3bacd6', fontWeight: 800, cursor: 'pointer', marginLeft: 5 }}>
+            <button 
+              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} 
+              style={{ background: 'none', border: 'none', color: '#3bacd6', fontWeight: 800, cursor: 'pointer', marginLeft: 6 }}
+              onMouseEnter={(e) => animate(e.currentTarget, { color: '#a78bfa', duration: 200 })}
+              onMouseLeave={(e) => animate(e.currentTarget, { color: '#3bacd6', duration: 200 })}
+            >
               {mode === "login" ? "Sign Up" : "Log In"}
             </button>
           </span>
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: 40, fontSize: 10, color: '#444', letterSpacing: 1 }}>
-          
         </div>
       </div>
 
       <style>{`
         .auth-card-mockup {
           width: 420px;
-          background: transparent;
-          border: none;
-          padding: 45px;
+          margin-left: auto;
+          margin-right: 0;
+          background: rgba(10, 12, 20, 0.65);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: 20px;
+          padding: 40px;
           position: relative;
           z-index: 10;
-          animation: slideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(59, 172, 214, 0.1);
+          overflow: hidden;
         }
 
-        .welcome-text {
-          font-family: 'Brush Script MT', cursive, sans-serif;
-          font-size: 38px;
-          color: #a78bfa;
-          margin: 15px 0 5px;
-          font-style: italic;
-          text-shadow: 0 0 20px rgba(167, 139, 250, 0.4);
+        .auth-card-light-sweep {
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 60%;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, #3bacd6, transparent);
+          animation: cardLightSweep 4s linear infinite;
+        }
+
+        @keyframes cardLightSweep {
+          0% { left: -100%; }
+          100% { left: 200%; }
         }
 
         .input-group {
           background: rgba(15, 15, 25, 0.5); 
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 8px;
+          border-radius: 10px;
           display: flex;
           align-items: center;
           padding: 0 15px;
-          transition: 0.3s;
         }
         
         .input-group input {
-          width: 100%; background: none; border: none; padding: 12px; 
+          width: 100%; background: none; border: none; padding: 12px 6px; 
           color: #fff; font-size: 14px; outline: none;
         }
 
         .enter-terminal-btn {
           width: 100%; padding: 14px; 
           background: linear-gradient(90deg, #6c63ff, #3bacd6);
-          border: none; border-radius: 8px; color: #fff; 
+          border: none; border-radius: 10px; color: #fff; 
           font-weight: 900; letter-spacing: 2px; cursor: pointer;
-          position: relative; overflow: hidden; transition: 0.3s;
+          position: relative; overflow: hidden;
           box-shadow: 0 10px 20px rgba(59, 172, 214, 0.2);
         }
         
         .btn-glow {
           position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
           animation: sweep 3s infinite;
         }
 
         @keyframes sweep { 100% { left: 100%; } }
-        @keyframes slideIn { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        @keyframes authGradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
-        @keyframes authParticleDrift {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(-40px); }
+        @media (max-width: 768px) {
+          .auth-card-mockup {
+            width: 90%;
+            padding: 25px;
+          }
         }
       `}</style>
     </div>
   );
 }
+
 // ─── LAYOUT ──────────────────────────────────────────────────────────────────
 
 
