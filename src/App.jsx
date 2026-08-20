@@ -14,6 +14,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "./supabaseClient";
 import { Canvas, PencilBrush, Rect, Circle } from "fabric";
 import { animate, createTimeline, stagger } from "animejs";
+import AnimatedList from "./AnimatedList.jsx";
 
 function LandingPage({ onEnterAuth }) {
   const [showVideo, setShowVideo] = useState(false);
@@ -129,7 +130,7 @@ function LandingPage({ onEnterAuth }) {
     animate(e.currentTarget, {
       scale: 1.05,
       translateY: -2,
-      boxShadow: '0 8px 25px rgba(255,255,255,0.2)',
+      boxShadow: 'var(--shadow-md)',
       duration: 250,
       easing: 'easeOutQuad'
     });
@@ -165,9 +166,9 @@ function LandingPage({ onEnterAuth }) {
     animate(e.currentTarget, {
       translateY: -6,
       scale: 1.02,
-      borderColor: 'rgba(255,255,255,0.3)',
-      backgroundColor: 'rgba(255,255,255,0.05)',
-      boxShadow: '0 12px 30px rgba(0, 242, 255, 0.15)',
+      borderColor: 'var(--text-muted)',
+      backgroundColor: 'var(--surface-2)',
+      boxShadow: 'var(--shadow-lg)',
       duration: 300,
       easing: 'easeOutQuad'
     });
@@ -177,8 +178,8 @@ function LandingPage({ onEnterAuth }) {
     animate(e.currentTarget, {
       translateY: 0,
       scale: 1,
-      borderColor: 'rgba(255,255,255,0.06)',
-      backgroundColor: 'rgba(255,255,255,0.02)',
+      borderColor: 'var(--surface-2)',
+      backgroundColor: 'var(--surface-1)',
       boxShadow: '0 0 0px rgba(0,0,0,0)',
       duration: 300,
       easing: 'easeOutQuad'
@@ -197,7 +198,7 @@ function LandingPage({ onEnterAuth }) {
   return (
     <div ref={containerRef} style={{ 
       height: '100vh', 
-      background: '#020205', 
+      background: 'var(--bg-base)', 
       color: '#fff', 
       fontFamily: "'Inter', sans-serif",
       overflow: 'hidden', 
@@ -213,7 +214,7 @@ function LandingPage({ onEnterAuth }) {
           left: '10%',
           width: '350px',
           height: '350px',
-          borderRadius: '50%',
+          borderRadius: 'var(--radius-full)',
           background: 'radial-gradient(circle, rgba(108, 99, 255, 0.25) 0%, rgba(0,0,0,0) 70%)',
           filter: 'blur(50px)',
           zIndex: 0,
@@ -228,7 +229,7 @@ function LandingPage({ onEnterAuth }) {
           right: '15%',
           width: '450px',
           height: '450px',
-          borderRadius: '50%',
+          borderRadius: 'var(--radius-full)',
           background: 'radial-gradient(circle, rgba(0, 242, 255, 0.2) 0%, rgba(0,0,0,0) 70%)',
           filter: 'blur(60px)',
           zIndex: 0,
@@ -295,7 +296,7 @@ function LandingPage({ onEnterAuth }) {
           {['ABOUT', 'COMMUNITY', 'SYSTEM'].map(t => (
             <span key={t} className="nav-item anime-reveal" style={{ opacity: 0 }}>{t}</span>
           ))}
-          <div className="anime-reveal" style={{ width: '1px', height: '14px', background: 'rgba(255,255,255,0.15)', opacity: 0 }} />
+          <div className="anime-reveal" style={{ width: '1px', height: '14px', background: 'var(--border-strong)', opacity: 0 }} />
           <button 
             onClick={() => onEnterAuth('login')} 
             onMouseEnter={handleBtnHoverEnter}
@@ -416,10 +417,10 @@ function LandingPage({ onEnterAuth }) {
         >
           <div 
             style={{
-              width: '90%', maxWidth: '1000px', background: '#050508', 
-              border: '1px solid rgba(8, 66, 212, 0.5)', borderRadius: '12px',
+              width: '90%', maxWidth: '1000px', background: 'var(--bg-base)', 
+              border: '1px solid rgba(8, 66, 212, 0.5)', borderRadius: 'var(--radius-md)',
               padding: '10px', position: 'relative',
-              boxShadow: '0 0 50px rgba(8, 66, 212, 0.3)'
+              boxShadow: 'var(--shadow-glow)'
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -432,7 +433,7 @@ function LandingPage({ onEnterAuth }) {
             >
               ×
             </button>
-            <video autoPlay controls style={{ width: '100%', borderRadius: '8px', display: 'block' }}>
+            <video autoPlay controls style={{ width: '100%', borderRadius: 'var(--radius-md)', display: 'block' }}>
               <source src="/demo.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
@@ -443,8 +444,8 @@ function LandingPage({ onEnterAuth }) {
       <style>{`
         .nav-item { font-size: 10px; font-weight: 900; letter-spacing: 2px; color: #555; cursor: pointer; transition: 0.3s; }
         .nav-item:hover { color: #fff; }
-        .prime-trigger { background: #fff; color: #000; border: none; padding: 10px 25px; border-radius: 100px; font-weight: 950; font-size: 10px; cursor: pointer; letter-spacing: 1px; }
-        .auth-trigger { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 25px; border-radius: 100px; font-weight: 950; font-size: 10px; cursor: pointer; letter-spacing: 1px; }
+        .prime-trigger { background: #fff; color: #000; border: none; padding: 10px 25px; border-radius: var(--radius-full); font-weight: 950; font-size: 10px; cursor: pointer; letter-spacing: 1px; }
+        .auth-trigger { background: transparent; border: 1px solid var(--surface-3); color: #fff; padding: 10px 25px; border-radius: var(--radius-full); font-weight: 950; font-size: 10px; cursor: pointer; letter-spacing: 1px; }
 
         .cinematic-title {
           font-size: 135px; font-weight: 950; text-transform: uppercase; letter-spacing: -10px; margin: 0; line-height: 0.8;
@@ -452,8 +453,8 @@ function LandingPage({ onEnterAuth }) {
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
-        .prime-cta { padding: 20px 45px; background: #fff; color: #000; border: none; border-radius: 4px; font-weight: 950; font-size: 14px; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
-        .video-trigger { padding: 20px 40px; background: transparent; border: 2px solid #fff; color: #fff; border-radius: 4px; font-weight: 950; font-size: 14px; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
+        .prime-cta { padding: 20px 45px; background: #fff; color: #000; border: none; border-radius: var(--radius-sm); font-weight: 950; font-size: 14px; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
+        .video-trigger { padding: 20px 40px; background: transparent; border: 2px solid #fff; color: #fff; border-radius: var(--radius-sm); font-weight: 950; font-size: 14px; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
 
         .marquee-viewport-full { 
             overflow: hidden; width: 100vw; 
@@ -464,9 +465,9 @@ function LandingPage({ onEnterAuth }) {
         @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-33.33%); } }
 
         .feat-card { 
-            width: 210px; padding: 22px; background: rgba(255,255,255,0.02); 
-            backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 10px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden;
+            width: 210px; padding: 22px; background: var(--surface-1); 
+            backdrop-filter: blur(12px); border: 1px solid var(--surface-2); 
+            border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden;
             cursor: pointer;
         }
       `}</style>
@@ -746,7 +747,7 @@ const makeLog = (minutes, note = "") => ({ minutesSpent: Number(minutes), note, 
 const editLog = (existing, minutes, note) => ({ ...existing, minutesSpent: Number(minutes), note: note !== undefined ? note : existing.note, editHistory: [...(existing.editHistory || []), { val: existing.minutesSpent, ts: existing.ts }], ts: new Date().toISOString() });
 // FIX 2 – heatmap status derived ONLY from logs
 const logStatus = (log, target) => { if (!log || log.minutesSpent === undefined || log.minutesSpent === null) return "nodata"; const r = log.minutesSpent / target; if (r >= 0.8) return "done"; if (r >= 0.25) return "partial"; return "fail"; };
-const STATUS_COLOR = { done: "#22c55e", partial: "#f59e0b", fail: "#ef4444", nodata: "rgba(255,255,255,0.07)" };
+const STATUS_COLOR = { done: "#22c55e", partial: "#f59e0b", fail: "#ef4444", nodata: "var(--border-subtle)" };
 const STATUS_LABEL = { done: "Completed", partial: "Partial", fail: "Not Done", nodata: "No Data" };
 
 
@@ -1057,9 +1058,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
     const parent = e.currentTarget.parentElement;
     if (parent) {
       animate(parent, {
-        borderColor: 'rgba(59, 172, 214, 0.6)',
+        borderColor: 'var(--accent-bg)',
         backgroundColor: 'rgba(15, 25, 45, 0.7)',
-        boxShadow: '0 0 20px rgba(59, 172, 214, 0.25)',
+        boxShadow: 'var(--shadow-glow)',
         scale: 1.01,
         duration: 250,
         easing: 'easeOutQuad'
@@ -1080,7 +1081,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
     const parent = e.currentTarget.parentElement;
     if (parent) {
       animate(parent, {
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: 'var(--surface-3)',
         backgroundColor: 'rgba(15, 15, 25, 0.5)',
         boxShadow: '0 0 0px rgba(0,0,0,0)',
         scale: 1,
@@ -1104,7 +1105,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
     const activeEl = document.activeElement;
     if (activeEl && activeEl.parentElement) {
       animate(activeEl.parentElement, {
-        boxShadow: ['0 0 25px rgba(59, 172, 214, 0.4)', '0 0 15px rgba(59, 172, 214, 0.2)'],
+        boxShadow: ['0 0 25px var(--accent-bg)', '0 0 15px var(--accent-bg)'],
         duration: 200,
         easing: 'easeOutQuad'
       });
@@ -1262,7 +1263,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
     if (cardRef.current) {
       animate(cardRef.current, {
         scale: [1, 1.03, 1],
-        boxShadow: '0 0 50px rgba(59, 172, 214, 0.5)',
+        boxShadow: 'var(--shadow-glow)',
         duration: 400,
         easing: 'easeOutQuad'
       });
@@ -1292,7 +1293,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         position: "relative",
         overflow: "hidden",
         fontFamily: "'Inter', sans-serif",
-        background: "#020205",
+        background: 'var(--bg-base)',
         perspective: "1200px",
         boxSizing: "border-box"
       }}
@@ -1305,8 +1306,8 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           position: "absolute",
           width: "550px",
           height: "550px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(59, 172, 214, 0.18) 0%, rgba(108, 99, 255, 0.08) 40%, transparent 70%)",
+          borderRadius: 'var(--radius-full)',
+          background: "radial-gradient(circle, var(--accent-bg) 0%, rgba(108, 99, 255, 0.08) 40%, transparent 70%)",
           filter: "blur(60px)",
           transform: "translate(-50%, -50%)",
           pointerEvents: "none",
@@ -1320,7 +1321,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         inset: 0,
         zIndex: 0,
         opacity: 0,
-        backgroundImage: "linear-gradient(rgba(59, 172, 214, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 172, 214, 0.07) 1px, transparent 1px)",
+        backgroundImage: "linear-gradient(var(--accent-bg) 1px, transparent 1px), linear-gradient(90deg, var(--accent-bg) 1px, transparent 1px)",
         backgroundSize: "50px 50px",
         pointerEvents: "none"
       }} />
@@ -1337,9 +1338,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
               left: `${10 + (i * 5.8) % 80}%`,
               width: `${4 + (i % 3) * 3}px`,
               height: `${4 + (i % 3) * 3}px`,
-              borderRadius: "50%",
-              background: i % 2 === 0 ? "rgba(59, 172, 214, 0.6)" : "rgba(167, 139, 250, 0.6)",
-              boxShadow: i % 2 === 0 ? "0 0 10px rgba(59, 172, 214, 0.8)" : "0 0 10px rgba(167, 139, 250, 0.8)"
+              borderRadius: 'var(--radius-full)',
+              background: i % 2 === 0 ? 'var(--accent-bg)' : "rgba(167, 139, 250, 0.6)",
+              boxShadow: i % 2 === 0 ? "0 0 10px var(--accent-bg)" : "0 0 10px rgba(167, 139, 250, 0.8)"
             }}
           />
         ))}
@@ -1420,7 +1421,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         {/* LOGO & HEADING SECTION */}
         <div style={{ textAlign: "center", marginBottom: 25, position: "relative", zIndex: 5 }}>
            <div ref={logoRef} style={{ display: 'flex', justifyContent: 'center', marginBottom: -20, opacity: 0 }} className="cinematic-entry">
-             <img src="/logo.png" alt="Logo" style={{ height: 210, filter: 'drop-shadow(0 0 25px rgba(59,172,214,0.5))' }} />
+             <img src="/logo.png" alt="Logo" style={{ height: 210, filter: 'drop-shadow(0 0 25px var(--accent-bg))' }} />
            </div>
            
            <h1 
@@ -1505,7 +1506,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           {/* Password Complexity Bar on Signup */}
           {mode === "signup" && form.password && (
             <div style={{ padding: "0 4px", marginTop: -6 }}>
-              <div style={{ height: 3, width: "100%", background: "rgba(255,255,255,0.1)", borderRadius: 4, overflow: "hidden" }}>
+              <div style={{ height: 3, width: "100%", background: "var(--surface-3)", borderRadius: 4, overflow: "hidden" }}>
                 <div style={{ 
                   height: "100%", 
                   width: `${pwStrength}%`, 
@@ -1580,7 +1581,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           onMouseEnter={(e) => {
             animate(e.currentTarget, {
               scale: 1.03,
-              boxShadow: '0 12px 30px rgba(59, 172, 214, 0.4)',
+              boxShadow: 'var(--shadow-lg)',
               duration: 250,
               easing: 'easeOutQuad'
             });
@@ -1588,7 +1589,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           onMouseLeave={(e) => {
             animate(e.currentTarget, {
               scale: 1,
-              boxShadow: '0 10px 20px rgba(59, 172, 214, 0.2)',
+              boxShadow: 'var(--shadow-lg)',
               duration: 250,
               easing: 'easeOutQuad'
             });
@@ -1600,9 +1601,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
         {/* OR DIVIDER */}
         <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: 10, position: "relative", zIndex: 5 }}>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
           <span style={{ fontSize: 10, color: '#475569', fontWeight: 900, letterSpacing: 1 }}>OR SECURE CONNECT</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+          <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
         </div>
 
         {/* GOOGLE OAUTH BUTTON */}
@@ -1621,8 +1622,8 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           style={{
             width: '100%',
             padding: '12px',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            background: 'var(--surface-1)',
+            border: '1px solid var(--border-subtle)',
             borderRadius: 10,
             color: '#fff',
             fontWeight: 700,
@@ -1638,7 +1639,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           }}
           onMouseEnter={(e) => {
             animate(e.currentTarget, {
-              backgroundColor: 'rgba(255, 255, 255, 0.07)',
+              backgroundColor: 'var(--border-subtle)',
               borderColor: 'rgba(255, 255, 255, 0.2)',
               scale: 1.02,
               duration: 200,
@@ -1647,8 +1648,8 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           }}
           onMouseLeave={(e) => {
             animate(e.currentTarget, {
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
-              borderColor: 'rgba(255, 255, 255, 0.08)',
+              backgroundColor: 'var(--surface-1)',
+              borderColor: 'var(--border-subtle)',
               scale: 1,
               duration: 200,
               easing: 'easeOutQuad'
@@ -1683,11 +1684,11 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           background: rgba(10, 12, 20, 0.65);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border-radius: 20px;
+          border-radius: var(--radius-lg);
           padding: 40px;
           position: relative;
           z-index: 10;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(59, 172, 214, 0.1);
+          box-shadow: var(--shadow-lg);
           overflow: hidden;
         }
 
@@ -1709,8 +1710,8 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         .input-group {
           background: rgba(15, 15, 25, 0.5); 
           backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 10px;
+          border: 1px solid var(--surface-3);
+          border-radius: var(--radius-md);
           display: flex;
           align-items: center;
           padding: 0 15px;
@@ -1724,10 +1725,10 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         .enter-terminal-btn {
           width: 100%; padding: 14px; 
           background: linear-gradient(90deg, #6c63ff, #3bacd6);
-          border: none; border-radius: 10px; color: #fff; 
+          border: none; border-radius: var(--radius-md); color: #fff; 
           font-weight: 900; letter-spacing: 2px; cursor: pointer;
           position: relative; overflow: hidden;
-          box-shadow: 0 10px 20px rgba(59, 172, 214, 0.2);
+          box-shadow: var(--shadow-lg);
         }
         
         .btn-glow {
@@ -1801,7 +1802,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
   backgroundSize: "cover",
   backgroundPosition: "center",
   backdropFilter: "blur(25px)",
-  borderRight: "1px solid rgba(255,255,255,0.08)", 
+  borderRight: "1px solid var(--border-subtle)", 
   display: "flex", 
   flexDirection: "column", 
   /* 🌊 WAVY TRANSITION: Uses a custom cubic-bezier for a spring-like organic feel */
@@ -1825,7 +1826,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
     }
 
     .lux-tab:hover {
-      background: rgba(59, 130, 246, 0.15) !important;
+      background: var(--accent-bg) !important;
       border-radius: ${collapsed ? '12px' : '12px 30px 12px 30px'} !important; 
       transform: translateX(5px) !important;
     }
@@ -1846,7 +1847,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       background: #0f172a;
       border: 1px solid #3bacd6;
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       font-size: 9px;
       color: #fff;
       white-space: nowrap;
@@ -1856,7 +1857,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       margin-left: 15px;
       z-index: 9999;
       font-family: 'Orbitron', sans-serif;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+      box-shadow: var(--shadow-glow);
     }
 
     .lux-tab:hover .lux-popup {
@@ -1871,7 +1872,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       width: 4px;
       background: #3bacd6;
       border-radius: 0 4px 4px 0;
-      box-shadow: 0 0 15px #3bacd6;
+      box-shadow: var(--shadow-glow);
     }
   `}</style>
   
@@ -1900,14 +1901,14 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       <button 
         onClick={() => setShowWarConsole(!showWarConsole)}
         style={{ 
-          background: showWarConsole ? "rgba(59, 172, 214, 0.2)" : "rgba(255,255,255,0.05)",
-          border: "1px solid rgba(59, 172, 214, 0.3)",
+          background: showWarConsole ? 'var(--accent-bg)' : "var(--surface-2)",
+          border: "1px solid var(--accent-bg)",
           borderRadius: 8,
           width: 32, height: 32,
           display: "flex", alignItems: "center", justifyContent: "center",
           cursor: "pointer", transition: "0.3s",
           color: "#3bacd6", fontSize: 16,
-          boxShadow: showWarConsole ? "0 0 15px rgba(59, 172, 214, 0.4)" : "none"
+          boxShadow: showWarConsole ? "0 0 15px var(--accent-bg)" : "none"
         }}
         title="Ninja War Console"
       >
@@ -1920,8 +1921,8 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       <div style={{
         position: 'absolute', top: 75, left: 14, right: 14,
         background: 'rgba(10, 10, 15, 0.98)', backdropFilter: 'blur(30px)',
-        border: '1px solid rgba(59, 172, 214, 0.3)', borderRadius: 12,
-        padding: "18px 14px", zIndex: 1000, boxShadow: '0 15px 50px rgba(0,0,0,0.95)',
+        border: '1px solid var(--accent-bg)', borderRadius: 12,
+        padding: "18px 14px", zIndex: 1000, boxShadow: 'var(--shadow-lg)',
         animation: 'revealDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
         fontFamily: "'Orbitron', sans-serif"
       }}>
@@ -1930,7 +1931,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
         `}</style>
 
         {/* Console Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--border-subtle)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <img src="/shuriken.png" style={{ width: 14, height: 14 }} alt="" />
             <span style={{ fontSize: 9, fontWeight: 900, color: '#3bacd6', letterSpacing: 2 }}>WAR CONSOLE</span>
@@ -1945,7 +1946,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
             <span style={{ fontSize: 18, fontWeight: 900, color: '#fff', fontFamily: 'monospace', letterSpacing: 1 }}>{fmt(pomo.time)}</span>
             <div style={{ display: 'flex', gap: 6 }}>
               <button onClick={() => setPomo(p => ({ ...p, active: !p.active, lastTick: Date.now() }))} style={{ background: pomo.active ? '#ef4444' : '#22c55e', color: '#000', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: 9, fontWeight: 900, cursor: 'pointer' }}>{pomo.active ? 'STOP' : 'START'}</button>
-              <button onClick={() => setPomo({ ...pomo, time: 1500, active: false })} style={{ background: 'rgba(255,255,255,0.06)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+              <button onClick={() => setPomo({ ...pomo, time: 1500, active: false })} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
             </div>
           </div>
         </div>
@@ -1957,7 +1958,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
             <span style={{ fontSize: 18, fontWeight: 900, color: '#22c55e', fontFamily: 'monospace', letterSpacing: 1 }}>{fmt(stopwatch.time)}</span>
             <div style={{ display: 'flex', gap: 6 }}>
               <button onClick={() => setStopwatch(s => ({ ...s, active: !s.active, lastTick: Date.now() }))} style={{ background: stopwatch.active ? '#ef4444' : '#22c55e', color: '#000', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: 9, fontWeight: 900, cursor: 'pointer' }}>{stopwatch.active ? 'STOP' : 'RUN'}</button>
-              <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false })} style={{ background: 'rgba(255,255,255,0.06)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+              <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false })} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
             </div>
           </div>
         </div>
@@ -1969,7 +1970,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
             <span style={{ fontSize: 22, fontWeight: 900, color: '#f59e0b' }}>{counter}</span>
             <div style={{ display: 'flex', gap: 6 }}>
               <button onClick={() => setCounter(c => c + 1)} style={{ background: '#f59e0b', color: '#000', border: "none", borderRadius: 4, padding: "4px 14px", fontSize: 14, fontWeight: 900, cursor: "pointer" }}>+</button>
-              <button onClick={() => setCounter(0)} style={{ background: 'rgba(255,255,255,0.06)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+              <button onClick={() => setCounter(0)} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
             </div>
           </div>
         </div>
@@ -1979,8 +1980,8 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
     <button 
       onClick={() => setCollapsed(!collapsed)} 
       style={{ 
-        background: "rgba(255,255,255,0.05)", 
-        border: "1px solid rgba(255,255,255,0.1)", 
+        background: "var(--surface-2)", 
+        border: "1px solid var(--surface-3)", 
         color: "#fff", 
         cursor: "pointer", 
         width: 32, height: 32,
@@ -2011,7 +2012,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
           borderRadius: 10, 
           border: "none", 
           cursor: "pointer", 
-          background: tab === t.id ? "rgba(59, 130, 246, 0.2)" : "transparent", 
+          background: tab === t.id ? 'var(--accent-bg)' : "transparent", 
           color: tab === t.id ? "#3bacd6" : "#94a3b8"
         }}
       >
@@ -2036,7 +2037,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
   {!collapsed && (
     <div className="wavy-label" style={{ 
       padding: "20px 16px", 
-      borderTop: "1px solid rgba(255,255,255,0.06)", 
+      borderTop: "1px solid var(--surface-2)", 
       background: "rgba(0,0,0,0.2)",
       fontFamily: "'Orbitron', sans-serif"
     }}>
@@ -2057,7 +2058,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
 
 function PageHeader({ title, subtitle, actions }) {
   return (
-    <div style={{ padding: "35px 32px 25px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 16 }}>
+    <div style={{ padding: "35px 32px 25px", borderBottom: "1px solid var(--surface-2)", display: "flex", alignItems: "center", gap: 16 }}>
       <div style={{ flex: 1 }}>
         <h1 style={{ margin: 0, fontSize: 32, fontWeight: 900, color: "#fff", letterSpacing: "-0.5px" }}>{title}</h1>
         {subtitle && <p style={{ margin: "8px 0 0", fontSize: 15, color: "#64748b", fontWeight: 500 }}>{subtitle}</p>}
@@ -2081,7 +2082,7 @@ function Modal({ open, onClose, title, children, width = 480 }) {
   if (!open) return null;
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20, backdropFilter: "blur(5px)" }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: "#0c0c14", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: "28px 28px 24px", width, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: "#0c0c14", border: "1px solid var(--surface-3)", borderRadius: 16, padding: "28px 28px 24px", width, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto", boxShadow: 'var(--shadow-lg)' }}>
         <div style={{ display: "flex", alignItems: "center", marginBottom: 20 }}>
           <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#f1f5f9" }}>{title}</h2>
           <button onClick={onClose} style={{ marginLeft: "auto", background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: 24, lineHeight: 1 }}>×</button>
@@ -2109,7 +2110,7 @@ function Sel({ value, onChange, children, style: s }) {
 }
 
 function Card({ children, style: s }) {
-  return <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "20px 22px", ...s }}>{children}</div>;
+  return <div style={{ background: "var(--surface-1)", border: "1px solid var(--border-subtle)", borderRadius: 14, padding: "20px 22px", ...s }}>{children}</div>;
 }
 
 function Badge({ children, color = "#6c63ff" }) {
@@ -2139,20 +2140,25 @@ function TaskGoals({ task, onUpdate, onBack }) {
 
   return (
     <div style={{ animation: "revealUp 0.4s ease-out" }}>
-      <PageHeader title={`${task.name} Goals`} actions={<button onClick={onBack} className="click-scale" style={{padding:"8px 16px", background:"rgba(255,255,255,0.1)", border:"none", borderRadius:8, color:"#fff", cursor:"pointer"}}>← Back</button>} />
+      <PageHeader title={`${task.name} Goals`} actions={<button onClick={onBack} className="click-scale" style={{padding:"8px 16px", background:"var(--surface-3)", border:"none", borderRadius:8, color:"#fff", cursor:"pointer"}}>← Back</button>} />
       <div style={{ padding: "24px 32px", maxWidth: 600 }}>
         <div style={{ display: 'flex', gap: 10, marginBottom: 30 }}>
           <Inp value={newGoal} onChange={setNewGoal} placeholder="Add a new milestone" onKeyDown={e => e.key === 'Enter' && addGoal()} />
           <Btn className="click-scale" onClick={addGoal}>Add</Btn>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {goals.map((g, i) => (
-            <div key={g.id} className="reveal-item" style={{ animationDelay: `${i * 0.05}s`, display: 'flex', alignItems: 'center', gap: 12, padding: 15, background: 'rgba(255,255,255,0.03)', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)' }}>
-              <input type="checkbox" checked={g.completed} onChange={() => toggleGoal(g.id)} style={{ width: 18, height: 18, cursor: 'pointer' }} />
-              <span style={{ flex: 1, textDecoration: g.completed ? 'line-through' : 'none', color: g.completed ? '#64748b' : '#f1f5f9' }}>{g.text}</span>
-              <button className="click-scale" onClick={() => deleteGoal(g.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>✕</button>
-            </div>
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 10 }}>
+          <AnimatedList
+            items={goals}
+            renderItem={(g, i) => (
+              <div key={g.id} className="reveal-item" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 15, background: 'var(--surface-1)', borderRadius: 10, border: '1px solid var(--surface-2)', width: '100%', boxSizing: 'border-box' }}>
+                <input type="checkbox" checked={g.completed} onChange={() => toggleGoal(g.id)} style={{ width: 18, height: 18, cursor: 'pointer' }} />
+                <span style={{ flex: 1, textDecoration: g.completed ? 'line-through' : 'none', color: g.completed ? '#64748b' : '#f1f5f9' }}>{g.text}</span>
+                <button className="click-scale" onClick={() => deleteGoal(g.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>✕</button>
+              </div>
+            )}
+            showGradients={false}
+            displayScrollbar={false}
+          />
         </div>
       </div>
     </div>
@@ -2228,11 +2234,11 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
     [0, 0.25, 0.5, 0.75, 1].forEach(p => {
       const val = Math.round(maxV * p);
       const y = toY(val);
-      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      ctx.fillStyle = "var(--text-muted)";
       ctx.fillText(`${val}m`, padL - 15, y);
       
       // Horizontal grid lines
-      ctx.strokeStyle = "rgba(255,255,255,0.03)";
+      ctx.strokeStyle = "var(--surface-1)";
       ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
     });
 
@@ -2243,7 +2249,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
       // Show every 2nd or 5th day if mobile, else every day
       if (daysInMonth > 15 && i % 2 !== 0 && i !== daysInMonth - 1) return;
       const x = toX(i);
-      ctx.fillStyle = (i + 1 <= activeDaysCount) ? "#94a3b8" : "rgba(255,255,255,0.1)";
+      ctx.fillStyle = (i + 1 <= activeDaysCount) ? "#94a3b8" : "var(--surface-3)";
       ctx.fillText(i + 1, x, H - padB + 15);
     });
 
@@ -2251,7 +2257,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
 
     // 🌊 Area Fill
     const grad = ctx.createLinearGradient(0, padT, 0, H - padB);
-    grad.addColorStop(0, "rgba(59, 130, 246, 0.25)");
+    grad.addColorStop(0, 'var(--accent-bg)');
     grad.addColorStop(1, "rgba(59, 130, 246, 0)");
     ctx.beginPath();
     ctx.moveTo(toX(0), toY(0));
@@ -2270,7 +2276,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
 
     // 🎯 Crosshair logic
     if (hoverData) {
-      ctx.setLineDash([5, 5]); ctx.strokeStyle = "rgba(59, 130, 246, 0.5)";
+      ctx.setLineDash([5, 5]); ctx.strokeStyle = 'var(--accent-bg)';
       ctx.beginPath(); ctx.moveTo(toX(hoverData.index), padT); ctx.lineTo(toX(hoverData.index), H - padB); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(toX(hoverData.index), toY(hoverData.value), 6, 0, Math.PI * 2); ctx.fill();
@@ -2278,7 +2284,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
   }, [frame, vals, hoverData, activeDaysCount]);
 
   return (
-    <div style={{ animation: "revealUp 0.5s ease-out", background: "#050508", color: "#f8fafc" }}>
+    <div style={{ animation: "revealUp 0.5s ease-out", background: 'var(--bg-base)', color: "#f8fafc" }}>
       <PageHeader 
         title={`${capTaskName} Intel`} 
         subtitle={`${monthName} (Active Days: ${activeDaysCount})`}
@@ -2296,7 +2302,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
           {/* TOP CARDS */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
             {[{l:"DONE",v:doneCount,c:"#22c55e"},{l:"ACTIVE",v:activeDaysCount,c:"#3b82f6"},{l:"TARGET",v:target+'m',c:"#f59e0b"}].map((s,i)=>(
-              <div key={i} className="reveal-item" style={{ animationDelay:`${i*0.1}s`, background: "#0f172a", padding: 24, borderRadius: 20, borderLeft: `4px solid ${s.c}`, boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
+              <div key={i} className="reveal-item" style={{ animationDelay:`${i*0.1}s`, background: "#0f172a", padding: 24, borderRadius: 20, borderLeft: `4px solid ${s.c}`, boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ color: "#64748b", fontSize: 11, fontWeight: 900, letterSpacing: 1 }}>{s.l}</div>
                 <div style={{ fontSize: 32, fontWeight: 900, marginTop: 5 }}>{s.v}</div>
               </div>
@@ -2318,7 +2324,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
                   position: 'absolute', left: hoverData.x + 20, top: hoverData.y - 40,
                   background: 'rgba(15, 23, 42, 0.98)', border: '1px solid #3b82f6',
                   padding: '12px 16px', borderRadius: 12, pointerEvents: 'none', backdropFilter: 'blur(10px)', zIndex: 10,
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.6)'
+                  boxShadow: 'var(--shadow-lg)'
                 }}>
                   <div style={{ fontSize: 10, color: '#64748b', fontWeight: 900, marginBottom: 4 }}>DAY {hoverData.index + 1}</div>
                   <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>{hoverData.value}<span style={{fontSize: 12, color: '#3b82f6'}}>m</span></div>
@@ -2334,10 +2340,10 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
              <div style={{ fontWeight: 900, color: "#94a3b8", fontSize: 11, marginBottom: 25, letterSpacing: 1 }}>PRODUCTIVITY INDEX</div>
              <div style={{ position: 'relative', width: 160, height: 160, margin: '0 auto' }}>
                 <svg width="160" height="160" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth="8" />
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="var(--surface-1)" strokeWidth="8" />
                   <circle cx="50" cy="50" r="44" fill="none" stroke="#3b82f6" strokeWidth="8" strokeLinecap="round"
                     strokeDasharray={`${(productivity * frame) * 2.76}, 276`} transform="rotate(-90 50 50)" 
-                    style={{ filter: "drop-shadow(0 0 5px rgba(59, 130, 246, 0.5))" }} />
+                    style={{ filter: "drop-shadow(0 0 5px var(--accent-bg))" }} />
                 </svg>
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 28, fontWeight: 900 }}>{Math.round(productivity * frame)}%</div>
              </div>
@@ -2350,7 +2356,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
                  <div key={i} className="reveal-item" style={{ 
                    animationDelay: `${i*0.01}s`,
                    aspectRatio: '1', borderRadius: 5, 
-                   background: v >= target * 0.8 ? '#3b82f6' : (v > 0 ? '#1d4ed8' : ((i+1) <= activeDaysCount ? '#1e293b' : 'rgba(255,255,255,0.02)'))
+                   background: v >= target * 0.8 ? '#3b82f6' : (v > 0 ? '#1d4ed8' : ((i+1) <= activeDaysCount ? '#1e293b' : 'var(--surface-1)'))
                  }} />
                ))}
              </div>
@@ -2382,7 +2388,7 @@ function MonthlyChecklist({ task, tasks, updateLog, onBack }) {
     return "partial";
   };
 
-  const colors = { done: "#22c55e", partial: "#f59e0b", notdone: "#ef4444", empty: "rgba(255,255,255,0.04)" };
+  const colors = { done: "#22c55e", partial: "#f59e0b", notdone: "#ef4444", empty: "var(--surface-2)" };
   const monthStr = `${year}-${String(month+1).padStart(2,"0")}`;
   const currentMonthObj = new Date(year, month, 1);
   const monthName = currentMonthObj.toLocaleDateString("en-US", { month: "long", year: "numeric" });
@@ -2397,14 +2403,14 @@ function MonthlyChecklist({ task, tasks, updateLog, onBack }) {
       <PageHeader title={`${capTaskName} — ${monthName}`} actions={
         <div style={{ display: 'flex', gap: 10 }}>
           <button className="click-scale" onClick={() => setView("analytics")} style={{ padding: "10px 18px", background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 800, cursor: "pointer" }}>⚔️ VIEW ANALYSIS</button>
-          <button className="click-scale" onClick={onBack} style={{ padding: "10px 18px", background: "rgba(255,255,255,0.08)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>← BACK</button>
+          <button className="click-scale" onClick={onBack} style={{ padding: "10px 18px", background: "var(--border-subtle)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>← BACK</button>
         </div>
       } />
       <div style={{ padding: "24px 32px" }}>
         <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:24 }}>
-          <button className="click-scale" onClick={() => { if (month===0){setMonth(11);setYear(y=>y-1);}else setMonth(m=>m-1); }} style={{ background:"rgba(255,255,255,0.07)", border:"none", color:"#fff", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>‹</button>
+          <button className="click-scale" onClick={() => { if (month===0){setMonth(11);setYear(y=>y-1);}else setMonth(m=>m-1); }} style={{ background:"var(--border-subtle)", border:"none", color:"#fff", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>‹</button>
           <div style={{ fontWeight:800, fontSize:18, minWidth:180, textAlign:"center" }}>{monthName.toUpperCase()}</div>
-          <button className="click-scale" onClick={() => { if (month===11){setMonth(0);setYear(y=>y+1);}else setMonth(m=>m+1); }} style={{ background:"rgba(255,255,255,0.07)", border:"none", color:"#fff", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>›</button>
+          <button className="click-scale" onClick={() => { if (month===11){setMonth(0);setYear(y=>y+1);}else setMonth(m=>m+1); }} style={{ background:"var(--border-subtle)", border:"none", color:"#fff", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>›</button>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:10 }}>
           {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>(<div key={d} style={{ textAlign:"center", fontSize:11, color:"#444", fontWeight:900 }}>{d.toUpperCase()}</div>))}
@@ -2474,13 +2480,13 @@ function Dashboard({ user }) {
         @keyframes revealUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .reveal-item { animation: revealUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both; }
         .hover-lift { transition: all 0.25s ease !important; }
-        .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.4); border-color: rgba(59, 130, 246, 0.4) !important; }
+        .hover-lift:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--accent-bg) !important; }
         .click-scale:active { transform: scale(0.96); }
       `}</style>
 
       <PageHeader
         title={`Welcome, ${user.name}!`}
-        actions={<button className="click-scale" onClick={() => setShowAdd(true)} style={{ padding:"10px 22px", background:"#3b82f6", border:"none", borderRadius:12, color:"#fff", fontWeight:800, cursor:"pointer", boxShadow:"0 4px 15px rgba(59, 130, 246, 0.3)" }}>+ NEW MISSION</button>}
+        actions={<button className="click-scale" onClick={() => setShowAdd(true)} style={{ padding:"10px 22px", background:"#3b82f6", border:"none", borderRadius:12, color:"#fff", fontWeight:800, cursor:"pointer", boxShadow: 'var(--shadow-sm)' }}>+ NEW MISSION</button>}
       />
       
       <div style={{ padding: "24px 32px" }}>
@@ -2496,7 +2502,7 @@ function Dashboard({ user }) {
                   <button className="click-scale" onClick={() => deleteTask(task.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18 }}>🗑</button>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <button className="click-scale" onClick={() => setView({ type: "checklist", task })} style={{ padding:"12px", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:600, width:"100%" }}>📅 CHECKLIST</button>
+                  <button className="click-scale" onClick={() => setView({ type: "checklist", task })} style={{ padding:"12px", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:600, width:"100%" }}>📅 CHECKLIST</button>
                   <button className="click-scale" onClick={() => setView({ type: "goals", task })} style={{ padding:"12px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:800, width:"100%" }}>🎯 GOALS</button>
                 </div>
               </Card>
@@ -2989,7 +2995,7 @@ Instructions:
       />
 
       {/* Navigation Subtabs */}
-      <div style={{ display:"flex", borderBottom:"1px solid rgba(255,255,255,0.07)", marginBottom:20 }}>
+      <div style={{ display:"flex", borderBottom:"1px solid var(--border-subtle)", marginBottom:20 }}>
         {[
           ["setup","+ Task & Block Setup"],
           ["timetable","📅 Interactive Schedule"],
@@ -3005,7 +3011,7 @@ Instructions:
       {subtab === "setup" && (
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
           {/* Presets Row */}
-          <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
+          <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
             <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}>✨ LOAD STUDY PRESETS:</span>
             {PRESETS.map(p => (
               <button key={p.name} onClick={() => loadPreset(p)}
@@ -3030,7 +3036,7 @@ Instructions:
             <Field label="Energy Level (1-5) *">
               <div style={{ display:"flex", gap:8 }}>
                 {[1,2,3,4,5].map(n=>(
-                  <button key={n} onClick={()=>setForm({...form,energy:n})} style={{ flex:1, padding:"8px 0", borderRadius:8, border:"1px solid rgba(255,255,255,0.15)", background:form.energy===n?"#3b82f6":"transparent", color:form.energy===n?"#fff":"#888", cursor:"pointer", fontWeight:700, fontSize:15 }}>{n}</button>
+                  <button key={n} onClick={()=>setForm({...form,energy:n})} style={{ flex:1, padding:"8px 0", borderRadius:8, border:"1px solid var(--border-strong)", background:form.energy===n?"#3b82f6":"transparent", color:form.energy===n?"#fff":"#888", cursor:"pointer", fontWeight:700, fontSize:15 }}>{n}</button>
                 ))}
               </div>
             </Field>
@@ -3050,7 +3056,7 @@ Instructions:
                 <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                   {DAYS.map(d=>(
                     <button key={d} onClick={()=>setForm({...form,days:form.days.includes(d)?form.days.filter(x=>x!==d):[...form.days,d]})}
-                      style={{ padding:"5px 12px", borderRadius:7, border:"1px solid rgba(255,255,255,0.15)", background:form.days.includes(d)?"#6c63ff":"transparent", color:form.days.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13 }}>{d}</button>
+                      style={{ padding:"5px 12px", borderRadius:7, border:"1px solid var(--border-strong)", background:form.days.includes(d)?"#6c63ff":"transparent", color:form.days.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13 }}>{d}</button>
                   ))}
                 </div>
               </Field>
@@ -3075,13 +3081,13 @@ Instructions:
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {DAYS.map(d=>(
                   <button key={d} onClick={()=>setConstraints({...constraints,noWork:constraints.noWork.includes(d)?constraints.noWork.filter(x=>x!==d):[...constraints.noWork,d]})}
-                    style={{ padding:"5px 11px", borderRadius:20, border:"1px solid rgba(255,255,255,0.15)", background:constraints.noWork.includes(d)?"#ef4444":"transparent", color:constraints.noWork.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>{d}</button>
+                    style={{ padding:"5px 11px", borderRadius:20, border:"1px solid var(--border-strong)", background:constraints.noWork.includes(d)?"#ef4444":"transparent", color:constraints.noWork.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>{d}</button>
                 ))}
               </div>
             </Field>
 
             {/* Block hours setup */}
-            <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid var(--border-subtle)" }}>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Orbitron" }}>🏫 College & Class Blocks (Busy Hours)</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 10 }}>
                 <Field label="Block Label"><Inp value={blockForm.label} onChange={v => setBlockForm({ ...blockForm, label: v })} placeholder="e.g. Lectures / Work" /></Field>
@@ -3094,7 +3100,7 @@ Instructions:
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
                   {DAYS.map(d => (
                     <button key={d} onClick={() => setBlockForm({ ...blockForm, days: blockForm.days.includes(d) ? blockForm.days.filter(x => x !== d) : [...blockForm.days, d] })}
-                      style={{ padding: "5px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", background: blockForm.days.includes(d) ? "#6c63ff" : "transparent", color: blockForm.days.includes(d) ? "#fff" : "#888", cursor: "pointer", fontSize: 12 }}>{d}</button>
+                      style={{ padding: "5px 12px", borderRadius: 8, border: "1px solid var(--border-strong)", background: blockForm.days.includes(d) ? "#6c63ff" : "transparent", color: blockForm.days.includes(d) ? "#fff" : "#888", cursor: "pointer", fontSize: 12 }}>{d}</button>
                   ))}
                 </div>
               </Field>
@@ -3110,10 +3116,10 @@ Instructions:
             </div>
 
             <div style={{ marginTop:24, display:"flex", gap:12 }}>
-              <button onClick={generate} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow:"0 4px 16px rgba(139,92,246,0.2)" }}>
+              <button onClick={generate} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow: 'var(--shadow-sm)' }}>
                 ✨ Auto Schedule Tasks
               </button>
-              <button onClick={generateWithAI} disabled={aiOptimizing} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#3b82f6,#22c55e)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow:"0 4px 16px rgba(59,130,246,0.2)", opacity:aiOptimizing?0.5:1 }}>
+              <button onClick={generateWithAI} disabled={aiOptimizing} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#3b82f6,#22c55e)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow: 'var(--shadow-sm)', opacity:aiOptimizing?0.5:1 }}>
                 {aiOptimizing ? "🤖 Analyzing..." : "🤖 AI Optimize"}
               </button>
             </div>
@@ -3131,7 +3137,7 @@ Instructions:
                     tasks.forEach(t => { counts[t.taskType] = (counts[t.taskType] || 0) + t.duration; });
                     const totalDuration = tasks.reduce((s,t) => s + t.duration, 0);
                     return (
-                      <div style={{ display:"flex", gap:3, width:260, height:8, borderRadius:4, overflow:"hidden", background:"rgba(255,255,255,0.05)" }}>
+                      <div style={{ display:"flex", gap:3, width:260, height:8, borderRadius:4, overflow:"hidden", background:"var(--surface-2)" }}>
                         {Object.keys(counts).map(type => {
                           const pct = Math.round((counts[type] / totalDuration) * 100);
                           return (
@@ -3145,7 +3151,7 @@ Instructions:
                 </div>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
                   {tasks.map(t=>(
-                    <div key={t.id} style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.05)", borderRadius:10, padding:"12px 14px", display:"flex", flexDirection:"column", gap:6 }}>
+                    <div key={t.id} style={{ background:"var(--surface-1)", border:"1px solid var(--surface-2)", borderRadius:10, padding:"12px 14px", display:"flex", flexDirection:"column", gap:6 }}>
                       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
                         <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>{t.title}</span>
                         <button onClick={()=>setTasks(tasks.filter(x=>x.id!==t.id))} style={{ background:"none", border:"none", color:"#f87171", cursor:"pointer" }}>×</button>
@@ -3174,10 +3180,10 @@ Instructions:
             <div style={{ overflowX:"auto" }}>
               <table style={{ width:"100%", borderCollapse:"collapse", minWidth:800 }}>
                 <thead>
-                  <tr style={{ background:"rgba(255,255,255,0.02)" }}>
-                    <th style={{ padding:"10px 14px", fontSize:13, color:"#64748b", fontWeight:700, border:"1px solid rgba(255,255,255,0.05)", width:70, textAlign:"center" }}>Time</th>
+                  <tr style={{ background:"var(--surface-1)" }}>
+                    <th style={{ padding:"10px 14px", fontSize:13, color:"#64748b", fontWeight:700, border:"1px solid var(--surface-2)", width:70, textAlign:"center" }}>Time</th>
                     {DAYS.map(d=>(
-                      <th key={d} style={{ padding:"10px 14px", fontSize:13, color:"#a78bfa", fontWeight:700, border:"1px solid rgba(255,255,255,0.05)", textAlign:"center" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</th>
+                      <th key={d} style={{ padding:"10px 14px", fontSize:13, color:"#a78bfa", fontWeight:700, border:"1px solid var(--surface-2)", textAlign:"center" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</th>
                     ))}
                   </tr>
                 </thead>
@@ -3185,7 +3191,7 @@ Instructions:
                   {filteredRows.map(row=>{
                     return (
                       <tr key={row.label}>
-                        <td style={{ padding:"8px 12px", border:"1px solid rgba(255,255,255,0.05)", color:"#64748b", fontSize:12, verticalAlign:"middle", whiteSpace:"nowrap", textAlign:"center" }}>{row.label}</td>
+                        <td style={{ padding:"8px 12px", border:"1px solid var(--surface-2)", color:"#64748b", fontSize:12, verticalAlign:"middle", whiteSpace:"nowrap", textAlign:"center" }}>{row.label}</td>
                         {DAYS.map(d=>{
                           const state = getRenderState(d, row.hour, row.minute);
                           if (!state.render) return null;
@@ -3200,7 +3206,7 @@ Instructions:
                               }}
                               style={{ 
                                 padding:"4px 6px", 
-                                border:"1px solid rgba(255,255,255,0.05)", 
+                                border:"1px solid var(--surface-2)", 
                                 verticalAlign:"top", 
                                 minWidth:110, 
                                 height: 48 * state.rowSpan,
@@ -3286,7 +3292,7 @@ Instructions:
                     </defs>
                     {/* Render grid lines */}
                     {[0, 50, 100, 150].map(y => (
-                      <line key={y} x1="40" y1={170 - y} x2="480" y2={170 - y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                      <line key={y} x1="40" y1={170 - y} x2="480" y2={170 - y} stroke="var(--surface-2)" strokeWidth="1" />
                     ))}
                     {DAYS.map((d, i) => {
                       const totalMin = getDayTotal(d);
@@ -3301,7 +3307,7 @@ Instructions:
                         </g>
                       );
                     })}
-                    <line x1="40" y1="170" x2="480" y2="170" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                    <line x1="40" y1="170" x2="480" y2="170" stroke="var(--border-strong)" strokeWidth="1" />
                   </svg>
                 </div>
               ) : (
@@ -3342,9 +3348,9 @@ Instructions:
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {history.map(item => (
-                  <div key={item.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 12, padding: "12px 18px", transition: "0.2s" }}
+                  <div key={item.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 12, padding: "12px 18px", transition: "0.2s" }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(108,99,255,0.2)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--surface-2)"; }}
                   >
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{item.name}</div>
@@ -3550,7 +3556,7 @@ function EHMarkdown({ text }) {
         }
         if (trimmed.startsWith("##")) {
           return (
-            <div key={idx} style={{ fontSize: 14.5, fontWeight: 900, color: "#a78bfa", marginTop: 16, marginBottom: 6, fontFamily: "Orbitron", letterSpacing: 0.5, borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 4 }}>
+            <div key={idx} style={{ fontSize: 14.5, fontWeight: 900, color: "#a78bfa", marginTop: 16, marginBottom: 6, fontFamily: "Orbitron", letterSpacing: 0.5, borderBottom: "1px solid var(--surface-2)", paddingBottom: 4 }}>
               {trimmed.replace(/^##\s*/, "")}
             </div>
           );
@@ -3924,7 +3930,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       {/* Chat list */}
-      <div style={{ width: 240, borderRight: "1px solid rgba(255,255,255,0.07)", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      <div style={{ width: 240, borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ padding: "20px 16px 12px" }}>
           <Btn onClick={newChat} style={{ width: "100%" }}>+ New Chat</Btn>
         </div>
@@ -3940,7 +3946,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
             </div>
           ))}
         </div>
-        <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border-subtle)" }}>
           <button onClick={() => setShowKeyModal(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 12 }}>
             🔑 {apiKey ? "Gemini API Key Set ✓" : "Set Gemini API Key"}
           </button>
@@ -3948,7 +3954,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
       </div>
       {/* Chat area */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <div style={{ padding: "16px 24px", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ fontWeight: 700, fontSize: 16 }}>{activeChat ? activeChat.title : "VedAI"}</div>
           <div style={{ marginLeft: "auto" }}>
             <Btn small variant="secondary" onClick={() => send("Analyze my productivity data and suggest improvements for my schedule and habits.")}>🔍 Analyze My Data</Btn>
@@ -3980,9 +3986,9 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
             <div key={m.id} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
               <div style={{ 
                 maxWidth: "75%", 
-                background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "rgba(255, 255, 255, 0.01)", 
+                background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "var(--surface-1)", 
                 backdropFilter: m.role === "user" ? "none" : "blur(16px)",
-                border: m.role === "user" ? "none" : "1px solid rgba(255, 255, 255, 0.04)", 
+                border: m.role === "user" ? "none" : "1px solid var(--surface-2)", 
                 borderLeft: m.role === "user" ? "none" : "4px solid #38bdf8",
                 borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "4px 16px 16px 16px", 
                 padding: m.role === "user" ? "12px 18px" : "18px 22px", 
@@ -4000,17 +4006,17 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
           ))}
           {loading && (
             <div style={{ display: "flex", justifyContent: "flex-start" }}>
-              <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px 16px 16px 4px", padding: "12px 16px" }}>
+              <div style={{ background: "var(--surface-2)", border: "1px solid var(--border-subtle)", borderRadius: "16px 16px 16px 4px", padding: "12px 16px" }}>
                 <div style={{ display: "flex", gap: 4 }}>
-                  {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#6c63ff", animation: `bounce ${0.6}s ${i*0.2}s infinite alternate` }} />)}
+                  {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: 'var(--radius-full)', background: "#6c63ff", animation: `bounce ${0.6}s ${i*0.2}s infinite alternate` }} />)}
                 </div>
               </div>
             </div>
           )}
           <div ref={bottomRef} />
         </div>
-        <div style={{ padding: "12px 24px 20px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <div style={{ display: "flex", gap: 10, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "8px 12px" }}>
+        <div style={{ padding: "12px 24px 20px", borderTop: "1px solid var(--border-subtle)" }}>
+          <div style={{ display: "flex", gap: 10, background: "var(--surface-2)", border: "1px solid var(--surface-3)", borderRadius: 12, padding: "8px 12px" }}>
             <textarea value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
               placeholder="Ask VedAI anything... (Enter to send)" rows={1}
               style={{ flex: 1, background: "none", border: "none", color: "#f1f5f9", fontSize: 14, resize: "none", outline: "none", lineHeight: 1.6, maxHeight: 120, overflowY: "auto" }} />
@@ -4111,13 +4117,13 @@ function Reminders({ user, reminders = [], setReminders }) {
   const done = reminders.filter(r => r.done);
 
   return (
-    <div style={{ animation: "fadeIn 0.6s ease-out", background: "#050508", minHeight: "100vh" }}>
+    <div style={{ animation: "fadeIn 0.6s ease-out", background: 'var(--bg-base)', minHeight: "100vh" }}>
       {/* 🟢 CUSTOM CYBER ANIMATIONS */}
       <style>{`
         @keyframes cyberPulse {
-          0% { box-shadow: 0 0 5px rgba(34, 211, 238, 0.2); }
-          50% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.5); }
-          100% { box-shadow: 0 0 5px rgba(34, 211, 238, 0.2); }
+          0% { box-shadow: var(--shadow-glow); }
+          50% { box-shadow: var(--shadow-glow); }
+          100% { box-shadow: var(--shadow-glow); }
         }
         .day-cell { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
         .day-cell:hover { transform: translateY(-5px) scale(1.02); background: rgba(34, 211, 238, 0.15) !important; border-color: #22d3ee !important; z-index: 10; }
@@ -4126,13 +4132,13 @@ function Reminders({ user, reminders = [], setReminders }) {
       `}</style>
 
       <PageHeader title="Mission Reminders" subtitle="Strategic focal point for your objectives"
-        actions={<Btn className="click-scale" onClick={() => setShowAdd(true)} style={{boxShadow: "0 0 15px rgba(59, 130, 246, 0.4)"}}>+ Add Mission</Btn>} />
+        actions={<Btn className="click-scale" onClick={() => setShowAdd(true)} style={{boxShadow: 'var(--shadow-glow)'}}>+ Add Mission</Btn>} />
       
       <div style={{ padding: "0 32px 32px", display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 32 }}>
         
         {/* LEFT: ENLARGED TACTICAL CALENDAR */}
         <div className="calendar-container">
-          <div style={{ background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(12px)", borderRadius: 32, padding: 40, border: "1px solid rgba(34, 211, 238, 0.1)", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)" }}>
+          <div style={{ background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(12px)", borderRadius: 32, padding: 40, border: "1px solid rgba(34, 211, 238, 0.1)", boxShadow: 'var(--shadow-lg)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
               <div style={{ fontSize: 24, fontWeight: 900, color: "#22d3ee", letterSpacing: 3, textShadow: "0 0 10px rgba(34, 211, 238, 0.3)" }}>{monthLabel.toUpperCase()}</div>
               <div style={{ display: 'flex', gap: 15 }}>
@@ -4158,12 +4164,12 @@ function Reminders({ user, reminders = [], setReminders }) {
                     style={{ 
                       animationDelay: `${i * 0.01}s`,
                       aspectRatio: "1.1", borderRadius: 20, display: "flex", flexDirection: 'column', alignItems: "center", justifyContent: "center", 
-                      background: activeOnDay ? "rgba(34, 211, 238, 0.08)" : "rgba(255,255,255,0.01)", 
-                      border: activeOnDay ? "2px solid rgba(34, 211, 238, 0.5)" : "1px solid rgba(255,255,255,0.03)",
+                      background: activeOnDay ? "rgba(34, 211, 238, 0.08)" : "var(--surface-1)", 
+                      border: activeOnDay ? "2px solid rgba(34, 211, 238, 0.5)" : "1px solid var(--surface-1)",
                       cursor: "pointer"
                     }}>
                     <span style={{ fontSize: 22, fontWeight: 900, color: activeOnDay ? "#22d3ee" : "#fff" }}>{day}</span>
-                    {activeOnDay && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22d3ee", marginTop: 8, boxShadow: "0 0 12px #22d3ee" }} />}
+                    {activeOnDay && <div style={{ width: 6, height: 6, borderRadius: 'var(--radius-full)', background: "#22d3ee", marginTop: 8, boxShadow: 'var(--shadow-glow)' }} />}
                   </div>
                 );
               })}
@@ -4177,7 +4183,7 @@ function Reminders({ user, reminders = [], setReminders }) {
           
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {upcoming.map((r, i) => (
-              <Card key={r.id} className="reveal-item hover-lift" style={{ animationDelay: `${i * 0.1}s`, background: "rgba(15, 23, 42, 0.8)", border: "1px solid rgba(255,255,255,0.03)", borderLeft: "4px solid #3b82f6", padding: 20 }}>
+              <Card key={r.id} className="reveal-item hover-lift" style={{ animationDelay: `${i * 0.1}s`, background: "rgba(15, 23, 42, 0.8)", border: "1px solid var(--surface-1)", borderLeft: "4px solid #3b82f6", padding: 20 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                   <div style={{ fontWeight: 900, fontSize: 18, color: "#08b1f9", letterSpacing: 0.5 }}>{r.title.toUpperCase()}</div>
                   <div style={{ fontSize: 10, fontWeight: 900, color: "#475569", fontFamily: "monospace" }}>{new Date(r.datetime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
@@ -4213,7 +4219,7 @@ function Reminders({ user, reminders = [], setReminders }) {
       <Modal open={!!selectedDayMissions} onClose={() => setSelectedDayMissions(null)} title={`DAY_${selectedDayMissions?.day}_INTEL`}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
           {selectedDayMissions?.missions.map((m, i) => (
-            <div key={m.id} className="reveal-item" style={{ animationDelay: `${i*0.1}s`, padding: 20, background: 'rgba(255,255,255,0.03)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div key={m.id} className="reveal-item" style={{ animationDelay: `${i*0.1}s`, padding: 20, background: 'var(--surface-1)', borderRadius: 16, border: '1px solid var(--surface-2)' }}>
               <div style={{ fontWeight: 900, color: m.done ? '#475569' : '#22d3ee', fontSize: 16 }}>{m.title}</div>
               <div style={{ fontSize: 11, color: '#64748b', marginTop: 5, fontFamily: 'monospace' }}>{new Date(m.datetime).toLocaleTimeString()}</div>
             </div>
@@ -4279,11 +4285,11 @@ const DrawingCanvas = ({ onSave, onCancel, initialColor }) => {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "1000px", background: "#0f172a", padding: "20px", borderRadius: "32px", border: "1px solid rgba(255,255,255,0.15)", boxShadow: "0 50px 100px rgba(0,0,0,0.8)" }}>
+    <div style={{ width: "100%", maxWidth: "1000px", background: "#0f172a", padding: "20px", borderRadius: 'var(--radius-xl)', border: "1px solid var(--border-strong)", boxShadow: 'var(--shadow-lg)' }}>
       <div style={{ display: "flex", gap: "15px", marginBottom: "20px", justifyContent: "center", alignItems: "center", flexWrap: 'wrap' }}>
-        <button onClick={() => setTool("pencil")} style={{ background: tool === "pencil" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: "12px", cursor: "pointer" }}>🖋️ Pencil</button>
-        <button onClick={() => setTool("eraser")} style={{ background: tool === "eraser" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: "12px", cursor: "pointer" }}>🧽 Eraser</button>
-        <button onClick={resetCanvas} style={{ background: "#ef4444", border: "none", color: "white", padding: "10px 18px", borderRadius: "12px", cursor: "pointer" }}>🗑️ Reset</button>
+        <button onClick={() => setTool("pencil")} style={{ background: tool === "pencil" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}>🖋️ Pencil</button>
+        <button onClick={() => setTool("eraser")} style={{ background: tool === "eraser" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}>🧽 Eraser</button>
+        <button onClick={resetCanvas} style={{ background: "#ef4444", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}>🗑️ Reset</button>
         <input type="color" value={color} onChange={(e) => setColor(e.target.value)} style={{ width: "40px", height: "40px", border: "none", background: "none", cursor: "pointer" }} />
         <div style={{ flex: 1, minWidth: '150px', display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontSize: "12px", opacity: 0.6 }}>Size</span>
@@ -4299,12 +4305,12 @@ const DrawingCanvas = ({ onSave, onCancel, initialColor }) => {
         onMouseMove={draw}
         onMouseUp={() => setIsDrawing(false)}
         onMouseLeave={() => setIsDrawing(false)}
-        style={{ width: "100%", height: "auto", maxHeight: '60vh', background: "white", borderRadius: "16px", cursor: "crosshair", display: "block", touchAction: "none" }}
+        style={{ width: "100%", height: "auto", maxHeight: '60vh', background: "white", borderRadius: 'var(--radius-lg)', cursor: "crosshair", display: "block", touchAction: "none" }}
       />
 
       <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-        <button onClick={onCancel} style={{ padding: "12px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)", background: "transparent", color: "white", cursor: "pointer" }}>Cancel</button>
-        <button onClick={() => onSave(canvasRef.current.toDataURL("image/jpeg", 0.6))} style={{ padding: "12px 30px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #06b6d4, #3b82f6)", color: "white", fontWeight: "bold", cursor: "pointer" }}>Save Drawing</button>
+        <button onClick={onCancel} style={{ padding: "12px 24px", borderRadius: 'var(--radius-lg)', border: "1px solid var(--surface-3)", background: "transparent", color: "white", cursor: "pointer" }}>Cancel</button>
+        <button onClick={() => onSave(canvasRef.current.toDataURL("image/jpeg", 0.6))} style={{ padding: "12px 30px", borderRadius: 'var(--radius-lg)', border: "none", background: "linear-gradient(135deg, #06b6d4, #3b82f6)", color: "white", fontWeight: "bold", cursor: "pointer" }}>Save Drawing</button>
       </div>
     </div>
   );
@@ -4399,7 +4405,7 @@ function StickyNotes({ user }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 style={{ fontWeight: 900 }}>{view === "active" ? "Tactical Intel" : "Deep Vault"}</h1>
         <div style={{ display: 'flex', gap: 12 }}>
-          <button onClick={() => { setView(view === "active" ? "vault" : "active"); setVaultLocked(true); setPassInput(""); }} style={{ padding: "10px 18px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, color: "#fff", cursor: "pointer", fontWeight: 800 }}>
+          <button onClick={() => { setView(view === "active" ? "vault" : "active"); setVaultLocked(true); setPassInput(""); }} style={{ padding: "10px 18px", background: "var(--surface-2)", border: "1px solid var(--border-subtle)", borderRadius: 12, color: "#fff", cursor: "pointer", fontWeight: 800 }}>
             {view === "active" ? "🛡️ VAULT" : "⬅ ACTIVE"}
           </button>
           <button onClick={() => setShowAdd(true)} style={{ padding: "12px 24px", background: "linear-gradient(135deg, #06b6d4, #3b82f6)", borderRadius: 12, color: "#fff", border: 'none', cursor: 'pointer', fontWeight: 900 }}>+ NEW MISSION</button>
@@ -4409,14 +4415,14 @@ function StickyNotes({ user }) {
       {/* VAULT UI */}
       {view === "vault" && (
         !vaultPass ? (
-          <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.02)', padding: 40, borderRadius: 32, border: '1px solid rgba(255,255,255,0.1)', maxWidth: 420, margin: '100px auto', boxSizing: 'border-box' }}>
+          <div style={{ textAlign: 'center', background: 'var(--surface-1)', padding: 40, borderRadius: 32, border: '1px solid var(--surface-3)', maxWidth: 420, margin: '100px auto', boxSizing: 'border-box' }}>
             <h2 style={{ fontWeight: 900, marginBottom: 20 }}>Initialize Vault</h2>
             <input 
               type="password" 
               placeholder="Set Access Code" 
               value={newPass} 
               onChange={e => setNewPass(e.target.value)} 
-              style={{ width: '100%', padding: 16, borderRadius: 16, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', marginBottom: 20, boxSizing: 'border-box', outline: 'none' }} 
+              style={{ width: '100%', padding: 16, borderRadius: 16, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid var(--surface-3)', marginBottom: 20, boxSizing: 'border-box', outline: 'none' }} 
             />
             <button onClick={initializeVault} style={{ width: '100%', padding: 16, background: '#22c55e', color: '#fff', borderRadius: 16, border: 'none', fontWeight: 900, cursor: 'pointer' }}>ACTIVATE</button>
           </div>
@@ -4430,7 +4436,7 @@ function StickyNotes({ user }) {
                 value={passInput} 
                 onChange={e => setPassInput(e.target.value)} 
                 onKeyDown={e => e.key === 'Enter' && (passInput === vaultPass ? setVaultLocked(false) : alert("Access Denied"))} 
-                style={{ padding: 18, borderRadius: 16, background: 'rgba(255,255,255,0.03)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', width: '100%', fontSize: 22, boxSizing: 'border-box', outline: 'none' }} 
+                style={{ padding: 18, borderRadius: 16, background: 'var(--surface-1)', color: '#fff', border: '1px solid var(--surface-3)', textAlign: 'center', width: '100%', fontSize: 22, boxSizing: 'border-box', outline: 'none' }} 
               />
               <button 
                 onClick={() => passInput === vaultPass ? setVaultLocked(false) : alert("Access Denied")} 
@@ -4446,7 +4452,7 @@ function StickyNotes({ user }) {
       {(view === "active" || (view === "vault" && !vaultLocked)) && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24, marginTop: 40 }}>
           {(view === "active" ? notes : archived).map((n) => (
-            <div key={n.id} style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 28, padding: 24, overflow: 'hidden' }}>
+            <div key={n.id} style={{ background: "var(--surface-1)", backdropFilter: "blur(20px)", border: "1px solid var(--border-subtle)", borderRadius: 28, padding: 24, overflow: 'hidden' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 15 }}>
                 <span style={{ fontSize: 10, color: '#475569' }}>{n.timestamp}</span>
                 <div style={{ display: 'flex', gap: 12 }}>
@@ -4485,12 +4491,12 @@ function StickyNotes({ user }) {
             {!isDrawingMode ? (
               <div style={{ background: "#0f172a", padding: 30, borderRadius: 36, border: "1px solid rgba(255,255,255,0.12)", width: '100%', boxSizing: 'border-box' }}>
                 <h2 style={{ marginBottom: 25, fontWeight: 900 }}>{editId ? "Edit Objective" : "New Intel"}</h2>
-                <input placeholder="Objective Name" value={form.title} onChange={e => setForm({...form, title: e.target.value})} style={{ width: "100%", padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", boxSizing: 'border-box' }} />
-                <textarea placeholder="Details..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} style={{ width: "100%", height: 100, padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", resize: 'none', boxSizing: 'border-box' }} />
+                <input placeholder="Objective Name" value={form.title} onChange={e => setForm({...form, title: e.target.value})} style={{ width: "100%", padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", boxSizing: 'border-box' }} />
+                <textarea placeholder="Details..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} style={{ width: "100%", height: 100, padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", resize: 'none', boxSizing: 'border-box' }} />
                 
                 <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-                  <button onClick={() => document.getElementById('note-img-up').click()} style={{ flex: 1, padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer" }}>📎 ATTACH</button>
-                  <button onClick={() => setIsDrawingMode(true)} style={{ flex: 1, padding: 12, borderRadius: 12, background: "rgba(59,130,246,0.1)", color: "#60a5fa", border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer" }}>🎨 DRAW</button>
+                  <button onClick={() => document.getElementById('note-img-up').click()} style={{ flex: 1, padding: 12, borderRadius: 12, background: "var(--surface-2)", color: "#fff", border: "1px solid var(--surface-3)", cursor: "pointer" }}>📎 ATTACH</button>
+                  <button onClick={() => setIsDrawingMode(true)} style={{ flex: 1, padding: 12, borderRadius: 12, background: 'var(--accent-bg)', color: "#60a5fa", border: "1px solid var(--accent-bg)", cursor: "pointer" }}>🎨 DRAW</button>
                   <input type="file" id="note-img-up" hidden accept="image/*" onChange={handleImageUpload} />
                 </div>
 
@@ -4572,7 +4578,7 @@ function FriendCircles({ user }) {
           <div style={{ fontSize: 11, fontWeight: 900, color: "#444", textTransform: "uppercase", letterSpacing: 1 }}>Your Circles</div>
           {myRooms.map(room => (
             <div key={room.id} onClick={() => setActiveRoomId(room.id)} 
-              style={{ padding: 16, background: activeRoomId === room.id ? "rgba(59, 130, 246, 0.1)" : "rgba(255,255,255,0.03)", border: activeRoomId === room.id ? "1.5px solid #3b82f6" : "1px solid rgba(255,255,255,0.08)", borderRadius: 14, cursor: "pointer", transition: "all 0.2s" }}>
+              style={{ padding: 16, background: activeRoomId === room.id ? 'var(--accent-bg)' : "var(--surface-1)", border: activeRoomId === room.id ? "1.5px solid #3b82f6" : "1px solid var(--border-subtle)", borderRadius: 14, cursor: "pointer", transition: "all 0.2s" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: activeRoomId === room.id ? "#3b82f6" : "#fff" }}>{room.name}</div>
                 <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.restoreState ? "💀 0" : `🔥 ${room.streak || 0}`}</div>
@@ -4591,7 +4597,7 @@ function FriendCircles({ user }) {
             </div>
           ))}
         </div>
-        <div style={{ flex: 1, background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 20, overflow: "hidden" }}>
+        <div style={{ flex: 1, background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 20, overflow: "hidden" }}>
           {activeRoom ? <RoomView room={activeRoom} user={user} allRooms={allRooms} setAllRooms={setAllRooms} /> : <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}><div style={{ fontSize: 40, opacity: 0.2 }}>👥</div><div style={{ color: "#444", fontWeight: 600 }}>Select a circle to start collaborating</div></div>}
         </div>
       </div>
@@ -4891,7 +4897,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
 
   const renderFile = (m) => {
     if (!m.file) return null;
-    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
+    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid var(--surface-3)", display: "block" };
     if (m.fType?.startsWith("image/")) return <img src={m.file} style={s} alt={m.fName} />;
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
     if (m.fType?.startsWith("audio/")) return (
@@ -4901,7 +4907,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       </div>
     );
     return (
-      <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: "#3b82f6", marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+      <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: "var(--surface-2)", padding: "10px 14px", borderRadius: 10, color: "#3b82f6", marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
         <span style={{ fontSize: 20 }}>📄</span>
         <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.fName}</div>
       </a>
@@ -4918,7 +4924,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 180px)", background: "#0a0a0f", borderRadius: 20, overflow: 'hidden', position: 'relative' }}>
-      <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+      <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--surface-2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
         <div style={{ fontWeight: 800, display: "flex", alignItems: "center", gap: 12 }}>
           <span>{room.name}</span>
           <span style={{ color: "#f59e0b" }}>{room.restoreState ? "💀 0" : `🔥 ${room.streak || 0}`}</span>
@@ -4928,7 +4934,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
               alert("Squad ID copied to clipboard!");
             }}
             style={{ 
-              fontSize: 12, background: "rgba(59, 130, 246, 0.12)", border: "1px solid rgba(59, 130, 246, 0.3)", 
+              fontSize: 12, background: 'var(--accent-bg)', border: "1px solid var(--accent-bg)", 
               borderRadius: 8, padding: "3px 10px", color: "#60a5fa", cursor: "pointer", fontWeight: 700, 
               display: "flex", alignItems: "center", gap: 4 
             }}
@@ -5015,7 +5021,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                 )}
               </div>
               {failedMembers.includes(user.id) && room.restoreState.payments?.[user.id] !== true && (
-                <Btn onClick={() => handleRestore(restorePrice)} style={{ background: "#22c55e", border: "none", boxShadow: "0 4px 12px rgba(34, 197, 94, 0.3)" }}>
+                <Btn onClick={() => handleRestore(restorePrice)} style={{ background: "#22c55e", border: "none", boxShadow: 'var(--shadow-sm)' }}>
                   Pay ₹{restorePrice}
                 </Btn>
               )}
@@ -5030,13 +5036,13 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                 <Btn onClick={() => setShowAddTask(true)} small>+ New Task</Btn>
               </div>
               {(room.tasks || []).map(t => (
-                <div key={t.id} style={{ padding: 18, background: "rgba(255,255,255,0.02)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.04)", marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={t.id} style={{ padding: 18, background: "var(--surface-1)", borderRadius: 16, border: "1px solid var(--surface-2)", marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                       <div style={{ fontWeight: 700, color: '#fff' }}>{t.title}</div>
                       <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                         {room.members.map(m => {
                           const isDone = t.logs?.[today()]?.[m.id];
-                          return <div key={m.id} style={{ width: 30, height: 30, borderRadius: '50%', background: isDone ? "rgba(34, 197, 94, 0.2)" : "#111", border: `1px solid ${isDone ? "#22c55e" : "#333"}`, color: isDone ? "#22c55e" : "#666", display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800 }}>{m.name[0].toUpperCase()}</div>;
+                          return <div key={m.id} style={{ width: 30, height: 30, borderRadius: 'var(--radius-full)', background: isDone ? "rgba(34, 197, 94, 0.2)" : "#111", border: `1px solid ${isDone ? "#22c55e" : "#333"}`, color: isDone ? "#22c55e" : "#666", display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800 }}>{m.name[0].toUpperCase()}</div>;
                         })}
                       </div>
                   </div>
@@ -5055,7 +5061,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
 
         {tab === "chat" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "10px 0" }}>
-            <div style={{ alignSelf: "center", background: "rgba(255,255,255,0.05)", padding: "4px 12px", borderRadius: 8, fontSize: 11, color: "#64748b", marginBottom: 10, fontWeight: 800 }}>MESSAGES ARE LOCALLY ENCRYPTED</div>
+            <div style={{ alignSelf: "center", background: "var(--surface-2)", padding: "4px 12px", borderRadius: 8, fontSize: 11, color: "#64748b", marginBottom: 10, fontWeight: 800 }}>MESSAGES ARE LOCALLY ENCRYPTED</div>
             {(room.messages || []).map(m => {
               const isMe = m.userId === user.id;
               return (
@@ -5070,16 +5076,16 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                     background: isMe ? "linear-gradient(135deg, #2563eb, #1d4ed8)" : "#1e293b", 
                     borderRadius: isMe ? "18px 18px 2px 18px" : "18px 18px 18px 2px", 
                     color: "#f1f5f9", 
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+                    boxShadow: 'var(--shadow-sm)',
                     position: "relative",
-                    border: isMe ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.05)"
+                    border: isMe ? "1px solid var(--surface-3)" : "1px solid var(--surface-2)"
                   }}>
                     {!isMe && <div style={{ fontSize: 11, fontWeight: 900, color: "#60a5fa", marginBottom: 6, letterSpacing: 0.5 }}>{m.userName.toUpperCase()}</div>}
                     <div style={{ fontSize: 14, lineHeight: "1.5", wordBreak: "break-word", fontWeight: 500 }}>
                       {m.text}
                       {renderFile(m)}
                     </div>
-                    <div style={{ position: "absolute", bottom: 6, right: 10, fontSize: 10, color: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", gap: 5, fontWeight: 700 }}>
+                    <div style={{ position: "absolute", bottom: 6, right: 10, fontSize: 10, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 5, fontWeight: 700 }}>
                       {m.isEdited && <span style={{ opacity: 0.8 }}>Edited</span>}
                       {m.time}
                       {isMe && <span style={{ color: "#93c5fd", fontSize: 13 }}>✓✓</span>}
@@ -5098,8 +5104,8 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
         {tab === "members" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
             {(room.members || []).map(m => (
-              <div key={m.id} style={{ padding: 12, background: "rgba(255,255,255,0.02)", borderRadius: 12, display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800 }}>{m.name[0]}</div>
+              <div key={m.id} style={{ padding: 12, background: "var(--surface-1)", borderRadius: 12, display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 'var(--radius-full)', background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800 }}>{m.name[0]}</div>
                 <div style={{ fontWeight: 600 }}>{m.name}</div>
               </div>
             ))}
@@ -5108,9 +5114,9 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       </div>
 
       {tab === "chat" && (
-        <div style={{ padding: "12px 24px", background: "#0f172a", borderTop: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
+        <div style={{ padding: "12px 24px", background: "#0f172a", borderTop: "1px solid var(--surface-2)", flexShrink: 0 }}>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-end", maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ flex: 1, background: "#1e293b", borderRadius: 24, padding: "8px 18px", display: "flex", alignItems: "center", gap: 14, minHeight: 48, border: "1px solid rgba(255,255,255,0.05)" }}>
+            <div style={{ flex: 1, background: "#1e293b", borderRadius: 24, padding: "8px 18px", display: "flex", alignItems: "center", gap: 14, minHeight: 48, border: "1px solid var(--surface-2)" }}>
                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>📎</button>
                <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
                <textarea
@@ -5146,7 +5152,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                  disabled={recordingMode === 'transcribe'}
                  style={{ 
                    background: "none", border: "none", 
-                   color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "rgba(255,255,255,0.15)" : "#64748b"), 
+                   color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "var(--border-strong)" : "#64748b"), 
                    cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer", 
                    fontSize: 20, padding: 0 
                  }}
@@ -5161,7 +5167,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                  disabled={recordingMode === 'audio'}
                  style={{ 
                    background: "none", border: "none", 
-                   color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "rgba(255,255,255,0.15)" : "#64748b"), 
+                   color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "var(--border-strong)" : "#64748b"), 
                    cursor: recordingMode === 'audio' ? "not-allowed" : "pointer", 
                    fontSize: 20, padding: 0 
                  }}
@@ -5173,9 +5179,9 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
             <button 
               onClick={() => sendMsg()} 
               style={{ 
-                width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none", 
+                width: 48, height: 48, borderRadius: 'var(--radius-full)', background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none", 
                 display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
-                boxShadow: "0 4px 15px rgba(37, 99, 235, 0.4)", flexShrink: 0, transition: "0.2s"
+                boxShadow: 'var(--shadow-sm)', flexShrink: 0, transition: "0.2s"
               }}
               onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
               onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
@@ -5191,7 +5197,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
             </button>
           </div>
           {audioBlob && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12, background: '#1e293b', padding: "10px 18px", borderRadius: 16, animation: "fadeIn 0.3s", border: "1px solid rgba(59, 130, 246, 0.2)" }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12, background: '#1e293b', padding: "10px 18px", borderRadius: 16, animation: "fadeIn 0.3s", border: "1px solid var(--accent-bg)" }}>
               <div style={{ flex: 1, fontSize: 13, color: '#60a5fa', fontWeight: 800 }}>🎙️ VOCAL COMMAND READY</div>
               <button onClick={() => setAudioBlob(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>DISCARD</button>
               <button onClick={sendAudio} style={{ background: "#3b82f6", border: "none", padding: "8px 18px", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>SEND</button>
@@ -5201,14 +5207,14 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       )}
 
       {contextMenu && (
-        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#233138', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '6px', zIndex: 9999, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", minWidth: 160 }}>
+        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#233138', border: '1px solid var(--surface-3)', borderRadius: 12, padding: '6px', zIndex: 9999, boxShadow: 'var(--shadow-lg)', minWidth: 160 }}>
           <button onClick={() => startEdit(contextMenu.m)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#e9edef', textAlign: 'left', cursor: 'pointer', fontSize: 14, width: '100%', borderRadius: 8 }} className="hover-highlight">
             <span>✎</span> Edit Message
           </button>
           <button onClick={() => deleteMsg(contextMenu.m.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#f87171', textAlign: 'left', cursor: 'pointer', fontSize: 14, width: '100%', borderRadius: 8 }} className="hover-highlight">
             <span>🗑</span> Delete
           </button>
-          <style>{`.hover-highlight:hover { background: rgba(255,255,255,0.05); }`}</style>
+          <style>{`.hover-highlight:hover { background: var(--surface-2); }`}</style>
         </div>
       )}
 
@@ -5221,8 +5227,8 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       {SHOW_SIMULATOR && (
         <div style={{ 
           padding: "12px 20px", 
-          background: "rgba(255, 255, 255, 0.02)", 
-          borderTop: "1.5px dashed rgba(255,255,255,0.08)", 
+          background: "var(--surface-1)", 
+          borderTop: "1.5px dashed var(--border-subtle)", 
           display: "flex", 
           justifyContent: "space-between", 
           alignItems: "center",
@@ -5297,7 +5303,7 @@ function EHAvatar({ name = "?", size = 28 }) {
   const palette = ["#6c63ff","#3b82f6","#22c55e","#f59e0b","#00B8D9","#8b5cf6"];
   const c = palette[(name.charCodeAt(0)||0) % palette.length];
   return (
-    <div style={{ width:size, height:size, borderRadius:6, background:`linear-gradient(135deg,${c},${c}99)`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:size*0.4, color:"#fff", border:"1px solid rgba(255,255,255,0.1)" }}>
+    <div style={{ width:size, height:size, borderRadius:6, background:`linear-gradient(135deg,${c},${c}99)`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:size*0.4, color:"#fff", border:"1px solid var(--surface-3)" }}>
       {String(name)[0]?.toUpperCase()}
     </div>
   );
@@ -5337,7 +5343,7 @@ function EHDonut({ pct=0, size=100, color="#00B8D9", label }) {
       <defs>
         <filter id="glow"><feGaussianBlur stdDeviation="2" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth={size*0.08}/>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--surface-1)" strokeWidth={size*0.08}/>
       <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={size*0.08}
         strokeDasharray={`${(pct/100)*circ} ${circ}`} strokeDashoffset={circ/4} strokeLinecap="round" filter="url(#glow)"/>
       <text x={cx} y={cy-4} textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize={size*0.22} fontWeight="900" style={{ fontFamily: 'Orbitron' }}>{pct}%</text>
@@ -5381,7 +5387,7 @@ function EHIntelligence({ user, ws, eh, setEH, members }) {
               {entry.file && (
                 <div style={{ marginTop: 12 }}>
                   {entry.fType?.startsWith("image/") ? <img src={entry.file} style={{ maxWidth: 400, borderRadius: 12, border: `1px solid ${EH_BORDER}` }} /> :
-                   <a href={entry.file} download={entry.fName} style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 16px", background: "rgba(255,255,255,0.03)", borderRadius: 10, color: EH_PRIMARY, textDecoration: "none", fontSize: 12, fontWeight: 800, border: `1px solid ${EH_PRIMARY}33` }}>ðŸ“„ {entry.fName}</a>}
+                   <a href={entry.file} download={entry.fName} style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 16px", background: "var(--surface-1)", borderRadius: 10, color: EH_PRIMARY, textDecoration: "none", fontSize: 12, fontWeight: 800, border: `1px solid ${EH_PRIMARY}33` }}>ðŸ“„ {entry.fName}</a>}
                 </div>
               )}
             </div>
@@ -5434,7 +5440,7 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
       <PageHeader title="Execution Hub" subtitle="Manage your workspaces and team execution"
         actions={
           <div style={{ display:"flex", gap:10 }}>
-            <button onClick={()=>setView("join")} style={{ padding:"9px 18px", background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, color:"#e2e8f0", fontWeight:600, fontSize:13, cursor:"pointer" }}>Join Workspace</button>
+            <button onClick={()=>setView("join")} style={{ padding:"9px 18px", background:"var(--border-subtle)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, color:"#e2e8f0", fontWeight:600, fontSize:13, cursor:"pointer" }}>Join Workspace</button>
             <button onClick={()=>setView("create")} style={{ padding:"9px 20px", background:"linear-gradient(135deg,#3b82f6,#6c63ff)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, fontSize:13, cursor:"pointer" }}>+ New Workspace</button>
           </div>
         }
@@ -5452,7 +5458,7 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
             <div style={{ fontSize:17, color:"#888", marginBottom:20 }}>No workspaces yet.</div>
             <div style={{ display:"flex", gap:12, justifyContent:"center" }}>
               <button onClick={()=>setView("create")} style={{ padding:"10px 24px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Create Workspace</button>
-              <button onClick={()=>setView("join")} style={{ padding:"10px 24px", background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, color:"#e2e8f0", fontWeight:600, cursor:"pointer" }}>Join Workspace</button>
+              <button onClick={()=>setView("join")} style={{ padding:"10px 24px", background:"var(--border-subtle)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, color:"#e2e8f0", fontWeight:600, cursor:"pointer" }}>Join Workspace</button>
             </div>
           </div>
         ) : (
@@ -5468,14 +5474,14 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
                   key={ws.id} 
                   onClick={()=>openWs(ws.id)} 
                   style={{ 
-                    background:"rgba(255,255,255,0.01)", 
+                    background:"var(--surface-1)", 
                     backdropFilter: "blur(16px)",
-                    border:"1px solid rgba(255,255,255,0.06)", 
+                    border:"1px solid var(--surface-2)", 
                     borderRadius:16, 
                     padding:"22px", 
                     cursor:"pointer", 
                     transition:"all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)"
+                    boxShadow: 'var(--shadow-sm)'
                   }}
                   onMouseEnter={e=>{
                     e.currentTarget.style.borderColor = "rgba(0,184,217,0.4)";
@@ -5483,7 +5489,7 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
                     e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,184,217,0.15)";
                   }}
                   onMouseLeave={e=>{
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                    e.currentTarget.style.borderColor = "var(--surface-2)";
                     e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.2)";
                   }}
@@ -5493,15 +5499,15 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
                     <EHBadge label={myRole} color={EH_ROLE_C[myRole]||"#6c63ff"} />
                   </div>
                   {ws.description && <div style={{ fontSize:12, color:"#64748b", marginBottom:10, lineHeight:1.5 }}>{ws.description}</div>}
-                  <div style={{ height:4, background:"rgba(255,255,255,0.07)", borderRadius:2, overflow:"hidden", marginBottom:10 }}>
+                  <div style={{ height:4, background:"var(--border-subtle)", borderRadius:2, overflow:"hidden", marginBottom:10 }}>
                     <div style={{ height:"100%", width:`${pct}%`, background:pct>=80?"#22c55e":pct>=40?"#f59e0b":"#3b82f6", borderRadius:2, transition:"width 0.4s" }} />
                   </div>
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:16, borderTop:"1px solid rgba(255,255,255,0.03)", paddingTop:12 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:16, borderTop:"1px solid var(--surface-1)", paddingTop:12 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:14 }}>
                       <span style={{ fontSize:12, color:"#64748b", fontWeight:700 }}>📋 {wsTasks.length} tasks</span>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         {[ws.createdByName, ...wsMembers.map(m=>m.name)].slice(0, 4).map((name, idx) => (
-                          <div key={idx} style={{ marginLeft: idx === 0 ? 0 : -8, border: "2px solid #08090a", borderRadius: "50%", overflow: "hidden" }} title={name}>
+                          <div key={idx} style={{ marginLeft: idx === 0 ? 0 : -8, border: "2px solid var(--bg-base)", borderRadius: 'var(--radius-full)', overflow: "hidden" }} title={name}>
                             <EHAvatar name={name} size={22} />
                           </div>
                         ))}
@@ -5570,17 +5576,17 @@ function EHCreateWorkspace({ user, eh, setEH, onDone, onCancel }) {
           <Field label="Workspace Name *"><Inp value={form.name} onChange={v=>setForm({...form,name:v})} placeholder="e.g. Website Redesign" /></Field>
           <Field label="Description">
             <textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="What is this workspace for?" rows={3}
-              style={{ width:"100%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:8, padding:"9px 12px", color:"#fff", fontSize:14, resize:"vertical", boxSizing:"border-box", outline:"none", fontFamily:"inherit" }} />
+              style={{ width:"100%", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:8, padding:"9px 12px", color:"#fff", fontSize:14, resize:"vertical", boxSizing:"border-box", outline:"none", fontFamily:"inherit" }} />
           </Field>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <Field label="Start Date"><Inp type="date" value={form.startDate} onChange={v=>setForm({...form,startDate:v})} /></Field>
             <Field label="End Date *"><Inp type="date" value={form.endDate} onChange={v=>setForm({...form,endDate:v})} /></Field>
           </div>
-          <div style={{ background:"rgba(59,130,246,0.08)", border:"1px solid rgba(59,130,246,0.2)", borderRadius:8, padding:"10px 14px", marginBottom:16, fontSize:13, color:"#94a3b8" }}>
+          <div style={{ background:'var(--accent-bg)', border:"1px solid var(--accent-bg)", borderRadius:8, padding:"10px 14px", marginBottom:16, fontSize:13, color:"#94a3b8" }}>
             💡 After creating, you'll get a <strong style={{color:"#3b82f6"}}>Workspace ID</strong> + <strong style={{color:"#3b82f6"}}>Access Code</strong> to invite members.
           </div>
           <div style={{ display:"flex", gap:10 }}>
-            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
+            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
             <button onClick={create} style={{ flex:2, padding:"11px 0", background:"linear-gradient(135deg,#3b82f6,#6c63ff)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Create Workspace</button>
           </div>
         </Card>
@@ -5665,7 +5671,7 @@ function EHJoinWorkspace({ user, eh, setEH, onDone, onCancel }) {
           </Field>
 
           <div style={{ display:"flex", gap:10, marginTop:20 }}>
-            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
+            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
             <button onClick={join} style={{ flex:2, padding:"11px 0", background:"linear-gradient(135deg,#00B8D9,#008AA1)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Submit Request</button>
           </div>
         </Card>
@@ -5707,7 +5713,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
   const WORKSPACE_TABS = [["pipeline","Board"],["timeline","Roadmap"],["chat","Control"],["team","Team"],["insights","Reports"]];
 
   return (
-    <div style={{ display:"flex", background: "#08090a", height:"100vh", color: "#f1f5f9", overflow: "hidden", fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ display:"flex", background: 'var(--bg-base)', height:"100vh", color: "#f1f5f9", overflow: "hidden", fontFamily: "'Inter', sans-serif" }}>
 
       {/* Main High-Definition Workspace */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
@@ -5824,7 +5830,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
           alignItems: "center", 
           gap: 6, 
           padding: "0 40px", 
-          background: "#0d0f11", 
+          background: 'var(--bg-base)', 
           borderBottom: `1px solid ${EH_BORDER}`,
           flexShrink: 0
         }}>
@@ -5845,7 +5851,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
         </div>
 
         {/* Tab Body with depth */}
-        <div style={{ flex: 1, overflow: "hidden", position: "relative", background: "radial-gradient(circle at 50% 50%, #0d0f11 0%, #08090a 100%)" }}>
+        <div style={{ flex: 1, overflow: "hidden", position: "relative", background: "radial-gradient(circle at 50% 50%, var(--bg-base) 0%, var(--bg-base) 100%)" }}>
           {tab==="pipeline"  && <EHPipeline  user={user} ws={ws} tasks={tasks.filter(t=>t.title.toLowerCase().includes(searchQuery.toLowerCase()))} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} onSelectTask={setSelectedTask} selectedTaskId={liveTask?.id} />}
           {tab==="timeline"  && <EHTimeline  tasks={tasks} ws={ws} members={members} />}
           {tab==="chat"      && <EHChat user={user} ws={ws} eh={eh} setEH={setEH} addLog={addLog} />}
@@ -5857,7 +5863,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
       {/* 3. Right Intelligence Drawer */}
       <div style={{ 
         position: "fixed", top: 0, right: liveTask ? 0 : -520, width: 520, height: "100vh", 
-        background: "#0d0f11", borderLeft: `1px solid ${EH_BORDER}`, zIndex: 1000, 
+        background: 'var(--bg-base)', borderLeft: `1px solid ${EH_BORDER}`, zIndex: 1000, 
         transition: "right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)", boxShadow: "-40px 0 100px rgba(0,0,0,0.8)"
       }}>
         {liveTask && <EHTaskDetail task={liveTask} members={members} user={user} isAdmin={isAdmin} setEH={setEH} addLog={addLog} eh={eh} onClose={()=>setSelectedTask(null)} />}
@@ -5920,12 +5926,12 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
             onDragOver={e => e.preventDefault()}
             onDrop={e => handleDrop(e, statusKey)}
             style={{ 
-              width: 320, minWidth: 320, background: "rgba(255,255,255,0.02)", borderRadius: 16, display: "flex", flexDirection: "column",
+              width: 320, minWidth: 320, background: "var(--surface-1)", borderRadius: 16, display: "flex", flexDirection: "column",
               border: `1px solid ${isOverWIP ? "#ef4444" : EH_BORDER}`, transition: "0.3s",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+              boxShadow: 'var(--shadow-lg)'
             }}
           >
-            <div style={{ padding: "18px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)" }}>
+            <div style={{ padding: "18px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${EH_BORDER}`, background: "var(--surface-1)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 13, fontWeight: 900, color: meta.color, letterSpacing: 1.5, fontFamily: 'Orbitron' }}>{meta.label.toUpperCase()}</span>
                 <span style={{ fontSize: 11, background: meta.color+"22", padding: "1px 8px", borderRadius: 4, color: meta.color, fontWeight: 900 }}>{colTasks.length}</span>
@@ -5944,7 +5950,7 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
                 />
               ))}
               {isAdmin && statusKey === "Backlog" && (
-                 <button onClick={() => setShowCreate(true)} style={{ background: "rgba(255,255,255,0.02)", border: `1px dashed ${EH_BORDER}`, color: "#475569", padding: "14px", borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 900, letterSpacing: 1, transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.borderColor=EH_PRIMARY}>+ CREATE ISSUE</button>
+                 <button onClick={() => setShowCreate(true)} style={{ background: "var(--surface-1)", border: `1px dashed ${EH_BORDER}`, color: "#475569", padding: "14px", borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 900, letterSpacing: 1, transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.borderColor=EH_PRIMARY}>+ CREATE ISSUE</button>
               )}
             </div>
           </div>
@@ -5970,7 +5976,7 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
           </Sel>
           <div style={{ position:"relative" }}>
              <Inp type="date" value={form.deadline} onChange={v=>setForm({...form,deadline:v})} />
-             <div style={{ position:"absolute", top:-7, left:12, background:"#0d0f11", fontSize:9, fontWeight:900, color:"#94a3b8", padding:"0 4px", letterSpacing:1 }}>DEADLINE</div>
+             <div style={{ position:"absolute", top:-7, left:12, background:'var(--bg-base)', fontSize:9, fontWeight:900, color:"#94a3b8", padding:"0 4px", letterSpacing:1 }}>DEADLINE</div>
           </div>
         </div>
         <button onClick={createTask} style={{ width:"100%", marginTop:24, background: EH_PRIMARY, border: "none", color: "#000", padding: "14px", borderRadius: 12, fontWeight: 900, fontSize: 14, cursor: "pointer", boxShadow: `0 10px 30px ${EH_PRIMARY}33` }}>INITIALIZE MISSION</button>
@@ -5989,7 +5995,7 @@ function EHCard({ task, members, onSelect, active, onDragStart }) {
       onDragStart={onDragStart}
       onClick={onSelect}
       style={{ 
-        padding: "16px", background: active ? "linear-gradient(135deg, #1c2126, #111316)" : "#0d0f11", border: `1px solid ${active ? EH_PRIMARY : EH_BORDER}`,
+        padding: "16px", background: active ? "linear-gradient(135deg, #1c2126, #111316)" : 'var(--bg-base)', border: `1px solid ${active ? EH_PRIMARY : EH_BORDER}`,
         borderRadius: 14, cursor: "pointer", transition: "all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)", 
         boxShadow: active ? `0 10px 40px ${EH_PRIMARY}22` : "none",
         transform: active ? "scale(1.02) translateX(4px)" : "none"
@@ -6007,7 +6013,7 @@ function EHCard({ task, members, onSelect, active, onDragStart }) {
       <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", marginBottom:14, lineHeight: 1.4, lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
         {task.title}
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", borderTop: `1px solid rgba(255,255,255,0.03)`, paddingTop: 10 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", borderTop: `1px solid var(--surface-1)`, paddingTop: 10 }}>
         <EHAvatar name={assignee?.name||"?"} size={26} />
       </div>
     </div>
@@ -6195,9 +6201,9 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
 
   const renderFile = (c, isMe) => {
     if (!c.file) return null;
-    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
+    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid var(--surface-3)", display: "block" };
     if (c.fType?.startsWith("image/")) return (
-      <div style={{ marginTop: 12, position: "relative", overflow: "hidden", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}>
+      <div style={{ marginTop: 12, position: "relative", overflow: "hidden", borderRadius: 12, border: "1px solid var(--border-subtle)", boxShadow: 'var(--shadow-lg)' }}>
         <img src={c.file} style={{ ...s, cursor: "zoom-in", transition: "transform 0.3s ease" }} alt={c.fName} onClick={() => window.setGlobalLightboxImg?.(c.file)} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1.0)"} />
       </div>
     );
@@ -6213,7 +6219,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
         display: "flex", 
         alignItems: "center", 
         gap: 12, 
-        background: isMe ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.03)", 
+        background: isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)", 
         border: isMe ? "1px solid rgba(0,0,0,0.08)" : `1px solid ${EH_BORDER}`,
         padding: "12px 16px", 
         borderRadius: 12, 
@@ -6222,11 +6228,11 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
         textDecoration: "none", 
         fontSize: 13, 
         fontWeight: 800,
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+        boxShadow: "inset 0 1px 0 var(--surface-2)",
         transition: "0.2s" 
       }}
-      onMouseEnter={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.18)" : "rgba(255,255,255,0.06)"; }}
-      onMouseLeave={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.03)"; }}
+      onMouseEnter={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.18)" : "var(--surface-2)"; }}
+      onMouseLeave={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)"; }}
       >
         <div style={{ width: 36, height: 36, borderRadius: 8, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,184,217,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 18 }}>📄</div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -6240,7 +6246,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
 
   return (
     <div style={{ display:"flex", flexDirection:"column", height:"100%", background: EH_PANEL }}>
-      <div style={{ padding: "24px 30px", borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)", flexShrink: 0 }}>
+      <div style={{ padding: "24px 30px", borderBottom: `1px solid ${EH_BORDER}`, background: "var(--surface-1)", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div style={{ display: "flex", gap: 10 }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: "#444", fontFamily: "monospace", letterSpacing: 2 }}>{task.key || "EH-???"}</span>
@@ -6289,11 +6295,11 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             
             {/* Horizontal Data Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div style={{ background: "rgba(255,255,255,0.01)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
+              <div style={{ background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
                 <div style={{ fontSize: 9, fontWeight: 900, color: "#64748b", letterSpacing: 1, marginBottom: 4 }}>TASK REF KEY</div>
                 <div style={{ fontSize: 13, fontWeight: 900, color: EH_PRIMARY, fontFamily: "monospace" }}>{task.key || `EH-${task.id.slice(0, 4).toUpperCase()}`}</div>
               </div>
-              <div style={{ background: "rgba(255,255,255,0.01)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
+              <div style={{ background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
                 <div style={{ fontSize: 9, fontWeight: 900, color: "#64748b", letterSpacing: 1, marginBottom: 4 }}>LAST CHRONICLE MOD</div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#e2e8f0" }}>
                   {task.updatedAt ? new Date(task.updatedAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : "Recently"}
@@ -6302,7 +6308,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             </div>
 
             {/* Main Cyber Attributes Dashboard */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 20, background: "rgba(255,255,255,0.01)", border: `1px solid ${EH_BORDER}`, borderRadius: 16, padding: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 20, background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 16, padding: 20 }}>
               
               {/* ASSIGNEE CONTAINER */}
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -6310,14 +6316,14 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                 <div style={{ position: "relative" }}>
                   <div 
                     onClick={() => { setShowAssigneeDropdown(!showAssigneeDropdown); setShowStatusDropdown(false); setShowPriorityDropdown(false); }} 
-                    style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.02)", padding: "10px 14px", borderRadius: 10, border: `1px solid ${EH_BORDER}`, cursor: "pointer", transition: "0.2s" }}
+                    style={{ display: "flex", alignItems: "center", gap: 10, background: "var(--surface-1)", padding: "10px 14px", borderRadius: 10, border: `1px solid ${EH_BORDER}`, cursor: "pointer", transition: "0.2s" }}
                   >
                     <EHAvatar name={assignee?.name||"?"} size={24} />
                     <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", flex: 1 }}>{assignee?.name || "UNASSIGNED"}</span>
                     <span style={{ fontSize: 10, color: "#475569" }}>▼</span>
                   </div>
                   {showAssigneeDropdown && (
-                    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#0d0f11", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", maxHeight: 180, overflowY: "auto" }}>
+                    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: 'var(--bg-base)', border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: 'var(--shadow-lg)', maxHeight: 180, overflowY: "auto" }}>
                       <div 
                         onClick={() => { updateField("assignedTo", null); setShowAssigneeDropdown(false); }}
                         style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#ef4444", fontWeight: 700 }}
@@ -6328,7 +6334,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                         <div 
                           key={m.userId}
                           onClick={() => { updateField("assignedTo", m.userId); setShowAssigneeDropdown(false); }}
-                          style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#e2e8f0", transition: "0.2s", background: task.assignedTo === m.userId ? "rgba(255,255,255,0.04)" : "transparent" }}
+                          style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#e2e8f0", transition: "0.2s", background: task.assignedTo === m.userId ? "var(--surface-2)" : "transparent" }}
                         >
                           <EHAvatar name={m.name} size={20} />
                           <span style={{ fontWeight: 600 }}>{m.name}</span>
@@ -6354,7 +6360,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                       <span style={{ fontSize: 9, color: meta.color }}>▼</span>
                     </div>
                     {showStatusDropdown && (
-                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#0d0f11", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: 'var(--bg-base)', border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: 'var(--shadow-lg)' }}>
                         {Object.keys(EH_STATUS).map(s => {
                           const m = EH_STATUS[s];
                           return (
@@ -6384,7 +6390,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                       <span style={{ fontSize: 9, color: p.color }}>▼</span>
                     </div>
                     {showPriorityDropdown && (
-                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#0d0f11", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: 'var(--bg-base)', border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: 'var(--shadow-lg)' }}>
                         {Object.keys(EH_PRIORITY).map(key => {
                           const pr = EH_PRIORITY[key];
                           return (
@@ -6406,14 +6412,14 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
               </div>
 
               {/* DEADLINE CONTAINER */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 6, borderTop: `1px solid rgba(255,255,255,0.03)`, paddingTop: 16 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, borderTop: `1px solid var(--surface-1)`, paddingTop: 16 }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>DEADLINE LIMIT</span>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   <input 
                     type="date" 
                     value={task.deadline || ""} 
                     onChange={e => updateField("deadline", e.target.value)} 
-                    style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${EH_BORDER}`, borderRadius: 10, color: "#fff", fontWeight: 700, fontSize: 12, padding: "10px 14px", outline: "none", fontFamily: "monospace" }} 
+                    style={{ background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 10, color: "#fff", fontWeight: 700, fontSize: 12, padding: "10px 14px", outline: "none", fontFamily: "monospace" }} 
                   />
                   <span style={{ fontSize: 12, color: dlStats.color, fontWeight: 800, letterSpacing: 0.5 }}>{dlStats.label}</span>
                 </div>
@@ -6422,8 +6428,8 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             </div>
 
             {/* DESCRIPTION PORT */}
-            <div style={{ border: `1px solid ${EH_BORDER}`, borderRadius: 16, background: "rgba(255,255,255,0.01)", overflow: "hidden", position: "relative" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.02)", padding: "12px 18px", borderBottom: `1px solid ${EH_BORDER}` }}>
+            <div style={{ border: `1px solid ${EH_BORDER}`, borderRadius: 16, background: "var(--surface-1)", overflow: "hidden", position: "relative" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--surface-1)", padding: "12px 18px", borderBottom: `1px solid ${EH_BORDER}` }}>
                 <div style={{ fontSize: 9, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>:: DESCRIPTION_MODULE_0x9A ::</div>
                 {!editing && <button onClick={() => setEditing(true)} style={{ background: "none", border: "none", color: EH_PRIMARY, fontSize: 11, fontWeight: 900, cursor: "pointer", letterSpacing: 0.5 }}>EDIT</button>}
               </div>
@@ -6453,12 +6459,12 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
           <style>{`
             .cyber-chat-pane::-webkit-scrollbar { width: 6px; }
             .cyber-chat-pane::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-            .cyber-chat-pane::-webkit-scrollbar-thumb { background: rgba(0, 184, 217, 0.2); border-radius: 10px; }
+            .cyber-chat-pane::-webkit-scrollbar-thumb { background: rgba(0, 184, 217, 0.2); border-radius: var(--radius-md); }
             .cyber-chat-pane::-webkit-scrollbar-thumb:hover { background: rgba(0, 184, 217, 0.5); }
             .cyber-bubble { position: relative; transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1); }
             .cyber-bubble:hover { transform: translateY(-1px); }
             .cyber-bubble:hover .bubble-actions-trigger { opacity: 1 !important; transform: scale(1) !important; }
-            .cyber-input:focus-within { border-color: ${EH_PRIMARY}aa !important; box-shadow: 0 0 15px ${EH_PRIMARY}33, inset 0 2px 10px rgba(0,0,0,0.6) !important; }
+            .cyber-input:focus-within { border-color: ${EH_PRIMARY}aa !important; box-shadow: var(--shadow-glow); }
           `}</style>
           {/* WhatsApp-Style Chat body */}
           <div 
@@ -6505,7 +6511,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                               borderRadius: 20,
                               padding: "2px 6px",
                               zIndex: 10,
-                              boxShadow: "0 10px 20px rgba(0,0,0,0.5)"
+                              boxShadow: 'var(--shadow-lg)'
                             }}>
                               <button onClick={(e) => { e.stopPropagation(); startEditComment(c); }} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Edit">✎</button>
                               <button onClick={(e) => { e.stopPropagation(); deleteComment(c.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Delete">🗑</button>
@@ -6516,10 +6522,10 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                               fontSize: 13, 
                               color: isMe ? "#050505" : "#e2e8f0", 
                               lineHeight: 1.6, 
-                              background: isMe ? `linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)` : "rgba(255, 255, 255, 0.02)", 
+                              background: isMe ? `linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)` : "var(--surface-1)", 
                               padding: "14px 18px", 
                               borderRadius: isMe ? "18px 4px 18px 18px" : "4px 18px 18px 18px", 
-                              border: isMe ? "none" : `1px solid rgba(255,255,255,0.04)`,
+                              border: isMe ? "none" : `1px solid var(--surface-2)`,
                               boxShadow: isMe ? `0 8px 24px rgba(0, 242, 254, 0.15)` : "0 8px 32px rgba(0,0,0,0.25)",
                               wordBreak: "break-word",
                               paddingBottom: c.isEdited ? "22px" : "14px",
@@ -6529,7 +6535,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                               <div>{c.comment}</div>
                               {renderFile(c, isMe)}
                               {c.isEdited && (
-                                <span style={{ fontSize: 8, color: isMe ? "rgba(5,5,5,0.5)" : "rgba(255,255,255,0.3)", position: "absolute", bottom: 4, right: 8, fontWeight: 900, letterSpacing: 0.5, textTransform: "uppercase" }}>Edited</span>
+                                <span style={{ fontSize: 8, color: isMe ? "rgba(5,5,5,0.5)" : "var(--text-muted)", position: "absolute", bottom: 4, right: 8, fontWeight: 900, letterSpacing: 0.5, textTransform: "uppercase" }}>Edited</span>
                               )}
                           </div>
                       </div>
@@ -6560,7 +6566,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
               </div>
             )}
 
-            <div className="cyber-input" style={{ display: "flex", gap: 12, background: "#06080a", border: `1px solid rgba(255,255,255,0.05)`, borderRadius: 18, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.6)", transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}>
+            <div className="cyber-input" style={{ display: "flex", gap: 12, background: "#06080a", border: `1px solid var(--surface-2)`, borderRadius: 18, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.6)", transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}>
                 <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#475569"}>📎</button>
                 <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
                 <textarea
@@ -6598,7 +6604,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                   disabled={recordingMode === 'transcribe'}
                   style={{ 
                     background: "none", border: "none", 
-                    color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "rgba(255,255,255,0.15)" : "#475569"), 
+                    color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "var(--border-strong)" : "#475569"), 
                     cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer", 
                     fontSize: 18, transition: "0.2s" 
                   }} 
@@ -6615,7 +6621,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                   disabled={recordingMode === 'audio'}
                   style={{ 
                     background: "none", border: "none", 
-                    color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "rgba(255,255,255,0.15)" : "#475569"), 
+                    color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "var(--border-strong)" : "#475569"), 
                     cursor: recordingMode === 'audio' ? "not-allowed" : "pointer", 
                     fontSize: 18, transition: "0.2s", paddingRight: 6 
                   }} 
@@ -6626,14 +6632,14 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                   {recordingMode === 'transcribe' ? "🛑" : "📝"}
                 </button>
 
-                <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: "50%", background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow=`0 4px 20px ${EH_PRIMARY}66`;}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=`0 4px 15px ${EH_PRIMARY}44`;}}>{editingCommentId ? "✓" : "↵"}</button>
+                <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: 'var(--radius-full)', background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow=`0 4px 20px ${EH_PRIMARY}66`;}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=`0 4px 15px ${EH_PRIMARY}44`;}}>{editingCommentId ? "✓" : "↵"}</button>
             </div>
           </div>
         </div>
       )}
 
       {contextMenu && (
-        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#111316', border: `1px solid ${EH_BORDER}`, borderRadius: 10, padding: '6px', zIndex: 9999, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", minWidth: 160 }}>
+        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#111316', border: `1px solid ${EH_BORDER}`, borderRadius: 10, padding: '6px', zIndex: 9999, boxShadow: 'var(--shadow-lg)', minWidth: 160 }}>
           <button onClick={() => startEditComment(contextMenu.c)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#e9edef', textAlign: 'left', cursor: 'pointer', fontSize: 13, width: '100%', borderRadius: 6, fontWeight: 700 }} className="eh-ctx-btn">
             <span>✎</span> Edit Transmission
           </button>
@@ -6744,12 +6750,12 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
 
   const renderFile = (m, isMe) => {
     if (!m.file) return null;
-    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid rgba(255,255,255,0.1)", display: "block" };
+    const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid var(--surface-3)", display: "block" };
     if (m.fType?.startsWith("image/")) return <img src={m.file} style={{ ...s, cursor: "zoom-in" }} alt={m.fName} onClick={() => window.setGlobalLightboxImg?.(m.file)} />;
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
     if (m.fType?.startsWith("audio/")) return <audio src={m.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ ...s, width: "100%" }} />;
     return (
-      <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.05)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+      <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "var(--surface-2)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
         <span style={{ fontSize: 20 }}>📄</span>
         <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.fName}</div>
       </a>
@@ -6759,7 +6765,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "transparent", position: "relative" }}>
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 40px", display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ alignSelf: "center", fontSize: 10, fontWeight: 900, color: "#475569", letterSpacing: 2, marginBottom: 20, background: "rgba(255,255,255,0.03)", padding: "4px 12px", borderRadius: 4 }}>MISSION CHANNEL ENCRYPTED // END-TO-END</div>
+        <div style={{ alignSelf: "center", fontSize: 10, fontWeight: 900, color: "#475569", letterSpacing: 2, marginBottom: 20, background: "var(--surface-1)", padding: "4px 12px", borderRadius: 4 }}>MISSION CHANNEL ENCRYPTED // END-TO-END</div>
         {roomMsgs.map((m, idx) => {
           const isMe = m.userId === user.id;
           const isSameUser = idx > 0 && roomMsgs[idx-1].userId === m.userId;
@@ -6773,9 +6779,9 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
               <div style={{ 
                 padding: "12px 16px", paddingBottom: "20px", borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
                 background: isMe ? "linear-gradient(135deg, #00B8D9, #008AA1)" : "#16191c", 
-                border: `1px solid ${isMe ? "rgba(255,255,255,0.1)" : EH_BORDER}`,
+                border: `1px solid ${isMe ? "var(--surface-3)" : EH_BORDER}`,
                 color: isMe ? "#000" : "#d1d5db", 
-                boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+                boxShadow: 'var(--shadow-lg)',
                 position: "relative",
                 cursor: isMe ? "context-menu" : "default"
               }}>
@@ -6783,7 +6789,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
                   {m.text}
                   {renderFile(m, isMe)}
                 </div>
-                <div style={{ position: "absolute", bottom: 6, right: 10, fontSize: 10, color: isMe ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", gap: 5, fontWeight: 800 }}>
+                <div style={{ position: "absolute", bottom: 6, right: 10, fontSize: 10, color: isMe ? "rgba(0,0,0,0.5)" : "var(--text-muted)", display: "flex", alignItems: "center", gap: 5, fontWeight: 800 }}>
                   {m.isEdited && <span style={{ opacity: 0.8 }}>Edited</span>}
                   {m.time}
                   {isMe && <span style={{ fontSize: 12 }}>✓✓</span>}
@@ -6806,7 +6812,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
       )}
 
       <div style={{ padding: "16px 40px", background: "rgba(8,9,10,0.8)", borderTop: `1px solid ${EH_BORDER}`, backdropFilter: "blur(20px)" }}>
-        <div style={{ display: "flex", gap: 12, background: "#111316", padding: "8px 16px", borderRadius: 18, border: `1px solid rgba(255,255,255,0.05)`, alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.3)" }}>
+        <div style={{ display: "flex", gap: 12, background: "#111316", padding: "8px 16px", borderRadius: 18, border: `1px solid var(--surface-2)`, alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.3)" }}>
           <button onClick={()=>fileInputRef.current.click()} style={{ background:"none", border:"none", color:"#475569", cursor:"pointer", fontSize:20 }}>📎</button>
           <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
           <textarea
@@ -6848,7 +6854,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
       </div>
 
       {contextMenu && (
-        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#111316', border: `1px solid ${EH_BORDER}`, borderRadius: 10, padding: '6px', zIndex: 9999, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", minWidth: 160 }}>
+        <div style={{ position: 'fixed', top: contextMenu.y, left: contextMenu.x, background: '#111316', border: `1px solid ${EH_BORDER}`, borderRadius: 10, padding: '6px', zIndex: 9999, boxShadow: 'var(--shadow-lg)', minWidth: 160 }}>
           <button onClick={() => startEdit(contextMenu.m)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#e9edef', textAlign: 'left', cursor: 'pointer', fontSize: 13, width: '100%', borderRadius: 6, fontWeight: 700 }} className="eh-ctx-btn">
             <span>✎</span> Edit Report
           </button>
@@ -6860,7 +6866,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
 
       <style>{`
         @keyframes msgSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .eh-ctx-btn:hover { background: rgba(255,255,255,0.05); }
+        .eh-ctx-btn:hover { background: var(--surface-2); }
       `}</style>
     </div>
   );
@@ -6877,7 +6883,7 @@ function EHTimeline({ tasks, ws, members }) {
   return (
     <div style={{ display: "flex", height: "100%", borderTop: `1px solid ${EH_BORDER}` }}>
       {/* List Pane */}
-      <div style={{ width: 340, borderRight: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.01)", overflowY: "auto" }}>
+      <div style={{ width: 340, borderRight: `1px solid ${EH_BORDER}`, background: "var(--surface-1)", overflowY: "auto" }}>
         <div style={{ padding: "20px", borderBottom: `1px solid ${EH_BORDER}`, fontSize: 10, fontWeight: 900, color: "#475569", letterSpacing: 2 }}>OPERATIONAL ISSUES</div>
         {dated.map(t => (
           <div key={t.id} style={{ padding: "16px 20px", borderBottom: `1px solid ${EH_BORDER}`, fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", gap: 14 }}>
@@ -6889,7 +6895,7 @@ function EHTimeline({ tasks, ws, members }) {
       </div>
       {/* Timeline Pane */}
       <div style={{ flex: 1, overflowX: "auto", position: "relative" }}>
-        <div style={{ display: "flex", height: 50, borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(255,255,255,0.02)" }}>
+        <div style={{ display: "flex", height: 50, borderBottom: `1px solid ${EH_BORDER}`, background: "var(--surface-1)" }}>
           {[0,0.2,0.4,0.6,0.8,1].map(p => {
              const d = new Date(start.getTime() + p * totalMs);
              return <div key={p} style={{ flex: 1, borderRight: `1px solid ${EH_BORDER}`, fontSize: 10, color: "#475569", padding: "18px 0", textAlign: "center", fontWeight: 800 }}>{d.toLocaleDateString("en-IN",{month:'short',day:'2-digit'}).toUpperCase()}</div>
@@ -6988,7 +6994,7 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
             🔔 Pending Requests ({pendingReqs.length})
           </div>
           {pendingReqs.map(r=>(
-            <div key={r.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
+            <div key={r.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid var(--surface-2)" }}>
               <EHAvatar name={r.userName} size={34} />
               <div style={{ flex:1 }}>
                 <div style={{ fontWeight:700, fontSize:13, color:"#f1f5f9" }}>{r.userName}</div>
@@ -7009,11 +7015,11 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
           <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>Team</span>
         </div>
         {/* Table header */}
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"6px 0 10px", borderBottom:"1px solid rgba(255,255,255,0.07)", fontSize:11, fontWeight:700, color:"#475569", textTransform:"uppercase", letterSpacing:0.5 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"6px 0 10px", borderBottom:"1px solid var(--border-subtle)", fontSize:11, fontWeight:700, color:"#475569", textTransform:"uppercase", letterSpacing:0.5 }}>
           <span>Member</span><span>Role</span><span>Status</span><span>Actions</span>
         </div>
         {/* Creator row */}
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"12px 0", alignItems:"center", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"12px 0", alignItems:"center", borderBottom:"1px solid var(--surface-2)" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <EHAvatar name={user.name} size={34} online />
             <div>
@@ -7026,7 +7032,7 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
           <span style={{ fontSize:11, color:"#555" }}>Creator</span>
         </div>
         {members.filter(m=>m.userId!==user.id).map(m=>(
-          <div key={m.id} style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"12px 0", alignItems:"center", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
+          <div key={m.id} style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"12px 0", alignItems:"center", borderBottom:"1px solid var(--surface-2)" }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <EHAvatar name={m.name} size={34} />
               <div>
@@ -7036,7 +7042,7 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
             </div>
             {isAdmin ? (
               <select value={m.role} onChange={e=>updateRole(m.id,e.target.value)}
-                style={{ background:"#1a1a2e", border:"1px solid rgba(255,255,255,0.1)", borderRadius:8, padding:"4px 8px", color:EH_ROLE_C[m.role]||"#fff", fontSize:11, fontWeight:700 }}>
+                style={{ background:"#1a1a2e", border:"1px solid var(--surface-3)", borderRadius:8, padding:"4px 8px", color:EH_ROLE_C[m.role]||"#fff", fontSize:11, fontWeight:700 }}>
                 {["Member","Manager","Admin","Observer"].map(r=><option key={r}>{r}</option>)}
               </select>
             ) : (
@@ -7054,7 +7060,7 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
       </Card>
 
       {/* Share info box */}
-      <div style={{ marginTop:16, background:"rgba(59,130,246,0.07)", border:"1px solid rgba(59,130,246,0.2)", borderRadius:10, padding:"14px 18px" }}>
+      <div style={{ marginTop:16, background:'var(--accent-bg)', border:"1px solid var(--accent-bg)", borderRadius:10, padding:"14px 18px" }}>
         <div style={{ fontSize:12, fontWeight:700, color:"#3b82f6", marginBottom:8 }}>🔗 Invite Members</div>
         <div style={{ display:"flex", gap:20, fontSize:13 }}>
           <div><span style={{ color:"#64748b" }}>Workspace ID: </span><span style={{ color:"#f1f5f9", fontWeight:700, letterSpacing:1 }}>{ws.id}</span></div>
@@ -7104,7 +7110,7 @@ function EHInsights({ tasks, members, ws, eh }) {
           <Card key={l} style={{ border:`1px solid ${c}22` }}>
             <div style={{ fontSize:26, fontWeight:800, color:c, marginBottom:2 }}>{v}</div>
             <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>{l}</div>
-            <div style={{ height:3, background:"rgba(255,255,255,0.05)", borderRadius:2, overflow:"hidden" }}>
+            <div style={{ height:3, background:"var(--surface-2)", borderRadius:2, overflow:"hidden" }}>
               <div style={{ height:"100%", width:typeof v === "number" ? `${Math.min(100,(v/Math.max(total,1))*100)}%` : `${pct}%`, background:c, borderRadius:2 }} />
             </div>
           </Card>
@@ -7167,7 +7173,7 @@ function EHInsights({ tasks, members, ws, eh }) {
                   <span style={{ fontSize:12, color:"#e2e8f0", fontWeight:600 }}>{m.name.split(" ")[0]}</span>
                   <span style={{ fontSize:12, fontWeight:700, color:"#f1f5f9" }}>{m.done}</span>
                 </div>
-                <div style={{ height:4, background:"rgba(255,255,255,0.07)", borderRadius:2, overflow:"hidden" }}>
+                <div style={{ height:4, background:"var(--border-subtle)", borderRadius:2, overflow:"hidden" }}>
                   <div style={{ height:"100%", width:`${m.eff}%`, background:"#3b82f6", borderRadius:2, transition:"width 0.4s" }} />
                 </div>
               </div>
@@ -7175,7 +7181,7 @@ function EHInsights({ tasks, members, ws, eh }) {
           ))}
           {memberStats.length===0 && <div style={{ color:"#555", fontSize:13 }}>Add members to see productivity metrics.</div>}
           {/* Join stats */}
-          <div style={{ marginTop:16, paddingTop:14, borderTop:"1px solid rgba(255,255,255,0.07)" }}>
+          <div style={{ marginTop:16, paddingTop:14, borderTop:"1px solid var(--border-subtle)" }}>
             <div style={{ fontSize:11, fontWeight:700, color:"#555", textTransform:"uppercase", letterSpacing:0.5, marginBottom:8 }}>Join Requests</div>
             <div style={{ display:"flex", gap:12 }}>
               {[["Approved",approved,"#22c55e"],["Pending",reqs.filter(r=>r.status==="Pending").length,"#f59e0b"],["Rejected",rejected,"#ef4444"]].map(([l,v,c])=>(
@@ -7195,6 +7201,15 @@ function EHInsights({ tasks, members, ws, eh }) {
 
 // ─── HABIT TRACKER ────────────────────────────────────────────────────────────
 function HabitTracker({ user }) {
+
+  const renderIcon = (iconName) => {
+    const style = { display: 'inline-block', verticalAlign: 'middle' };
+    if (iconName === "water" || iconName === "droplet") return <LuDroplet style={style} />;
+    if (iconName === "meditation" || iconName === "activity") return <LuActivity style={style} />;
+    if (iconName === "mobile" || iconName === "smartphone") return <LuSmartphone style={style} />;
+    return <LuTarget style={style} />;
+  };
+
   const [myHabits, setMyHabits] = useLS(`apx_custom_habits_${user.id}`, [
     { id: "water", icon: "💧", label: "Water", type: "numeric", unit: "glasses", target: 8, color: "#38bdf8" },
     { id: "meditation", icon: "🧘", label: "Meditation", type: "positive", color: "#a78bfa" },
@@ -7309,15 +7324,15 @@ function HabitTracker({ user }) {
   const weeklyComparison = getWeeklyComparisonForMonth();
 
   return (
-    <div style={{ padding: "24px 32px", background: "#050508", minHeight: "100vh" }}>
+    <div style={{ padding: "24px 32px", background: 'var(--bg-base)', minHeight: "100vh" }}>
       <PageHeader title="Warrior Discipline" subtitle="Forge your character through repetition" 
         actions={<button onClick={() => setShowAdd(true)} style={{ padding: "12px 24px", background: "linear-gradient(135deg, #6c63ff, #3b82f6)", border: "none", borderRadius: 12, color: "#fff", fontWeight: 800, cursor: "pointer" }}>+ New Habit</button>} />
       
       {/* ─── BAR CHART ANALYTICS ─── */}
-      <Card style={{ marginBottom: 32, padding: "24px", background: "rgba(10,10,15,0.8)", border: "1px solid rgba(255,255,255,0.05)" }}>
+      <Card style={{ marginBottom: 32, padding: "24px", background: "rgba(10,10,15,0.8)", border: "1px solid var(--surface-2)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 30 }}>
           <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>📊 DISCIPLINE TRAJECTORY</div>
-          <div style={{ display: "flex", gap: 6, background: "rgba(0,0,0,0.4)", padding: 4, borderRadius: 10, border: "1px solid rgba(255,255,255,0.05)" }}>
+          <div style={{ display: "flex", gap: 6, background: "rgba(0,0,0,0.4)", padding: 4, borderRadius: 10, border: "1px solid var(--surface-2)" }}>
             <button 
               onClick={() => setChartView("day")} 
               style={{ padding: "6px 12px", background: chartView === "day" ? "linear-gradient(135deg, #6c63ff, #3b82f6)" : "none", border: "none", borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 900, cursor: "pointer", transition: "0.2s", letterSpacing: 0.5 }}
@@ -7394,8 +7409,8 @@ function HabitTracker({ user }) {
       {/* Active date indicator banner if viewing past days */}
       {selectedDateStr !== today() && (
         <div style={{ 
-          background: "rgba(59,172,214,0.1)", 
-          border: "1px solid rgba(59,172,214,0.2)", 
+          background: 'var(--accent-bg)', 
+          border: "1px solid var(--accent-bg)", 
           borderRadius: 12, 
           padding: "12px 20px", 
           marginBottom: 20, 
@@ -7436,9 +7451,9 @@ function HabitTracker({ user }) {
           const pct = calculatePct(h, val);
           const streak = getStreak(h.id);
           return (
-            <Card key={h.id} style={{ border: `1px solid ${pct === 100 ? h.color + '44' : 'rgba(255,255,255,0.05)'}` }}>
+            <Card key={h.id} style={{ border: `1px solid ${pct === 100 ? h.color + '44' : 'var(--surface-2)'}` }}>
               <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-                <span style={{ fontSize: 24 }}>{h.icon}</span>
+                <span style={{ fontSize: 24 }}>{typeof h.icon === 'string' ? renderIcon(h.icon) : renderIcon("target")}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 900, color: "#fff" }}>{h.label}</div>
                   <div style={{ fontSize: 11, color: "#64748b" }}>{h.type === "numeric" ? `${h.target} ${h.unit.toUpperCase()}` : "MISSION"}</div>
@@ -7461,7 +7476,7 @@ function HabitTracker({ user }) {
                 </div>
               )}
               {/* Mini Weekly Chart (Mon-Sun) */}
-              <div style={{ marginTop: 20, marginBottom: 20, borderTop: "1px dashed rgba(255,255,255,0.05)", paddingTop: 16 }}>
+              <div style={{ marginTop: 20, marginBottom: 20, borderTop: "1px dashed var(--surface-2)", paddingTop: 16 }}>
                 <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", marginBottom: 12, letterSpacing: 0.5 }}>WEEKLY PROGRESSION</div>
                 <div style={{ display: "flex", gap: 6, height: 40, alignItems: "flex-end" }}>
                   {weekDates.map((dateObj, idx) => {
@@ -7486,7 +7501,7 @@ function HabitTracker({ user }) {
                 </div>
               </div>
 
-              <div style={{ height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 2 }}>
+              <div style={{ height: 4, background: "var(--surface-2)", borderRadius: 2 }}>
                 <div style={{ height: "100%", width: `${pct}%`, background: pct === 100 ? "#22c55e" : h.color, borderRadius: 2, transition: "width 0.4s" }} />
               </div>
             </Card>
@@ -8291,18 +8306,18 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   };
 
   if (showMotivation) return (
-    <div style={{ padding: 40, textAlign: 'center', minHeight: '94vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#050508', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ padding: 40, textAlign: 'center', minHeight: '94vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-base)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `url('/samurai.png')`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.4, zIndex: 0 }}></div>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, #050508 90%)', zIndex: 1 }}></div>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, var(--bg-base) 90%)', zIndex: 1 }}></div>
       <div style={{ maxWidth: 800, zIndex: 2, position: 'relative' }}>
         <div style={{ fontSize: 14, fontWeight: 900, color: '#3bacd6', letterSpacing: 8, marginBottom: 30, textShadow: '0 0 15px #1e6fa8' }}>BATTLE COMMENCE</div>
         <h1 style={{ fontSize: 42, color: '#fff', fontStyle: 'italic', fontWeight: 200, lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>"{quote}"</h1>
-        <button onClick={() => setShowMotivation(false)} style={{ marginTop: 60, padding: '18px 50px', background: 'rgba(59, 172, 214, 0.1)', border: '1px solid #3bacd6', borderRadius: 4, color: '#3bacd6', fontWeight: 900, cursor: 'pointer', letterSpacing: 3, textTransform: 'uppercase', transition: '0.3s', backdropFilter: 'blur(5px)' }}>Initialize Command Center</button>
+        <button onClick={() => setShowMotivation(false)} style={{ marginTop: 60, padding: '18px 50px', background: 'var(--accent-bg)', border: '1px solid #3bacd6', borderRadius: 4, color: '#3bacd6', fontWeight: 900, cursor: 'pointer', letterSpacing: 3, textTransform: 'uppercase', transition: '0.3s', backdropFilter: 'blur(5px)' }}>Initialize Command Center</button>
       </div>
     </div>
   );
 
-  const circleBtn = { width: 40, height: 40, borderRadius: '50%', background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)', cursor: 'pointer', fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' };
+  const circleBtn = { width: 40, height: 40, borderRadius: 'var(--radius-full)', background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)', cursor: 'pointer', fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' };
 
   return (
     <div style={{ padding: "20px 30px", background: "transparent", minHeight: "100vh", backdropFilter: "blur(10px)" }}>
@@ -8317,19 +8332,19 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       {subTab === "battle" && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
           {/* LEVEL BAR & WARRIOR RANK */}
-          <div style={{ gridColumn: 'span 3', background: 'radial-gradient(circle at top right, rgba(0, 184, 217, 0.08), transparent 45%), rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px 30px', backdropFilter: 'blur(20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ gridColumn: 'span 3', background: 'radial-gradient(circle at top right, rgba(0, 184, 217, 0.08), transparent 45%), rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px 30px', backdropFilter: 'blur(20px)', boxShadow: 'var(--shadow-lg)', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
                 {/* 🛡️ DYNAMIC POMODORO FOCUS SHIELD */}
                 <div style={{
                   width: 44,
                   height: 44,
-                  borderRadius: '50%',
+                  borderRadius: 'var(--radius-full)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: pomoShieldBroke ? 'rgba(239, 68, 68, 0.15)' : pomo.active ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255,255,255,0.02)',
-                  border: pomoShieldBroke ? '2px dashed #ef4444' : pomo.active ? '2px solid #22c55e' : '1px solid rgba(255,255,255,0.1)',
+                  background: pomoShieldBroke ? 'rgba(239, 68, 68, 0.15)' : pomo.active ? 'rgba(34, 197, 94, 0.15)' : 'var(--surface-1)',
+                  border: pomoShieldBroke ? '2px dashed #ef4444' : pomo.active ? '2px solid #22c55e' : '1px solid var(--surface-3)',
                   boxShadow: pomoShieldBroke ? 'none' : pomo.active ? '0 0 15px rgba(34, 197, 94, 0.4)' : 'none',
                   animation: pomo.active && !pomoShieldBroke ? 'pulse 2s infinite' : 'none'
                 }}>
@@ -8346,7 +8361,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
               </div>
             </div>
             
-            <div style={{ width: '100%', height: 8, background: '#000', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)' }}>
+            <div style={{ width: '100%', height: 8, background: '#000', borderRadius: 4, overflow: 'hidden', border: '1px solid var(--surface-1)' }}>
               <div style={{ height: '100%', width: `${(exp % 1000) / 10}%`, background: `linear-gradient(90deg, ${EH_PRIMARY}, #8b5cf6)`, boxShadow: `0 0 12px ${EH_PRIMARY}`, borderRadius: 4, transition: 'width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)' }} />
             </div>
 
@@ -8357,7 +8372,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             )}
             
             {/* Quick stats indicators */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 8, borderTop: '1px dashed rgba(255,255,255,0.05)', paddingTop: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 8, borderTop: '1px dashed var(--surface-2)', paddingTop: 16 }}>
               <div>
                 <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>⚔️ STRENGTH STAT</div>
                 <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{Math.round(exp / 4)} XP</div>
@@ -8374,7 +8389,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           </div>
 
           {/* Pomodoro Timer with interactive penalties */}
-          <Card style={{ background: 'rgba(15, 23, 42, 0.35)', border: pomo.active ? '1px solid #6c63ff' : pomoShieldBroke ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transition: 'all 0.3s' }}>
+          <Card style={{ background: 'rgba(15, 23, 42, 0.35)', border: pomo.active ? '1px solid #6c63ff' : pomoShieldBroke ? '1px solid #ef4444' : '1px solid var(--surface-2)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: 'var(--shadow-lg)', transition: 'all 0.3s' }}>
             <div style={{ fontSize: 10, fontWeight: 900, color: '#6c63ff', marginBottom: 15, letterSpacing: 1.5 }}>T-MINUS (POMODORO)</div>
             <div style={{ fontSize: 48, fontWeight: 900, fontFamily: 'monospace', color: '#fff', letterSpacing: 2, textShadow: pomo.active ? '0 0 15px rgba(108, 99, 255, 0.4)' : 'none' }}>{fmt(pomo.time)}</div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
@@ -8391,32 +8406,32 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 setPomoShieldBroke(true);
                 setExp(e => Math.max(0, e - 50));
                 setPomo({ ...pomo, time: 1500, active: false, lastTick: Date.now() });
-              }} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>RESET</button>
+              }} style={{ padding: '10px 16px', background: 'var(--surface-1)', border: '1px solid var(--surface-2)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>RESET</button>
             </div>
           </Card>
 
           {/* Stopwatch */}
-          <Card style={{ background: 'rgba(5, 46, 22, 0.15)', border: stopwatch.active ? '1px solid #22c55e' : '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transition: 'border 0.3s' }}>
+          <Card style={{ background: 'rgba(5, 46, 22, 0.15)', border: stopwatch.active ? '1px solid #22c55e' : '1px solid var(--surface-2)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: 'var(--shadow-lg)', transition: 'border 0.3s' }}>
             <div style={{ fontSize: 10, fontWeight: 900, color: '#22c55e', marginBottom: 15, letterSpacing: 1.5 }}>MISSION DURATION</div>
             <div style={{ fontSize: 48, fontWeight: 900, color: '#22c55e', fontFamily: 'monospace', letterSpacing: 2, textShadow: stopwatch.active ? '0 0 15px rgba(34, 197, 94, 0.4)' : 'none' }}>{fmt(stopwatch.time)}</div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button onClick={() => setStopwatch({ ...stopwatch, active: !stopwatch.active, lastTick: Date.now() })} style={{ flex: 1, padding: '10px 16px', background: stopwatch.active ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)', border: stopwatch.active ? '1px solid #ef4444' : '1px solid #22c55e', borderRadius: 10, color: stopwatch.active ? '#ef4444' : '#4ade80', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: 'all 0.2s' }}>{stopwatch.active ? "STOP" : "RECORD"}</button>
-              <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false, lastTick: Date.now() })} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>CLEAR</button>
+              <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false, lastTick: Date.now() })} style={{ padding: '10px 16px', background: 'var(--surface-1)', border: '1px solid var(--surface-2)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}>CLEAR</button>
             </div>
           </Card>
 
           {/* Rep Counter */}
-          <Card style={{ background: 'rgba(120, 53, 4, 0.15)', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
+          <Card style={{ background: 'rgba(120, 53, 4, 0.15)', border: '1px solid var(--surface-2)', textAlign: 'center', backdropFilter: 'blur(10px)', padding: '24px 20px', borderRadius: 16, boxShadow: 'var(--shadow-lg)' }}>
             <div style={{ fontSize: 10, fontWeight: 900, color: '#f59e0b', marginBottom: 15, letterSpacing: 1.5 }}>REP/ACTION COUNTER</div>
             <div style={{ fontSize: 48, fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace' }}>{counter}</div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button onClick={() => setCounter(counter + 1)} style={{ flex: 1, padding: '10px 16px', fontSize: 18, background: 'rgba(245, 158, 11, 0.2)', border: '#f59e0b 1px solid', borderRadius: 10, color: '#fbbf24', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s' }}>+</button>
-              <button onClick={() => setCounter(0)} style={{ padding: '10px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, cursor: 'pointer' }}>0</button>
+              <button onClick={() => setCounter(0)} style={{ padding: '10px 16px', background: 'var(--surface-1)', border: '1px solid var(--surface-2)', borderRadius: 10, color: '#94a3b8', fontWeight: 900, cursor: 'pointer' }}>0</button>
             </div>
           </Card>
 
           {/* Focus Audio Center with Binaural Beats */}
-          <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.6)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.6)', border: '1px solid var(--surface-2)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>🔊 CYBER-AMBIENT SOUND DECK</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
               {FOCUS_TRACKS.map(track => {
@@ -8430,8 +8445,8 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                       alignItems: 'center', 
                       justifyContent: 'space-between', 
                       padding: '10px 14px', 
-                      background: isActive ? 'rgba(167, 139, 250, 0.15)' : 'rgba(255,255,255,0.02)', 
-                      border: isActive ? '1px solid #a78bfa' : '1px solid rgba(255,255,255,0.05)', 
+                      background: isActive ? 'rgba(167, 139, 250, 0.15)' : 'var(--surface-1)', 
+                      border: isActive ? '1px solid #a78bfa' : '1px solid var(--surface-2)', 
                       borderRadius: 10, 
                       cursor: 'pointer',
                       transition: 'all 0.2s' 
@@ -8449,7 +8464,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           <Card style={{ 
             textAlign: 'center', 
             background: 'radial-gradient(circle, rgba(30, 27, 75, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)', 
-            border: '1px solid rgba(255,255,255,0.05)',
+            border: '1px solid var(--surface-2)',
             backdropFilter: 'blur(10px)',
             borderRadius: 16,
             padding: '24px 20px',
@@ -8465,7 +8480,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
               position: 'relative', 
               width: 130, 
               height: 130, 
-              borderRadius: '50%',
+              borderRadius: 'var(--radius-full)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -8475,9 +8490,9 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                borderRadius: '50%',
+                borderRadius: 'var(--radius-full)',
                 border: '2px solid #3bacd6',
-                boxShadow: '0 0 20px rgba(59, 172, 214, 0.5), inset 0 0 15px rgba(59, 172, 214, 0.2)',
+                boxShadow: 'var(--shadow-glow)',
                 animation: 'pulse 4s infinite ease-in-out',
                 zIndex: 2,
                 pointerEvents: 'none' 
@@ -8498,7 +8513,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 style={{ 
                   width: '100%', 
                   height: '100%', 
-                  borderRadius: '50%', 
+                  borderRadius: 'var(--radius-full)', 
                   objectFit: 'cover',
                   zIndex: 1,
                   filter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
@@ -8515,7 +8530,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           </Card>
 
           {/* Brain Dump Card */}
-          <Card style={{ gridColumn: 'span 3', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}>
+          <Card style={{ gridColumn: 'span 3', background: 'var(--surface-1)', backdropFilter: 'blur(10px)' }}>
             <div style={{ fontSize: 11, fontWeight: 900, color: "var(--text-dim)", marginBottom: 10 }}>WARRIOR BRAIN DUMP</div>
             <textarea placeholder="Immediate thoughts here..." style={{ width: '100%', height: 80, background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)', padding: 15, outline: 'none' }} />
           </Card>
@@ -8534,7 +8549,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
         return (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {/* Daily Commandments */}
-            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}>⚔️ 10 COMMANDMENTS</div>
                 <span style={{ fontSize: 11, fontWeight: 800, color: commCompletedCount === 10 ? '#22c55e' : '#64748b' }}>{commCompletedCount}/10</span>
@@ -8571,7 +8586,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             </Card>
 
             {/* Stoic Obstacles Planner */}
-            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🛡️ PREMEDITATIO MALORUM</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -8608,7 +8623,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             </Card>
 
             {/* Nightly Combat Debrief */}
-            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>📓 NIGHTLY COMBAT DEBRIEF</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -8665,7 +8680,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
         return (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {/* Interactive Ikigai Finder */}
-            <Card style={{ gridColumn: 'span 3', background: 'rgba(10,10,15,0.7)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Card style={{ gridColumn: 'span 3', background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🌸 INTERACTIVE IKIGAI FINDER</div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -8724,7 +8739,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       {/* 🖼️ VISION BOARD SUBTAB (With clickable Coordinate Pin Dropping!) */}
       {subTab === "vision" && (
         !vision.image ? (
-          <div style={{ padding: 60, textAlign: 'center', border: '2px dashed var(--border)', borderRadius: 30, margin: '20px auto', maxWidth: 800, backdropFilter: 'blur(10px)', background: 'rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+          <div style={{ padding: 60, textAlign: 'center', border: '2px dashed var(--border)', borderRadius: 30, margin: '20px auto', maxWidth: 800, backdropFilter: 'blur(10px)', background: 'var(--surface-1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
             <div style={{ fontSize: 60 }}>🖼️</div>
             <h2 style={{ fontWeight: 900, margin: 0 }}>MANIFEST YOUR FUTURE</h2>
             <p style={{ color: 'var(--text-dim)', margin: '0 0 10px 0', lineHeight: 1.6 }}>Upload your vision board to display it continuously in high definition.</p>
@@ -8752,7 +8767,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           <div style={{ 
             background: 'radial-gradient(circle, rgba(167, 139, 250, 0.15) 0%, rgba(10,10,15,0.95) 100%)', 
             border: '2px solid #a78bfa', 
-            boxShadow: '0 0 50px rgba(167, 139, 250, 0.4), inset 0 0 30px rgba(167, 139, 250, 0.2)',
+            boxShadow: 'var(--shadow-glow)',
             borderRadius: 24, 
             padding: '40px 60px', 
             textAlign: 'center',
@@ -8809,7 +8824,7 @@ function Settings({ user, users, setUsers, onLogout }) {
               <div style={{
                 width: 80,
                 height: 80,
-                borderRadius: '50%',
+                borderRadius: 'var(--radius-full)',
                 background: 'linear-gradient(135deg, var(--accent) 0%, #1e1b4b 100%)',
                 border: '3px solid var(--accent)',
                 display: 'flex',
@@ -8819,7 +8834,7 @@ function Settings({ user, users, setUsers, onLogout }) {
                 fontWeight: 900,
                 fontSize: 28,
                 overflow: 'hidden',
-                boxShadow: '0 0 20px var(--accent-border)'
+                boxShadow: 'var(--shadow-glow)'
               }}>
                 {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : "AP"}
               </div>
@@ -9027,9 +9042,9 @@ export default function App() {
     // Force Dark Mode theme variable mappings permanently
     document.documentElement.style.setProperty('--text', '#9ca3af');
     document.documentElement.style.setProperty('--text-h', '#f3f4f6');
-    document.documentElement.style.setProperty('--bg', '#16171d');
+    document.documentElement.style.setProperty('--bg', 'var(--bg-base)');
     document.documentElement.style.setProperty('--border', '#2e303a');
-    document.documentElement.style.setProperty('--code-bg', '#1f2028');
+    document.documentElement.style.setProperty('--code-bg', 'var(--bg-base)');
   }, [currentUser]);
   const [scanlinesActive, setScanlinesActive] = useLS(`apx_scanlines_${currentUser?.id}`, false);
   const [appThemeAccent, setAppThemeAccent] = useLS(`apx_theme_accent_${currentUser?.id}`, '#c084fc');
@@ -9134,7 +9149,7 @@ export default function App() {
     return (
       <div style={{
         height: '100vh',
-        background: '#020205',
+        background: 'var(--bg-base)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -9148,17 +9163,17 @@ export default function App() {
         <div style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "radial-gradient(circle, rgba(59,172,214,0.08) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, var(--accent-bg) 1px, transparent 1px)",
           backgroundSize: "30px 30px",
           zIndex: 0
         }} />
         
         <div style={{ zIndex: 1, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ height: 120, filter: 'drop-shadow(0 0 15px rgba(59,172,214,0.3))', animation: 'pulse 2s infinite ease-in-out' }} />
+          <img src="/logo.png" alt="Logo" style={{ height: 120, filter: 'drop-shadow(0 0 15px var(--accent-bg))', animation: 'pulse 2s infinite ease-in-out' }} />
           <h2 style={{ fontSize: 13, fontWeight: 900, letterSpacing: 3, textTransform: 'uppercase', margin: '20px 0 10px', color: '#3bacd6' }}>
             CONNECTING SECURE SESSION
           </h2>
-          <div style={{ width: 180, height: 2, background: 'rgba(255,255,255,0.05)', borderRadius: 1, overflow: 'hidden', position: 'relative', margin: '15px 0' }}>
+          <div style={{ width: 180, height: 2, background: 'var(--surface-2)', borderRadius: 1, overflow: 'hidden', position: 'relative', margin: '15px 0' }}>
             <div style={{
               position: 'absolute',
               height: '100%',
@@ -9231,7 +9246,7 @@ export default function App() {
       {lightboxImg && (
         <Modal open={true} onClose={() => setLightboxImg(null)} title="👁️ IMAGE PREVIEW" width={800}>
           <div style={{ padding: 10, textAlign: 'center', background: '#090a0c', borderRadius: 16 }}>
-            <img src={lightboxImg} style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12, objectFit: 'contain', border: '1px solid rgba(255,255,255,0.08)' }} alt="Preview" />
+            <img src={lightboxImg} style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12, objectFit: 'contain', border: '1px solid var(--border-subtle)' }} alt="Preview" />
             <Btn onClick={() => setLightboxImg(null)} style={{ marginTop: 20, width: '100%' }}>CLOSE PREVIEW</Btn>
           </div>
         </Modal>
