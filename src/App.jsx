@@ -1269,9 +1269,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         easing: 'easeOutQuad'
       });
     }
-    if (alertMsg) {
-      setTimeout(() => alert(alertMsg), 150);
-    }
+
     if (onLogin && userObj) {
       setTimeout(() => {
         onLogin(userObj);
