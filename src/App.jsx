@@ -1,3 +1,4 @@
+import { LuCalendar, LuBot, LuRocket, LuCrosshair, LuUsers, LuClock, LuUser, LuMail, LuLock, LuEye, LuEyeOff, LuFileText, LuChartBar, LuSettings, LuTrash2, LuTarget, LuPrinter, LuArrowDown, LuSparkles, LuSchool, LuBan, LuLightbulb, LuZap, LuCalendarDays, LuHourglass, LuClipboard, LuFolder, LuKey, LuSearch, LuPenTool, LuEraser, LuShield, LuArrowLeft, LuPencil, LuLockOpen, LuPaperclip, LuPalette, LuSkull, LuHeadphones, LuFile, LuTriangleAlert, LuSiren, LuCircleCheckBig, LuArrowRight, LuSquare, LuMic, LuOctagon, LuTestTube, LuRefreshCcw, LuInbox, LuCircle, LuBell, LuAtom, LuCircleX, LuLink, LuDroplet, LuActivity, LuSmartphone, LuFlame, LuFlower, LuImage, LuVolume2, LuPause, LuPlay, LuBook, LuHeart, LuDumbbell, LuCoins, LuGlobe } from "react-icons/lu";
 /* eslint-disable */
 const loadRazorpay = () => {
   return new Promise((resolve) => {
@@ -187,12 +188,12 @@ function LandingPage({ onEnterAuth }) {
   }, []);
 
   const features = [
-    { title: 'Neural Timetable', icon: '📅', color: '#6c63ff' },
-    { title: 'VedAI Assistant', icon: '🤖', color: '#00f2ff' },
-    { title: 'Execution Hub', icon: '🚀', color: '#3b82f6' },
-    { title: 'Warrior Mode', icon: '⚔️', color: '#ef4444' },
-    { title: 'Friend Circles', icon: '👥', color: '#f59e0b' },
-    { title: 'Reminders', icon: '⏰', color: '#a78bfa' }
+    { title: 'Neural Timetable', icon: <LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} />, color: '#6c63ff' },
+    { title: 'VedAI Assistant', icon: <LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} />, color: '#00f2ff' },
+    { title: 'Execution Hub', icon: <LuRocket style={{ display: 'inline-block', verticalAlign: 'middle' }} />, color: '#3b82f6' },
+    { title: 'Warrior Mode', icon: <LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />, color: '#ef4444' },
+    { title: 'Friend Circles', icon: <LuUsers style={{ display: 'inline-block', verticalAlign: 'middle' }} />, color: '#f59e0b' },
+    { title: 'Reminders', icon: <LuClock style={{ display: 'inline-block', verticalAlign: 'middle' }} />, color: '#a78bfa' }
   ];
 
   return (
@@ -1461,7 +1462,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 14, position: "relative", zIndex: 5 }}>
           {mode === "signup" && (
             <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0 }}>
-              <span className="input-icon">👤</span>
+              <span className="input-icon"><LuUser style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
               <input 
                 placeholder="Name" 
                 value={form.name} 
@@ -1473,7 +1474,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           )}
 
           <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0 }}>
-            <span className="input-icon">✉️</span>
+            <span className="input-icon"><LuMail style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</span>
             <input 
               placeholder="Email" 
               type="email" 
@@ -1485,7 +1486,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           </div>
 
           <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0, position: 'relative' }}>
-            <span className="input-icon">🔒</span>
+            <span className="input-icon"><LuLock style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
             <input 
               placeholder="Password" 
               type={showPassword ? "text" : "password"} 
@@ -1499,7 +1500,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
               onClick={() => setShowPassword(!showPassword)}
               style={{ cursor: 'pointer', opacity: 0.6, fontSize: 13, userSelect: 'none', paddingLeft: 8 }}
             >
-              {showPassword ? "👁️" : "🙈"}
+              {showPassword ? <LuEye style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuEyeOff style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
             </span>
           </div>
 
@@ -1755,15 +1756,15 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
 const TABS = [
   { id: "dashboard", icon: "⊞", label: "Dashboard" },
-  { id: "timetable", icon: "📅", label: "Timetable" },
-  { id: "vedai", icon: "🤖", label: "VedAI" },
-  { id: "reminders", icon: "⏰", label: "Reminders" },
-  { id: "notes", icon: "📝", label: "Sticky Notes" },
-  { id: "friends", icon: "👥", label: "Friend Circles" },
-  { id: "corporate", icon: "🚀", label: "Execution Hub" },
-  { id: "habits", icon: "📊", label: "Habit Tracker" },
-  { id: "warrior", icon: "⚔️", label: "Warrior" },
-  { id: "settings", icon: "⚙️", label: "Settings" },
+  { id: "timetable", icon: <LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Timetable" },
+  { id: "vedai", icon: <LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "VedAI" },
+  { id: "reminders", icon: <LuClock style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Reminders" },
+  { id: "notes", icon: <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Sticky Notes" },
+  { id: "friends", icon: <LuUsers style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Friend Circles" },
+  { id: "corporate", icon: <LuRocket style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Execution Hub" },
+  { id: "habits", icon: <LuChartBar style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Habit Tracker" },
+  { id: "warrior", icon: <LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Warrior" },
+  { id: "settings", icon: <LuSettings style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Settings" },
 ];
 
 // --- 🛡️ MAIN LAYOUT COMPONENT ---
@@ -1831,7 +1832,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       transform: translateX(5px) !important;
     }
 
-    /* 🌊 WAVY LABEL ANIMATION */
+    /*  WAVY LABEL ANIMATION */
     .wavy-label {
       opacity: ${collapsed ? 0 : 1};
       transform: translateX(${collapsed ? '-10px' : '0'});
@@ -1912,7 +1913,7 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
         }}
         title="Ninja War Console"
       >
-        <img src="/shuriken.png" style={{ width: 20, height: 20, filter: 'drop-shadow(0 0 2px #3bacd6)' }} alt="⚔️" />
+        <img src="/shuriken.png" style={{ width: 20, height: 20, filter: 'drop-shadow(0 0 2px #3bacd6)' }} alt="️" />
       </button>
     )}
 
@@ -2402,7 +2403,7 @@ function MonthlyChecklist({ task, tasks, updateLog, onBack }) {
     <div style={{ animation: "revealUp 0.4s ease-out" }}>
       <PageHeader title={`${capTaskName} — ${monthName}`} actions={
         <div style={{ display: 'flex', gap: 10 }}>
-          <button className="click-scale" onClick={() => setView("analytics")} style={{ padding: "10px 18px", background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 800, cursor: "pointer" }}>⚔️ VIEW ANALYSIS</button>
+          <button className="click-scale" onClick={() => setView("analytics")} style={{ padding: "10px 18px", background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 800, cursor: "pointer" }}><LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ VIEW ANALYSIS</button>
           <button className="click-scale" onClick={onBack} style={{ padding: "10px 18px", background: "var(--border-subtle)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>← BACK</button>
         </div>
       } />
@@ -2499,11 +2500,11 @@ function Dashboard({ user }) {
                     <div style={{ fontWeight: 800, fontSize: 18, color: "#fff" }}>{task.name}</div>
                     <div style={{ color: "#475569", fontSize: 12, fontWeight: 700, marginTop: 2 }}>{task.targetMinutes} MIN DAILY TARGET</div>
                   </div>
-                  <button className="click-scale" onClick={() => deleteTask(task.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18 }}>🗑</button>
+                  <button className="click-scale" onClick={() => deleteTask(task.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18 }}><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <button className="click-scale" onClick={() => setView({ type: "checklist", task })} style={{ padding:"12px", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:600, width:"100%" }}>📅 CHECKLIST</button>
-                  <button className="click-scale" onClick={() => setView({ type: "goals", task })} style={{ padding:"12px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:800, width:"100%" }}>🎯 GOALS</button>
+                  <button className="click-scale" onClick={() => setView({ type: "checklist", task })} style={{ padding:"12px", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:600, width:"100%" }}><LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> CHECKLIST</button>
+                  <button className="click-scale" onClick={() => setView({ type: "goals", task })} style={{ padding:"12px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:800, width:"100%" }}><LuTarget style={{ display: 'inline-block', verticalAlign: 'middle' }} /> GOALS</button>
                 </div>
               </Card>
             </div>
@@ -2545,7 +2546,7 @@ function TimetableBuilder({ user }) {
 
   const PRESETS = [
     {
-      name: "🎓 Exam Cram",
+      name: "Exam Cram",
       tasks: [
         { id: "1", title: "Math Deep Practice", priority: 5, duration: 120, energy: 5, type: "daily", days: [], preferStart: "08:30", preferEnd: "10:30", taskType: "Practice", recurrence: "daily" },
         { id: "2", title: "Physics Revision", priority: 4, duration: 90, energy: 4, type: "daily", days: [], preferStart: "11:00", preferEnd: "12:30", taskType: "Revision", recurrence: "daily" },
@@ -2555,7 +2556,7 @@ function TimetableBuilder({ user }) {
       constraints: { wake: "07:00", sleep: "23:00", maxHours: 10, breakMin: 15, noWork: [], blocks: [] }
     },
     {
-      name: "⚖️ Balanced Plan",
+      name: "️ Balanced Plan",
       tasks: [
         { id: "1", title: "Deep Work coding", priority: 4, duration: 150, energy: 5, type: "daily", days: [], preferStart: "09:00", preferEnd: "11:30", taskType: "Deep Work", recurrence: "daily" },
         { id: "2", title: "Literature Reading", priority: 3, duration: 60, energy: 2, type: "daily", days: [], preferStart: "13:30", preferEnd: "14:30", taskType: "Reading", recurrence: "daily" },
@@ -2565,7 +2566,7 @@ function TimetableBuilder({ user }) {
       constraints: { wake: "07:30", sleep: "22:30", maxHours: 7, breakMin: 20, noWork: ["Sun"], blocks: [] }
     },
     {
-      name: "🏃 Light Review",
+      name: "Light Review",
       tasks: [
         { id: "1", title: "Java revision", priority: 4, duration: 90, energy: 3, type: "daily", days: [], preferStart: "10:00", preferEnd: "11:30", taskType: "Revision", recurrence: "daily" },
         { id: "2", title: "History reading", priority: 2, duration: 60, energy: 2, type: "daily", days: [], preferStart: "15:00", preferEnd: "16:00", taskType: "Reading", recurrence: "daily" }
@@ -2792,7 +2793,7 @@ Instructions:
     const hasConflict = targetDaySlots.some(s => startMin < s.startMin + s.duration && endMin > s.startMin);
 
     if (hasConflict) {
-      if (!window.confirm("⚠️ Conflict Warning: Dragged slot overlaps with another task or block. Proceed anyway?")) {
+      if (!window.confirm("️ Conflict Warning: Dragged slot overlaps with another task or block. Proceed anyway?")) {
         return;
       }
     }
@@ -2988,8 +2989,8 @@ Instructions:
       <PageHeader title="Timetable Planner" subtitle="Interactive schedule builder with custom commitments and AI helper"
         actions={subtab==="timetable" && timetable ? (
           <div style={{display:"flex",gap:8}}>
-            <Btn variant="secondary" onClick={printTimetableCleanly}>🖨 Print Timetable</Btn>
-            <Btn onClick={downloadImage}>⬇ Download Image</Btn>
+            <Btn variant="secondary" onClick={printTimetableCleanly}><LuPrinter style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Print Timetable</Btn>
+            <Btn onClick={downloadImage}><LuArrowDown style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Download Image</Btn>
           </div>
         ) : null}
       />
@@ -2998,9 +2999,9 @@ Instructions:
       <div style={{ display:"flex", borderBottom:"1px solid var(--border-subtle)", marginBottom:20 }}>
         {[
           ["setup","+ Task & Block Setup"],
-          ["timetable","📅 Interactive Schedule"],
-          ["analytics","📈 Productivity Analytics"],
-          ["printable","🖨 Printable Export"]
+          ["timetable","Interactive Schedule"],
+          ["analytics","Productivity Analytics"],
+          ["printable","Printable Export"]
         ].map(([id,lbl])=>(
           <button key={id} onClick={()=>setSubtab(id)}
             style={{ padding:"12px 20px", background:"none", border:"none", color:subtab===id?"#a78bfa":"#64748b", fontWeight:subtab===id?800:600, borderBottom:subtab===id?"2px solid #a78bfa":"none", cursor:"pointer", transition:"0.2s", fontSize:13 }}>{lbl}</button>
@@ -3012,7 +3013,7 @@ Instructions:
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
           {/* Presets Row */}
           <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
-            <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}>✨ LOAD STUDY PRESETS:</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}><LuSparkles style={{ display: 'inline-block', verticalAlign: 'middle' }} /> LOAD STUDY PRESETS:</span>
             {PRESETS.map(p => (
               <button key={p.name} onClick={() => loadPreset(p)}
                 style={{ padding: "8px 16px", background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.2)", borderRadius: 10, color: "#a78bfa", fontWeight: 700, fontSize: 12, cursor: "pointer", transition: "0.2s" }}
@@ -3088,7 +3089,7 @@ Instructions:
 
             {/* Block hours setup */}
             <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid var(--border-subtle)" }}>
-              <div style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Orbitron" }}>🏫 College & Class Blocks (Busy Hours)</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", marginBottom: 12, textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "Orbitron" }}><LuSchool style={{ display: 'inline-block', verticalAlign: 'middle' }} /> College & Class Blocks (Busy Hours)</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 10 }}>
                 <Field label="Block Label"><Inp value={blockForm.label} onChange={v => setBlockForm({ ...blockForm, label: v })} placeholder="e.g. Lectures / Work" /></Field>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -3109,7 +3110,7 @@ Instructions:
               {/* Blocks list */}
               {(constraints.blocks || []).map(b => (
                 <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 10, padding: "8px 14px", marginBottom: 6 }}>
-                  <span style={{ fontSize: 12, color: "#f87171", flex: 1, fontWeight: 600 }}>🚫 {b.label} ({b.start}–{b.end}) on {b.days.join(", ")}</span>
+                  <span style={{ fontSize: 12, color: "#f87171", flex: 1, fontWeight: 600 }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {b.label} ({b.start}–{b.end}) on {b.days.join(", ")}</span>
                   <button onClick={() => removeBlock(b.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18, fontWeight:"bold" }}>×</button>
                 </div>
               ))}
@@ -3117,10 +3118,10 @@ Instructions:
 
             <div style={{ marginTop:24, display:"flex", gap:12 }}>
               <button onClick={generate} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow: 'var(--shadow-sm)' }}>
-                ✨ Auto Schedule Tasks
+                <LuSparkles style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Auto Schedule Tasks
               </button>
               <button onClick={generateWithAI} disabled={aiOptimizing} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#3b82f6,#22c55e)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow: 'var(--shadow-sm)', opacity:aiOptimizing?0.5:1 }}>
-                {aiOptimizing ? "🤖 Analyzing..." : "🤖 AI Optimize"}
+                {aiOptimizing ? <><LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Analyzing...</> : <><LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} /> AI Optimize</>}
               </button>
             </div>
           </Card>
@@ -3175,7 +3176,7 @@ Instructions:
         timetable ? (
           <div>
             <div style={{ color:"#888", fontSize:12, marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
-              <span>💡 Drag study cards to adjust timeslots. Warning conflict warnings automatically check constraints.</span>
+              <span><LuLightbulb style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Drag study cards to adjust timeslots. Warning conflict warnings automatically check constraints.</span>
             </div>
             <div style={{ overflowX:"auto" }}>
               <table style={{ width:"100%", borderCollapse:"collapse", minWidth:800 }}>
@@ -3236,7 +3237,7 @@ Instructions:
                                 >
                                   {slot.isBlockSlot ? (
                                     <>
-                                      <span style={{ fontSize:11, fontWeight:800, color:"#ef4444" }}>🚫 {slot.title}</span>
+                                      <span style={{ fontSize:11, fontWeight:800, color:"#ef4444" }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {slot.title}</span>
                                       <span style={{ fontSize:10, color:"#ef4444", fontWeight:700 }}>{slot.start}–{slot.end}</span>
                                     </>
                                   ) : (
@@ -3247,7 +3248,7 @@ Instructions:
                                       </div>
                                       <div style={{ fontSize:10, color:"#888", marginTop:4, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                                         <span>{slot.start}–{slot.end}</span>
-                                        {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}>⚡{slot.energy}</span>}
+                                        {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}><LuZap style={{ display: 'inline-block', verticalAlign: 'middle' }} />{slot.energy}</span>}
                                       </div>
                                     </>
                                   )}
@@ -3266,7 +3267,7 @@ Instructions:
         ) : (
           <Card>
             <div style={{ textAlign:"center", color:"#555", padding:60 }}>
-              <div style={{fontSize:40,marginBottom:12}}>🗓</div>
+              <div style={{fontSize:40,marginBottom:12}}><LuCalendarDays style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
               <div>No weekly timetable generated yet.</div>
               <Btn style={{marginTop:16}} onClick={()=>setSubtab("setup")}>Go to Setup →</Btn>
             </div>
@@ -3340,7 +3341,7 @@ Instructions:
           {/* Timetable History logs */}
           <Card>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontFamily: "Orbitron", letterSpacing: 0.5 }}>⏳ Saved Timetables History Logs</span>
+              <span style={{ fontFamily: "Orbitron", letterSpacing: 0.5 }}><LuHourglass style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Saved Timetables History Logs</span>
               <span style={{ fontSize: 11, background: "rgba(108,99,255,0.15)", padding: "4px 10px", borderRadius: 20, color: "#a78bfa", fontWeight: 700 }}>{history.length} SAVED</span>
             </div>
             {history.length === 0 ? (
@@ -3355,7 +3356,7 @@ Instructions:
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{item.name}</div>
                       <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>
-                        📋 {item.tasks?.length || 0} tasks · 🚫 {item.constraints?.blocks?.length || 0} blocks · Wake: {item.constraints?.wake} · Sleep: {item.constraints?.sleep}
+                        <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {item.tasks?.length || 0} tasks · <LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {item.constraints?.blocks?.length || 0} blocks · Wake: {item.constraints?.wake} · Sleep: {item.constraints?.sleep}
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -3371,7 +3372,7 @@ Instructions:
                         onMouseEnter={e => { e.currentTarget.style.background = "rgba(108,99,255,0.25)"; }}
                         onMouseLeave={e => { e.currentTarget.style.background = "rgba(108,99,255,0.15)"; }}
                       >
-                        📂 Restore & Edit
+                        <LuFolder style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Restore & Edit
                       </button>
                       <button onClick={() => {
                         if (window.confirm("Delete this saved schedule?")) {
@@ -3381,7 +3382,7 @@ Instructions:
                         style={{ padding: "6px 10px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#f87171", cursor: "pointer", display: "flex", alignItems: "center" }}
                         title="Delete log"
                       >
-                        🗑
+                        <LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} />
                       </button>
                     </div>
                   </div>
@@ -3397,8 +3398,8 @@ Instructions:
         timetable ? (
           <div>
             <div style={{ display:"flex", gap:10, marginBottom:20 }}>
-              <Btn onClick={printTimetableCleanly}>🖨 Print Timetable (PDF)</Btn>
-              <Btn variant="secondary" onClick={downloadImage}>⬇ Download Image (PNG)</Btn>
+              <Btn onClick={printTimetableCleanly}><LuPrinter style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Print Timetable (PDF)</Btn>
+              <Btn variant="secondary" onClick={downloadImage}><LuArrowDown style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Download Image (PNG)</Btn>
             </div>
             {/* Print canvas */}
             <div ref={exportRef} id="tt-print" style={{ background:"#fff", color:"#111", borderRadius:12, padding:"32px 28px", fontFamily:"'Segoe UI',sans-serif" }}>
@@ -3451,7 +3452,7 @@ Instructions:
                                 }}>
                                   {slot.isBlockSlot ? (
                                     <>
-                                      <span style={{ fontSize:9, fontWeight:700, color:"#ef4444" }}>🚫 {slot.title}</span>
+                                      <span style={{ fontSize:9, fontWeight:700, color:"#ef4444" }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {slot.title}</span>
                                       <span style={{ fontSize:8, color:"#ef4444", fontWeight:600 }}>{slot.start}–{slot.end}</span>
                                     </>
                                   ) : (
@@ -3948,7 +3949,7 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         </div>
         <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border-subtle)" }}>
           <button onClick={() => setShowKeyModal(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 12 }}>
-            🔑 {apiKey ? "Gemini API Key Set ✓" : "Set Gemini API Key"}
+            <LuKey style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {apiKey ? "Gemini API Key Set ✓" : "Set Gemini API Key"}
           </button>
         </div>
       </div>
@@ -3957,20 +3958,20 @@ You also have a custom tool: update_user_timetable. You can call this tool to au
         <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ fontWeight: 700, fontSize: 16 }}>{activeChat ? activeChat.title : "VedAI"}</div>
           <div style={{ marginLeft: "auto" }}>
-            <Btn small variant="secondary" onClick={() => send("Analyze my productivity data and suggest improvements for my schedule and habits.")}>🔍 Analyze My Data</Btn>
+            <Btn small variant="secondary" onClick={() => send("Analyze my productivity data and suggest improvements for my schedule and habits.")}><LuSearch style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Analyze My Data</Btn>
           </div>
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
           {!activeChat && (
             <div style={{ textAlign: "center", paddingTop: 40 }}>
-              <div style={{ fontSize: 40, marginBottom: 16 }}>🤖</div>
+              <div style={{ fontSize: 40, marginBottom: 16 }}><LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
               <div style={{ fontSize: 20, fontWeight: 700, color: "#a78bfa", marginBottom: 8 }}>VedAI Productivity Coach</div>
               <div style={{ color: "#666", fontSize: 14, marginBottom: 24 }}>Analyzing your logs & sync-updating your Timetable in real-time.</div>
               {[
-                "📊 Analyze Weekend Slump & Streaks",
-                "✨ Auto-Optimize Study Timetable",
-                "💡 Review Habits & Collaboration Logs",
-                "🎯 Prioritize Exam Deadlines in Timetable"
+                "Analyze Weekend Slump & Streaks",
+                "Auto-Optimize Study Timetable",
+                "Review Habits & Collaboration Logs",
+                "Prioritize Exam Deadlines in Timetable"
               ].map(p => (
                 <button key={p} onClick={() => { newChat(); setTimeout(() => send(p), 100); }}
                   style={{ display: "block", width: "100%", maxWidth: 420, margin: "0 auto 10px", padding: "12px 16px", background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)", borderRadius: 10, color: "#a78bfa", cursor: "pointer", fontSize: 14, textAlign: "left", transition: "0.2s" }}
@@ -4197,7 +4198,7 @@ function Reminders({ user, reminders = [], setReminders }) {
                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                       <Btn small variant="secondary" className="click-scale" onClick={() => startEditReminder(r)}>EDIT</Btn>
                       <Btn small variant="secondary" className="click-scale" onClick={() => setReminders(reminders.map(x => x.id === r.id ? {...x, done: true} : x))}>DISMISS</Btn>
-                      <button className="click-scale" onClick={() => setReminders(reminders.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 20, padding: "0 6px" }} title="Delete Reminder">🗑</button>
+                      <button className="click-scale" onClick={() => setReminders(reminders.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 20, padding: "0 6px" }} title="Delete Reminder"><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                    </div>
                 </div>
               </Card>
@@ -4287,9 +4288,9 @@ const DrawingCanvas = ({ onSave, onCancel, initialColor }) => {
   return (
     <div style={{ width: "100%", maxWidth: "1000px", background: "#0f172a", padding: "20px", borderRadius: 'var(--radius-xl)', border: "1px solid var(--border-strong)", boxShadow: 'var(--shadow-lg)' }}>
       <div style={{ display: "flex", gap: "15px", marginBottom: "20px", justifyContent: "center", alignItems: "center", flexWrap: 'wrap' }}>
-        <button onClick={() => setTool("pencil")} style={{ background: tool === "pencil" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}>🖋️ Pencil</button>
-        <button onClick={() => setTool("eraser")} style={{ background: tool === "eraser" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}>🧽 Eraser</button>
-        <button onClick={resetCanvas} style={{ background: "#ef4444", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}>🗑️ Reset</button>
+        <button onClick={() => setTool("pencil")} style={{ background: tool === "pencil" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}><LuPenTool style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ Pencil</button>
+        <button onClick={() => setTool("eraser")} style={{ background: tool === "eraser" ? "#3b82f6" : "#1f2937", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}><LuEraser style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Eraser</button>
+        <button onClick={resetCanvas} style={{ background: "#ef4444", border: "none", color: "white", padding: "10px 18px", borderRadius: 'var(--radius-md)', cursor: "pointer" }}><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ Reset</button>
         <input type="color" value={color} onChange={(e) => setColor(e.target.value)} style={{ width: "40px", height: "40px", border: "none", background: "none", cursor: "pointer" }} />
         <div style={{ flex: 1, minWidth: '150px', display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontSize: "12px", opacity: 0.6 }}>Size</span>
@@ -4406,7 +4407,7 @@ function StickyNotes({ user }) {
         <h1 style={{ fontWeight: 900 }}>{view === "active" ? "Tactical Intel" : "Deep Vault"}</h1>
         <div style={{ display: 'flex', gap: 12 }}>
           <button onClick={() => { setView(view === "active" ? "vault" : "active"); setVaultLocked(true); setPassInput(""); }} style={{ padding: "10px 18px", background: "var(--surface-2)", border: "1px solid var(--border-subtle)", borderRadius: 12, color: "#fff", cursor: "pointer", fontWeight: 800 }}>
-            {view === "active" ? "🛡️ VAULT" : "⬅ ACTIVE"}
+            {view === "active" ? <><LuShield style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ VAULT</> : <><LuArrowLeft style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ACTIVE</>}
           </button>
           <button onClick={() => setShowAdd(true)} style={{ padding: "12px 24px", background: "linear-gradient(135deg, #06b6d4, #3b82f6)", borderRadius: 12, color: "#fff", border: 'none', cursor: 'pointer', fontWeight: 900 }}>+ NEW MISSION</button>
         </div>
@@ -4456,9 +4457,9 @@ function StickyNotes({ user }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 15 }}>
                 <span style={{ fontSize: 10, color: '#475569' }}>{n.timestamp}</span>
                 <div style={{ display: 'flex', gap: 12 }}>
-                  <button onClick={() => openEdit(n)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>✏️</button>
-                  <button onClick={() => view === "active" ? moveToVault(n) : restoreFromVault(n)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>{view === "active" ? "🔒" : "🔓"}</button>
-                  <button onClick={() => deleteNote(n.id, view === "vault")} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                  <button onClick={() => openEdit(n)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><LuPencil style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</button>
+                  <button onClick={() => view === "active" ? moveToVault(n) : restoreFromVault(n)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>{view === "active" ? <LuLock style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuLockOpen style={{ display: 'inline-block', verticalAlign: 'middle' }} />}</button>
+                  <button onClick={() => deleteNote(n.id, view === "vault")} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</button>
                 </div>
               </div>
               <h3 style={{ margin: '0 0 10px 0' }}>{n.title}</h3>
@@ -4495,8 +4496,8 @@ function StickyNotes({ user }) {
                 <textarea placeholder="Details..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} style={{ width: "100%", height: 100, padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", resize: 'none', boxSizing: 'border-box' }} />
                 
                 <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-                  <button onClick={() => document.getElementById('note-img-up').click()} style={{ flex: 1, padding: 12, borderRadius: 12, background: "var(--surface-2)", color: "#fff", border: "1px solid var(--surface-3)", cursor: "pointer" }}>📎 ATTACH</button>
-                  <button onClick={() => setIsDrawingMode(true)} style={{ flex: 1, padding: 12, borderRadius: 12, background: 'var(--accent-bg)', color: "#60a5fa", border: "1px solid var(--accent-bg)", cursor: "pointer" }}>🎨 DRAW</button>
+                  <button onClick={() => document.getElementById('note-img-up').click()} style={{ flex: 1, padding: 12, borderRadius: 12, background: "var(--surface-2)", color: "#fff", border: "1px solid var(--surface-3)", cursor: "pointer" }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ATTACH</button>
+                  <button onClick={() => setIsDrawingMode(true)} style={{ flex: 1, padding: 12, borderRadius: 12, background: 'var(--accent-bg)', color: "#60a5fa", border: "1px solid var(--accent-bg)", cursor: "pointer" }}><LuPalette style={{ display: 'inline-block', verticalAlign: 'middle' }} /> DRAW</button>
                   <input type="file" id="note-img-up" hidden accept="image/*" onChange={handleImageUpload} />
                 </div>
 
@@ -4581,7 +4582,7 @@ function FriendCircles({ user }) {
               style={{ padding: 16, background: activeRoomId === room.id ? 'var(--accent-bg)' : "var(--surface-1)", border: activeRoomId === room.id ? "1.5px solid #3b82f6" : "1px solid var(--border-subtle)", borderRadius: 14, cursor: "pointer", transition: "all 0.2s" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: activeRoomId === room.id ? "#3b82f6" : "#fff" }}>{room.name}</div>
-                <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.restoreState ? "💀 0" : `🔥 ${room.streak || 0}`}</div>
+                <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.restoreState ? <LuSkull style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : ` ${room.streak || 0}`}</div>
               </div>
               <div 
                 onClick={(e) => {
@@ -4592,13 +4593,13 @@ function FriendCircles({ user }) {
                 style={{ fontSize: 10, color: "#475569", marginTop: 6, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
                 title="Click to copy full ID"
               >
-                📋 ID: {room.id.slice(0,8)}... • {room.members.length} members
+                <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ID: {room.id.slice(0,8)}... • {room.members.length} members
               </div>
             </div>
           ))}
         </div>
         <div style={{ flex: 1, background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 20, overflow: "hidden" }}>
-          {activeRoom ? <RoomView room={activeRoom} user={user} allRooms={allRooms} setAllRooms={setAllRooms} /> : <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}><div style={{ fontSize: 40, opacity: 0.2 }}>👥</div><div style={{ color: "#444", fontWeight: 600 }}>Select a circle to start collaborating</div></div>}
+          {activeRoom ? <RoomView room={activeRoom} user={user} allRooms={allRooms} setAllRooms={setAllRooms} /> : <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}><div style={{ fontSize: 40, opacity: 0.2 }}><LuUsers style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div><div style={{ color: "#444", fontWeight: 600 }}>Select a circle to start collaborating</div></div>}
         </div>
       </div>
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Room">
@@ -4763,9 +4764,9 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
           r.streak = r.restoreState.backupStreak;
           r.lastStreakUpdate = r.restoreState.failedDate;
           r.restoreState = null;
-          alert("🎉 STREAK SUCCESSFULLY RESTORED! Streak count set to +" + r.streak);
+          alert("STREAK SUCCESSFULLY RESTORED! Streak count set to +" + r.streak);
         } else {
-          alert("👍 Payment of ₹" + price + " successful! Waiting for remaining failed members to pay.");
+          alert("Payment of ₹" + price + " successful! Waiting for remaining failed members to pay.");
         }
 
         setAllRooms(prev => prev.map(item => item.id === room.id ? r : item));
@@ -4902,13 +4903,13 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
     if (m.fType?.startsWith("video/")) return <video src={m.file} controls style={s} />;
     if (m.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 18 }}>🎧</span>
+        <span style={{ fontSize: 18 }}><LuHeadphones style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
         <audio src={m.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ flex: 1, height: 32 }} />
       </div>
     );
     return (
       <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: "var(--surface-2)", padding: "10px 14px", borderRadius: 10, color: "#3b82f6", marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-        <span style={{ fontSize: 20 }}>📄</span>
+        <span style={{ fontSize: 20 }}><LuFile style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
         <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.fName}</div>
       </a>
     );
@@ -4927,7 +4928,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--surface-2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
         <div style={{ fontWeight: 800, display: "flex", alignItems: "center", gap: 12 }}>
           <span>{room.name}</span>
-          <span style={{ color: "#f59e0b" }}>{room.restoreState ? "💀 0" : `🔥 ${room.streak || 0}`}</span>
+          <span style={{ color: "#f59e0b" }}>{room.restoreState ? <LuSkull style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : ` ${room.streak || 0}`}</span>
           <span 
             onClick={() => {
               navigator.clipboard.writeText(room.id);
@@ -4940,7 +4941,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
             }}
             title="Click to copy Room ID"
           >
-            📋 ID: {room.id}
+            <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ID: {room.id}
           </span>
         </div>
         <div style={{ display: "flex", gap: 15 }}>
@@ -4964,7 +4965,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontSize: 20 }}>⚠️</span>
+                <span style={{ fontSize: 20 }}><LuTriangleAlert style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</span>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: 15, color: "#f87171" }}>
                     Streak Broken! (Previous Streak: +{room.restoreState.backupStreak - 1})
@@ -4976,7 +4977,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontSize: 12, fontWeight: 800, color: restorePrice === 15 ? "#fbbf24" : "#f87171" }}>
-                  {restorePrice === 15 ? "⏳ 1ST CHANCE (DAY 5)" : "🚨 FINAL CHANCE (DAY 6)"}
+                  {restorePrice === 15 ? <><LuHourglass style={{ display: 'inline-block', verticalAlign: 'middle' }} /> 1ST CHANCE (DAY 5)</> : <><LuSiren style={{ display: 'inline-block', verticalAlign: 'middle' }} /> FINAL CHANCE (DAY 6)</>}
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
                   Fee: ₹{restorePrice} per person
@@ -5001,7 +5002,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                       color: paid ? "#4ade80" : "#f87171",
                       border: `1.5px solid ${paid ? "rgba(34, 197, 94, 0.3)" : "rgba(239, 68, 68, 0.3)"}`
                     }}>
-                      {name}: {paid ? "✅ Paid" : "⏳ Pending"}
+                      {name}: {paid ? <><LuCircleCheckBig style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Paid</> : <><LuHourglass style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Pending</>}
                     </div>
                   );
                 })}
@@ -5012,9 +5013,9 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
               <div style={{ fontSize: 13, color: "#cbd5e1" }}>
                 {failedMembers.includes(user.id) ? (
                   room.restoreState.payments?.[user.id] === true ? (
-                    <span style={{ color: "#4ade80", fontWeight: 700 }}>✅ You have paid. Waiting for other failed members to restore streak.</span>
+                    <span style={{ color: "#4ade80", fontWeight: 700 }}><LuCircleCheckBig style={{ display: 'inline-block', verticalAlign: 'middle' }} /> You have paid. Waiting for other failed members to restore streak.</span>
                   ) : (
-                    <span style={{ color: "#fbbf24", fontWeight: 700 }}>👉 Action Required: You must pay ₹{restorePrice} to restore the team streak to +{room.restoreState.backupStreak}.</span>
+                    <span style={{ color: "#fbbf24", fontWeight: 700 }}><LuArrowRight style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Action Required: You must pay ₹{restorePrice} to restore the team streak to +{room.restoreState.backupStreak}.</span>
                   )
                 ) : (
                   <span style={{ color: "#94a3b8" }}>Waiting for failed members to restore streak to +{room.restoreState.backupStreak}.</span>
@@ -5117,7 +5118,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
         <div style={{ padding: "12px 24px", background: "#0f172a", borderTop: "1px solid var(--surface-2)", flexShrink: 0 }}>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-end", maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ flex: 1, background: "#1e293b", borderRadius: 24, padding: "8px 18px", display: "flex", alignItems: "center", gap: 14, minHeight: 48, border: "1px solid var(--surface-2)" }}>
-               <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>📎</button>
+               <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
                <textarea
                  ref={roomChatTextareaRef}
@@ -5158,7 +5159,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                  }}
                  title="Direct Voice Comment"
                >
-                 {recordingMode === 'audio' ? "⏹" : "🎙️"}
+                 {recordingMode === 'audio' ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                </button>
 
                {/* Transcription Dictation Button */}
@@ -5173,7 +5174,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                  }}
                  title="Voice to Text Dictation"
                >
-                 {recordingMode === 'transcribe' ? "🛑" : "📝"}
+                 {recordingMode === 'transcribe' ? <LuOctagon style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                </button>
             </div>
             <button 
@@ -5198,7 +5199,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
           </div>
           {audioBlob && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12, background: '#1e293b', padding: "10px 18px", borderRadius: 16, animation: "fadeIn 0.3s", border: "1px solid var(--accent-bg)" }}>
-              <div style={{ flex: 1, fontSize: 13, color: '#60a5fa', fontWeight: 800 }}>🎙️ VOCAL COMMAND READY</div>
+              <div style={{ flex: 1, fontSize: 13, color: '#60a5fa', fontWeight: 800 }}><LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ VOCAL COMMAND READY</div>
               <button onClick={() => setAudioBlob(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>DISCARD</button>
               <button onClick={sendAudio} style={{ background: "#3b82f6", border: "none", padding: "8px 18px", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>SEND</button>
             </div>
@@ -5212,7 +5213,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
             <span>✎</span> Edit Message
           </button>
           <button onClick={() => deleteMsg(contextMenu.m.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#f87171', textAlign: 'left', cursor: 'pointer', fontSize: 14, width: '100%', borderRadius: 8 }} className="hover-highlight">
-            <span>🗑</span> Delete
+            <span><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span> Delete
           </button>
           <style>{`.hover-highlight:hover { background: var(--surface-2); }`}</style>
         </div>
@@ -5235,7 +5236,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
           flexShrink: 0 
         }}>
           <div style={{ fontSize: 12, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
-            <span>🧪 <strong>Simulated Date:</strong> {today()}</span>
+            <span><LuTestTube style={{ display: 'inline-block', verticalAlign: 'middle' }} /> <strong>Simulated Date:</strong> {today()}</span>
             {Number(localStorage.getItem("apx_date_offset") || 0) > 0 && (
               <span style={{ color: "#fbbf24", fontWeight: 700 }}>(+{localStorage.getItem("apx_date_offset")} days)</span>
             )}
@@ -5246,7 +5247,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                 localStorage.removeItem("apx_date_offset");
                 window.location.reload();
               }} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.3)", padding: "4px 10px", fontSize: 11 }}>
-                🔄 Reset Date
+                <LuRefreshCcw style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Reset Date
               </Btn>
             )}
             <Btn small onClick={() => {
@@ -5254,7 +5255,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
               localStorage.setItem("apx_date_offset", currentOffset + 1);
               window.location.reload();
             }} style={{ padding: "4px 10px", fontSize: 11 }}>
-              ⚡ Fast Forward 24h
+              <LuZap style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Fast Forward 24h
             </Btn>
           </div>
         </div>
@@ -5276,11 +5277,11 @@ const EH_PANEL   = "#111418";
 const EH_BORDER  = "#1f2226";
 
 const EH_STATUS = {
-  Backlog:     { label: "Backlog",     color: "#94a3b8", bg: "rgba(148,163,184,0.1)", icon: "📥", wip: 15 },
-  Todo:        { label: "To Do",       color: "#34b7f1", bg: "rgba(52,183,241,0.1)",  icon: "⭕", wip: 10 },
-  InProgress:  { label: "In Progress", color: "#f59e0b", bg: "rgba(245,158,11,0.1)",  icon: "🔵", wip: 5  },
-  Review:      { label: "Review",      color: "#8b5cf6", bg: "rgba(139,92,246,0.1)",  icon: "👁️", wip: 8  },
-  Done:        { label: "Done",        color: "#22c55e", bg: "rgba(34,197,94,0.1)",   icon: "✅", wip: 99 },
+  Backlog:     { label: "Backlog",     color: "#94a3b8", bg: "rgba(148,163,184,0.1)", icon: <LuInbox style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 15 },
+  Todo:        { label: "To Do",       color: "#34b7f1", bg: "rgba(52,183,241,0.1)",  icon: <LuCircle style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 10 },
+  InProgress:  { label: "In Progress", color: "#f59e0b", bg: "rgba(245,158,11,0.1)",  icon: <LuCircle style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 5  },
+  Review:      { label: "Review",      color: "#8b5cf6", bg: "rgba(139,92,246,0.1)",  icon: <LuEye style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 8  },
+  Done:        { label: "Done",        color: "#22c55e", bg: "rgba(34,197,94,0.1)",   icon: <LuCircleCheckBig style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 99 },
 };
 
 const EH_PRIORITY = { 
@@ -5448,13 +5449,13 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
       <div style={{ padding:"24px 32px" }}>
         {pendingReqs>0 && (
           <div style={{ background:"rgba(245,158,11,0.1)", border:"1px solid rgba(245,158,11,0.25)", borderRadius:10, padding:"10px 16px", marginBottom:20, display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ fontSize:16 }}>🔔</span>
+            <span style={{ fontSize:16 }}><LuBell style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
             <span style={{ color:"#f59e0b", fontSize:13, fontWeight:600 }}>{pendingReqs} pending join request{pendingReqs>1?"s":""} — open a workspace to review them.</span>
           </div>
         )}
         {myWorkspaces.length===0 ? (
           <div style={{ textAlign:"center", padding:"60px 0", color:"#555" }}>
-            <div style={{ fontSize:52, marginBottom:14 }}>🚀</div>
+            <div style={{ fontSize:52, marginBottom:14 }}><LuRocket style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
             <div style={{ fontSize:17, color:"#888", marginBottom:20 }}>No workspaces yet.</div>
             <div style={{ display:"flex", gap:12, justifyContent:"center" }}>
               <button onClick={()=>setView("create")} style={{ padding:"10px 24px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Create Workspace</button>
@@ -5504,7 +5505,7 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
                   </div>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:16, borderTop:"1px solid var(--surface-1)", paddingTop:12 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-                      <span style={{ fontSize:12, color:"#64748b", fontWeight:700 }}>📋 {wsTasks.length} tasks</span>
+                      <span style={{ fontSize:12, color:"#64748b", fontWeight:700 }}><LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {wsTasks.length} tasks</span>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         {[ws.createdByName, ...wsMembers.map(m=>m.name)].slice(0, 4).map((name, idx) => (
                           <div key={idx} style={{ marginLeft: idx === 0 ? 0 : -8, border: "2px solid var(--bg-base)", borderRadius: 'var(--radius-full)', overflow: "hidden" }} title={name}>
@@ -5583,7 +5584,7 @@ function EHCreateWorkspace({ user, eh, setEH, onDone, onCancel }) {
             <Field label="End Date *"><Inp type="date" value={form.endDate} onChange={v=>setForm({...form,endDate:v})} /></Field>
           </div>
           <div style={{ background:'var(--accent-bg)', border:"1px solid var(--accent-bg)", borderRadius:8, padding:"10px 14px", marginBottom:16, fontSize:13, color:"#94a3b8" }}>
-            💡 After creating, you'll get a <strong style={{color:"#3b82f6"}}>Workspace ID</strong> + <strong style={{color:"#3b82f6"}}>Access Code</strong> to invite members.
+            <LuLightbulb style={{ display: 'inline-block', verticalAlign: 'middle' }} /> After creating, you'll get a <strong style={{color:"#3b82f6"}}>Workspace ID</strong> + <strong style={{color:"#3b82f6"}}>Access Code</strong> to invite members.
           </div>
           <div style={{ display:"flex", gap:10 }}>
             <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
@@ -5752,7 +5753,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                   onMouseEnter={e => { if (copiedText !== "name") e.currentTarget.style.color = "#fff"; }}
                   onMouseLeave={e => { if (copiedText !== "name") e.currentTarget.style.color = "#475569"; }}
                 >
-                  {copiedText === "name" ? "✓" : "📋"}
+                  {copiedText === "name" ? "✓" : <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                 </button>
               </h1>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -5781,7 +5782,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                   onMouseLeave={e => { if (copiedText !== "id") e.currentTarget.style.background = `${EH_PRIMARY}22`; }}
                 >
                   <span>ID: {ws.id}</span>
-                  <span>{copiedText === "id" ? "✓" : "📋"}</span>
+                  <span>{copiedText === "id" ? "✓" : <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} />}</span>
                 </div>
                 <div 
                   onClick={() => {
@@ -5808,7 +5809,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                   onMouseLeave={e => { if (copiedText !== "code") e.currentTarget.style.background = "rgba(245,158,11,0.15)"; }}
                 >
                   <span>CODE: {ws.accessCode}</span>
-                  <span>{copiedText === "code" ? "✓" : "📋"}</span>
+                  <span>{copiedText === "code" ? "✓" : <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} />}</span>
                 </div>
                 {copiedText === "id" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>ID COPIED!</span>}
                 {copiedText === "code" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 800, fontFamily: "monospace", letterSpacing: 0.5 }}>CODE COPIED!</span>}
@@ -5844,7 +5845,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
             onMouseEnter={e => { if (tab !== id) e.currentTarget.style.color = "#fff"; }}
             onMouseLeave={e => { if (tab !== id) e.currentTarget.style.color = "#94a3b8"; }}
             >
-              <span style={{ fontSize: 18 }}>{id === "pipeline" ? "⚛" : id === "timeline" ? "⎙" : id === "chat" ? "⌨" : id === "team" ? "⧉" : "⌬"}</span>
+              <span style={{ fontSize: 18 }}>{id === "pipeline" ? <LuAtom style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : id === "timeline" ? "⎙" : id === "chat" ? "" : id === "team" ? "⧉" : "⌬"}</span>
               <span>{lbl.toUpperCase()}</span>
             </div>
           ))}
@@ -6210,7 +6211,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
     if (c.fType?.startsWith("video/")) return <video src={c.file} controls style={s} />;
     if (c.fType?.startsWith("audio/")) return (
       <div style={{ marginTop: 10, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,0,0,0.2)", padding: "10px", borderRadius: 10, display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 18 }}>🎧</span>
+        <span style={{ fontSize: 18 }}><LuHeadphones style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
         <audio src={c.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ flex: 1, height: 32 }} />
       </div>
     );
@@ -6234,12 +6235,12 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       onMouseEnter={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.18)" : "var(--surface-2)"; }}
       onMouseLeave={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)"; }}
       >
-        <div style={{ width: 36, height: 36, borderRadius: 8, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,184,217,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 18 }}>📄</div>
+        <div style={{ width: 36, height: 36, borderRadius: 8, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,184,217,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 18 }}><LuFile style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", fontSize: 12 }}>{c.fName}</div>
           <div style={{ fontSize: 9, opacity: 0.6, marginTop: 2, textTransform: "uppercase", letterSpacing: 0.5 }}>DOCUMENT FILE</div>
         </div>
-        <div style={{ fontSize: 12, opacity: 0.8 }}>📥</div>
+        <div style={{ fontSize: 12, opacity: 0.8 }}><LuInbox style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
       </a>
     );
   };
@@ -6284,10 +6285,10 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
           if (!task.deadline) return { label: "No deadline set", color: "#64748b" };
           const diff = new Date(task.deadline) - new Date(today());
           const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-          if (days < 0) return { label: `⚠️ Overdue by ${Math.abs(days)} day${Math.abs(days) > 1 ? "s" : ""}`, color: "#ef4444" };
-          if (days === 0) return { label: "⏳ Due today", color: "#f59e0b" };
-          if (days === 1) return { label: "⏳ Due tomorrow", color: "#f59e0b" };
-          return { label: `⏳ ${days} days remaining`, color: "#3b82f6" };
+          if (days < 0) return { label: `️ Overdue by ${Math.abs(days)} day${Math.abs(days) > 1 ? "s" : ""}`, color: "#ef4444" };
+          if (days === 0) return { label: "Due today", color: "#f59e0b" };
+          if (days === 1) return { label: "Due tomorrow", color: "#f59e0b" };
+          return { label: ` ${days} days remaining`, color: "#3b82f6" };
         })();
 
         return (
@@ -6328,7 +6329,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                         onClick={() => { updateField("assignedTo", null); setShowAssigneeDropdown(false); }}
                         style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#ef4444", fontWeight: 700 }}
                       >
-                        ❌ UNASSIGN TASK
+                        <LuCircleX style={{ display: 'inline-block', verticalAlign: 'middle' }} /> UNASSIGN TASK
                       </div>
                       {members.map(m => (
                         <div 
@@ -6514,7 +6515,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                               boxShadow: 'var(--shadow-lg)'
                             }}>
                               <button onClick={(e) => { e.stopPropagation(); startEditComment(c); }} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Edit">✎</button>
-                              <button onClick={(e) => { e.stopPropagation(); deleteComment(c.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Delete">🗑</button>
+                              <button onClick={(e) => { e.stopPropagation(); deleteComment(c.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Delete"><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                             </div>
                           )}
 
@@ -6549,7 +6550,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
           <div style={{ padding: "20px 30px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.4)", backdropFilter: "blur(20px)" }}>
             {file && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "10px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)`, backdropFilter: "blur(10px)", animation: "msgSlide 0.25s ease-out" }}>
-                <span style={{ fontSize: 14 }}>📎</span>
+                <span style={{ fontSize: 14 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
                 <div style={{ flex: 1, fontSize: 11, color: '#00B8D9', fontWeight: 900, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: 0.5 }}>{file.name.toUpperCase()}</div>
                 <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 800, cursor: "pointer", fontSize: 11, letterSpacing: 1 }}>DISCARD</button>
               </div>
@@ -6558,7 +6559,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             {audioBlob && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "12px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)`, animation: "msgSlide 0.25s ease-out" }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ fontSize: 14 }}>🎙️</span>
+                  <span style={{ fontSize: 14 }}><LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</span>
                   <div style={{ flex: 1, fontSize: 11, color: '#00B8D9', fontWeight: 900, letterSpacing: 0.5 }}>VOCAL REPORT CAPTURED</div>
                   <button onClick={() => { setAudioBlob(null); }} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 800, cursor: "pointer", fontSize: 11 }}>DISCARD</button>
                   <button onClick={sendAudioComment} style={{ background: EH_PRIMARY, border: "none", padding: "6px 16px", borderRadius: 6, color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 11 }}>SEND AUDIO COMMENT</button>
@@ -6567,7 +6568,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             )}
 
             <div className="cyber-input" style={{ display: "flex", gap: 12, background: "#06080a", border: `1px solid var(--surface-2)`, borderRadius: 18, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.6)", transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}>
-                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#475569"}>📎</button>
+                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#475569"}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                 <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
                 <textarea
                   ref={commentTextareaRef}
@@ -6612,7 +6613,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                   onMouseEnter={e=>{ if (recordingMode !== 'transcribe') e.currentTarget.style.color=recordingMode==='audio'?"#ef4444":EH_PRIMARY; }} 
                   onMouseLeave={e=>{ if (recordingMode !== 'transcribe') e.currentTarget.style.color=recordingMode==='audio'?"#ef4444":"#475569"; }}
                 >
-                  {recordingMode === 'audio' ? "⏹" : "🎙️"}
+                  {recordingMode === 'audio' ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                 </button>
 
                 {/* Transcription Button */}
@@ -6629,7 +6630,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                   onMouseEnter={e=>{ if (recordingMode !== 'audio') e.currentTarget.style.color=recordingMode==='transcribe'?"#22c55e":EH_PRIMARY; }} 
                   onMouseLeave={e=>{ if (recordingMode !== 'audio') e.currentTarget.style.color=recordingMode==='transcribe'?"#22c55e":"#475569"; }}
                 >
-                  {recordingMode === 'transcribe' ? "🛑" : "📝"}
+                  {recordingMode === 'transcribe' ? <LuOctagon style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
                 </button>
 
                 <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: 'var(--radius-full)', background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow=`0 4px 20px ${EH_PRIMARY}66`;}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=`0 4px 15px ${EH_PRIMARY}44`;}}>{editingCommentId ? "✓" : "↵"}</button>
@@ -6644,7 +6645,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             <span>✎</span> Edit Transmission
           </button>
           <button onClick={() => deleteComment(contextMenu.c.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: 13, width: '100%', borderRadius: 6, fontWeight: 700 }} className="eh-ctx-btn">
-            <span>🗑</span> Delete
+            <span><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span> Delete
           </button>
         </div>
       )}
@@ -6756,7 +6757,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
     if (m.fType?.startsWith("audio/")) return <audio src={m.file} controls controlsList="nodownload" onContextMenu={e => e.preventDefault()} style={{ ...s, width: "100%" }} />;
     return (
       <a href={m.file} download={m.fName} style={{ display: "flex", alignItems: "center", gap: 10, background: isMe ? "rgba(0,0,0,0.08)" : "var(--surface-2)", padding: "10px 14px", borderRadius: 10, color: isMe ? "#000" : EH_PRIMARY, marginTop: 10, textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-        <span style={{ fontSize: 20 }}>📄</span>
+        <span style={{ fontSize: 20 }}><LuFile style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
         <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.fName}</div>
       </a>
     );
@@ -6804,7 +6805,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
       {audioBlob && (
         <div style={{ padding: "0 40px", marginBottom: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#111316', padding: "10px 18px", borderRadius: 12, border: `1px solid ${EH_BORDER}`, animation: "msgSlide 0.3s" }}>
-            <div style={{ flex: 1, fontSize: 12, color: EH_PRIMARY, fontWeight: 800, letterSpacing: 1 }}>🎙️ VOCAL REPORT READY</div>
+            <div style={{ flex: 1, fontSize: 12, color: EH_PRIMARY, fontWeight: 800, letterSpacing: 1 }}><LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ VOCAL REPORT READY</div>
             <button onClick={() => setAudioBlob(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 900, cursor: "pointer", fontSize: 11, letterSpacing: 1 }}>DISCARD</button>
             <button onClick={sendAudio} style={{ background: EH_PRIMARY, border: "none", padding: "6px 16px", borderRadius: 8, color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 11, letterSpacing: 1 }}>SEND</button>
           </div>
@@ -6813,7 +6814,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
 
       <div style={{ padding: "16px 40px", background: "rgba(8,9,10,0.8)", borderTop: `1px solid ${EH_BORDER}`, backdropFilter: "blur(20px)" }}>
         <div style={{ display: "flex", gap: 12, background: "#111316", padding: "8px 16px", borderRadius: 18, border: `1px solid var(--surface-2)`, alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.3)" }}>
-          <button onClick={()=>fileInputRef.current.click()} style={{ background:"none", border:"none", color:"#475569", cursor:"pointer", fontSize:20 }}>📎</button>
+          <button onClick={()=>fileInputRef.current.click()} style={{ background:"none", border:"none", color:"#475569", cursor:"pointer", fontSize:20 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
           <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
           <textarea
             ref={chatTextareaRef}
@@ -6845,7 +6846,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
             }}
           />
           <button onClick={recording ? stopRecording : startRecording} style={{ background: "none", border: "none", color: recording ? "#ef4444" : "#475569", cursor: "pointer", fontSize: 20 }}>
-            {recording ? "⏹" : "🎙️"}
+            {recording ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
           </button>
           <button onClick={()=>send(null)} style={{ background: editingMsgId ? "#3b82f6" : EH_PRIMARY, border: "none", width: 40, height: 40, borderRadius: 12, color: "#000", fontWeight: 900, cursor: "pointer", transition: "0.2s", display: "flex", alignItems: "center", justifyContent: "center" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
             {editingMsgId ? "✓" : "↵"}
@@ -6859,7 +6860,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
             <span>✎</span> Edit Report
           </button>
           <button onClick={() => deleteMsg(contextMenu.m.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: 13, width: '100%', borderRadius: 6, fontWeight: 700 }} className="eh-ctx-btn">
-            <span>🗑</span> Delete
+            <span><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span> Delete
           </button>
         </div>
       )}
@@ -6991,7 +6992,7 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
       {isAdmin && pendingReqs.length>0 && (
         <Card style={{ marginBottom:20, border:"1px solid rgba(245,158,11,0.3)" }}>
           <div style={{ fontWeight:700, fontSize:13, color:"#f59e0b", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
-            🔔 Pending Requests ({pendingReqs.length})
+            <LuBell style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Pending Requests ({pendingReqs.length})
           </div>
           {pendingReqs.map(r=>(
             <div key={r.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid var(--surface-2)" }}>
@@ -7061,7 +7062,7 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
 
       {/* Share info box */}
       <div style={{ marginTop:16, background:'var(--accent-bg)', border:"1px solid var(--accent-bg)", borderRadius:10, padding:"14px 18px" }}>
-        <div style={{ fontSize:12, fontWeight:700, color:"#3b82f6", marginBottom:8 }}>🔗 Invite Members</div>
+        <div style={{ fontSize:12, fontWeight:700, color:"#3b82f6", marginBottom:8 }}><LuLink style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Invite Members</div>
         <div style={{ display:"flex", gap:20, fontSize:13 }}>
           <div><span style={{ color:"#64748b" }}>Workspace ID: </span><span style={{ color:"#f1f5f9", fontWeight:700, letterSpacing:1 }}>{ws.id}</span></div>
           <div><span style={{ color:"#64748b" }}>Access Code: </span><span style={{ color:"#3b82f6", fontWeight:800, letterSpacing:2 }}>{ws.accessCode}</span></div>
@@ -7211,14 +7212,14 @@ function HabitTracker({ user }) {
   };
 
   const [myHabits, setMyHabits] = useLS(`apx_custom_habits_${user.id}`, [
-    { id: "water", icon: "💧", label: "Water", type: "numeric", unit: "glasses", target: 8, color: "#38bdf8" },
-    { id: "meditation", icon: "🧘", label: "Meditation", type: "positive", color: "#a78bfa" },
-    { id: "mobile", icon: "📱", label: "Avoid Mobile", type: "negative", color: "#ef4444" }
+    { id: "water", icon: <LuDroplet style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Water", type: "numeric", unit: "glasses", target: 8, color: "#38bdf8" },
+    { id: "meditation", icon: <LuActivity style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Meditation", type: "positive", color: "#a78bfa" },
+    { id: "mobile", icon: <LuSmartphone style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Avoid Mobile", type: "negative", color: "#ef4444" }
   ]);
   
   const [logs, setLogs] = useLS(`apx_habits_${user.id}`, {});
   const [showAdd, setShowAdd] = useState(false);
-  const [newHabit, setNewHabit] = useState({ label: "", icon: "🎯", type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
+  const [newHabit, setNewHabit] = useState({ label: "", icon: <LuTarget style={{ display: 'inline-block', verticalAlign: 'middle' }} />, type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
   const [chartView, setChartView] = useState("week"); // "day" or "week"
   const [selectedDateStr, setSelectedDateStr] = useState(today());
 
@@ -7240,7 +7241,7 @@ function HabitTracker({ user }) {
   const addHabit = () => {
     if (!newHabit.label.trim()) return;
     setMyHabits([...myHabits, { ...newHabit, id: uid() }]);
-    setNewHabit({ label: "", icon: "🎯", type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
+    setNewHabit({ label: "", icon: <LuTarget style={{ display: 'inline-block', verticalAlign: 'middle' }} />, type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
     setShowAdd(false);
   };
 
@@ -7331,7 +7332,7 @@ function HabitTracker({ user }) {
       {/* ─── BAR CHART ANALYTICS ─── */}
       <Card style={{ marginBottom: 32, padding: "24px", background: "rgba(10,10,15,0.8)", border: "1px solid var(--surface-2)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 30 }}>
-          <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>📊 DISCIPLINE TRAJECTORY</div>
+          <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}><LuChartBar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> DISCIPLINE TRAJECTORY</div>
           <div style={{ display: "flex", gap: 6, background: "rgba(0,0,0,0.4)", padding: 4, borderRadius: 10, border: "1px solid var(--surface-2)" }}>
             <button 
               onClick={() => setChartView("day")} 
@@ -7420,7 +7421,7 @@ function HabitTracker({ user }) {
           fontFamily: "'Inter', sans-serif"
         }}>
           <span style={{ fontSize: 13, color: "#3bacd6", fontWeight: 700 }}>
-            📅 Viewing and logging habits for: <strong style={{ color: '#fff' }}>{fmtDate(selectedDateStr)}</strong>
+            <LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Viewing and logging habits for: <strong style={{ color: '#fff' }}>{fmtDate(selectedDateStr)}</strong>
           </span>
           <button 
             onClick={() => setSelectedDateStr(today())} 
@@ -7459,8 +7460,8 @@ function HabitTracker({ user }) {
                   <div style={{ fontSize: 11, color: "#64748b" }}>{h.type === "numeric" ? `${h.target} ${h.unit.toUpperCase()}` : "MISSION"}</div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  {streak > 0 && <span style={{ color: "#f59e0b", fontSize: 12, fontWeight: 900 }}>🔥 {streak}</span>}
-                  <button onClick={() => deleteHabit(h.id)} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 18 }}>🗑️</button>
+                  {streak > 0 && <span style={{ color: "#f59e0b", fontSize: 12, fontWeight: 900 }}><LuFlame style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {streak}</span>}
+                  <button onClick={() => deleteHabit(h.id)} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 18 }}><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</button>
                 </div>
               </div>
 
@@ -7483,7 +7484,7 @@ function HabitTracker({ user }) {
                     const dateStr = toLocalDateStr(dateObj);
                     const dayVal = logs[dateStr]?.[h.id] ?? 0;
                     const dayPct = calculatePct(h, dayVal);
-                    const isToday = dateStr === d;
+                    const isToday = dateStr === today();
                     const initials = ["M", "T", "W", "T", "F", "S", "S"][idx];
                     return (
                       <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
@@ -7980,10 +7981,10 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   const [editingSlotIdx, setEditingSlotIdx] = useState(null);
 
   const CREATOR_THEMES = [
-    { id: 'space', name: '🌌 Deep Space', gradient: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%)' },
-    { id: 'sunset', name: '🌅 Retrowave Sunset', gradient: 'linear-gradient(135deg, #881337 0%, #4c0519 50%, #f43f5e 100%)' },
-    { id: 'cyber', name: '⚔️ Stealth Shogun', gradient: 'linear-gradient(135deg, #111827 0%, #030712 100%)' },
-    { id: 'gold', name: '🏆 Gladiator Gold', gradient: 'linear-gradient(135deg, #451a03 0%, #1a0c02 100%)' }
+    { id: 'space', name: "Deep Space", gradient: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%)' },
+    { id: 'sunset', name: "Retrowave Sunset", gradient: 'linear-gradient(135deg, #881337 0%, #4c0519 50%, #f43f5e 100%)' },
+    { id: 'cyber', name: "️ Stealth Shogun", gradient: 'linear-gradient(135deg, #111827 0%, #030712 100%)' },
+    { id: 'gold', name: "Gladiator Gold", gradient: 'linear-gradient(135deg, #451a03 0%, #1a0c02 100%)' }
   ];
 
   const AI_AFFIRMATIONS = {
@@ -8217,9 +8218,9 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
   // Looping Cyber-ambient soundtrack loops
   const FOCUS_TRACKS = [
-    { id: "rain", label: "🌧️ Cyber Rain Focus", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-    { id: "drone", label: "🌌 Deep Space Drone", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-    { id: "drums", label: "🥁 Cinematic Battle Drums", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+    { id: "rain", label: "️ Cyber Rain Focus", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+    { id: "drone", label: "Deep Space Drone", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+    { id: "drums", label: "Cinematic Battle Drums", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
   ];
 
   const playTrack = (track) => {
@@ -8323,10 +8324,10 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
     <div style={{ padding: "20px 30px", background: "transparent", minHeight: "100vh", backdropFilter: "blur(10px)" }}>
       {/* 🧭 NAVIGATION OVERHAUL */}
       <div style={{ display: 'flex', gap: 20, marginBottom: 25, borderBottom: '1px solid var(--border)', overflowX: 'auto', paddingBottom: 5 }}>
-        <button onClick={() => setSubTab("battle")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "battle" ? '3px solid #3bacd6' : '3px solid transparent', color: subTab === "battle" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>⚔️ BATTLE STATION</button>
-        <button onClick={() => setSubTab("quests")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "quests" ? '3px solid #38bdf8' : '3px solid transparent', color: subTab === "quests" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🛡️ QUEST DIRECTORY</button>
-        <button onClick={() => setSubTab("purpose")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "purpose" ? '3px solid #f59e0b' : '3px solid transparent', color: subTab === "purpose" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🌸 PURPOSE & STORY</button>
-        <button onClick={() => setSubTab("vision")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "vision" ? '3px solid #a78bfa' : '3px solid transparent', color: subTab === "vision" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}>🖼️ VISION BOARD</button>
+        <button onClick={() => setSubTab("battle")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "battle" ? '3px solid #3bacd6' : '3px solid transparent', color: subTab === "battle" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}><LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ BATTLE STATION</button>
+        <button onClick={() => setSubTab("quests")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "quests" ? '3px solid #38bdf8' : '3px solid transparent', color: subTab === "quests" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}><LuShield style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ QUEST DIRECTORY</button>
+        <button onClick={() => setSubTab("purpose")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "purpose" ? '3px solid #f59e0b' : '3px solid transparent', color: subTab === "purpose" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}><LuFlower style={{ display: 'inline-block', verticalAlign: 'middle' }} /> PURPOSE & STORY</button>
+        <button onClick={() => setSubTab("vision")} style={{ padding: '15px 10px', background: 'none', border: 'none', borderBottom: subTab === "vision" ? '3px solid #a78bfa' : '3px solid transparent', color: subTab === "vision" ? 'var(--text)' : 'var(--text-dim)', fontWeight: 900, fontSize: 13, cursor: 'pointer', letterSpacing: 1.5, transition: '0.2s' }}><LuImage style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ VISION BOARD</button>
       </div>
 
       {subTab === "battle" && (
@@ -8348,7 +8349,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                   boxShadow: pomoShieldBroke ? 'none' : pomo.active ? '0 0 15px rgba(34, 197, 94, 0.4)' : 'none',
                   animation: pomo.active && !pomoShieldBroke ? 'pulse 2s infinite' : 'none'
                 }}>
-                  <span style={{ fontSize: 20 }}>{pomoShieldBroke ? "⚠️" : pomo.active ? "🛡️" : "⚔️"}</span>
+                  <span style={{ fontSize: 20 }}>{pomoShieldBroke ? <LuTriangleAlert style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : pomo.active ? "️" : "️"}</span>
                 </div>
                 <div>
                   <span style={{ fontSize: 10, fontWeight: 900, color: rank.color, letterSpacing: 2 }}>{rank.title}</span>
@@ -8367,22 +8368,22 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
             {pomoShieldBroke && (
               <div style={{ fontSize: 11, fontWeight: 800, color: '#ef4444', animation: 'pulse 1.5s infinite', display: 'flex', alignItems: 'center', gap: 6 }}>
-                ❌ FOCUS SHIELD SHATTERED (PENALTY APPLIED - ENGAGE TIMER TO RESTORE SHIELD)
+                <LuCircleX style={{ display: 'inline-block', verticalAlign: 'middle' }} /> FOCUS SHIELD SHATTERED (PENALTY APPLIED - ENGAGE TIMER TO RESTORE SHIELD)
               </div>
             )}
             
             {/* Quick stats indicators */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 8, borderTop: '1px dashed var(--surface-2)', paddingTop: 16 }}>
               <div>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>⚔️ STRENGTH STAT</div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}><LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ STRENGTH STAT</div>
                 <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{Math.round(exp / 4)} XP</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>👁️ FOCUS RATIO</div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}><LuEye style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ FOCUS RATIO</div>
                 <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{Math.round(pomo.time / 60)} MINS</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}>⚡ AGILITY STAT</div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 800 }}><LuZap style={{ display: 'inline-block', verticalAlign: 'middle' }} /> AGILITY STAT</div>
                 <div style={{ fontSize: 14, color: '#f1f5f9', fontWeight: 900, marginTop: 4 }}>{counter} REPS</div>
               </div>
             </div>
@@ -8432,7 +8433,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
           {/* Focus Audio Center with Binaural Beats */}
           <Card style={{ gridColumn: 'span 2', background: 'rgba(10,10,15,0.6)', border: '1px solid var(--surface-2)', backdropFilter: 'blur(10px)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>🔊 CYBER-AMBIENT SOUND DECK</div>
+            <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}><LuVolume2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /> CYBER-AMBIENT SOUND DECK</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
               {FOCUS_TRACKS.map(track => {
                 const isActive = playingAudio === track.id;
@@ -8453,7 +8454,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                     }}
                   >
                     <span style={{ fontSize: 12, fontWeight: 800, color: isActive ? '#fff' : '#94a3b8' }}>{track.label}</span>
-                    <span style={{ fontSize: 12 }}>{isActive ? "⏸️" : "▶️"}</span>
+                    <span style={{ fontSize: 12 }}>{isActive ? <LuPause style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuPlay style={{ display: 'inline-block', verticalAlign: 'middle' }} />}</span>
                   </div>
                 );
               })}
@@ -8551,7 +8552,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             {/* Daily Commandments */}
             <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}>⚔️ 10 COMMANDMENTS</div>
+                <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}><LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ 10 COMMANDMENTS</div>
                 <span style={{ fontSize: 11, fontWeight: 800, color: commCompletedCount === 10 ? '#22c55e' : '#64748b' }}>{commCompletedCount}/10</span>
               </div>
               
@@ -8580,14 +8581,14 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
               {commCompletedCount === 10 && (
                 <div style={{ padding: 10, background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22c55e', borderRadius: 8, fontSize: 10, color: '#4ade80', fontWeight: 900, textAlign: 'center' }}>
-                  🛡️ COMMANDMENTS COMMENDED (+100 EXP CLAIMED)
+                  <LuShield style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ COMMANDMENTS COMMENDED (+100 EXP CLAIMED)
                 </div>
               )}
             </Card>
 
             {/* Stoic Obstacles Planner */}
             <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🛡️ PREMEDITATIO MALORUM</div>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}><LuShield style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ PREMEDITATIO MALORUM</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div>
@@ -8624,7 +8625,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
             {/* Nightly Combat Debrief */}
             <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}>📓 NIGHTLY COMBAT DEBRIEF</div>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}><LuBook style={{ display: 'inline-block', verticalAlign: 'middle' }} /> NIGHTLY COMBAT DEBRIEF</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div>
@@ -8662,7 +8663,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                   if (!debrief.conquest || !debrief.tomorrow) return alert("Please fill wins & tomorrow's directive.");
                   setExp(e => e + 50);
                   new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
-                  alert("📓 COMBAT DEBRIEF SIGNED & LOGGED (+50 EXP)");
+                  alert("COMBAT DEBRIEF SIGNED & LOGGED (+50 EXP)");
                 }} style={{ marginTop: 5, width: '100%', padding: 12, background: 'rgba(167, 139, 250, 0.2)', border: '1px solid #a78bfa', borderRadius: 8, color: '#c084fc', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: '0.2s' }}>
                   SIGN & CLOSE COMBAT LOG
                 </button>
@@ -8681,11 +8682,11 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {/* Interactive Ikigai Finder */}
             <Card style={{ gridColumn: 'span 3', background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}>🌸 INTERACTIVE IKIGAI FINDER</div>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}><LuFlower style={{ display: 'inline-block', verticalAlign: 'middle' }} /> INTERACTIVE IKIGAI FINDER</div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 900, color: '#f59e0b', display: 'block', marginBottom: 4 }}>❤️ WHAT YOU LOVE</label>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#f59e0b', display: 'block', marginBottom: 4 }}><LuHeart style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ WHAT YOU LOVE</label>
                   <textarea 
                     value={ikigai.love} 
                     onChange={(e) => setIkigai({ ...ikigai, love: e.target.value })}
@@ -8694,7 +8695,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 900, color: '#10b981', display: 'block', marginBottom: 4 }}>💪 WHAT YOU ARE GOOD AT</label>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#10b981', display: 'block', marginBottom: 4 }}><LuDumbbell style={{ display: 'inline-block', verticalAlign: 'middle' }} /> WHAT YOU ARE GOOD AT</label>
                   <textarea 
                     value={ikigai.goodAt} 
                     onChange={(e) => setIkigai({ ...ikigai, goodAt: e.target.value })}
@@ -8703,7 +8704,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 900, color: '#38bdf8', display: 'block', marginBottom: 4 }}>🪙 WHAT YOU CAN GET PAID FOR</label>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#38bdf8', display: 'block', marginBottom: 4 }}><LuCoins style={{ display: 'inline-block', verticalAlign: 'middle' }} /> WHAT YOU CAN GET PAID FOR</label>
                   <textarea 
                     value={ikigai.paidFor} 
                     onChange={(e) => setIkigai({ ...ikigai, paidFor: e.target.value })}
@@ -8712,7 +8713,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 900, color: '#a78bfa', display: 'block', marginBottom: 4 }}>🌍 WHAT THE WORLD NEEDS</label>
+                  <label style={{ fontSize: 10, fontWeight: 900, color: '#a78bfa', display: 'block', marginBottom: 4 }}><LuGlobe style={{ display: 'inline-block', verticalAlign: 'middle' }} /> WHAT THE WORLD NEEDS</label>
                   <textarea 
                     value={ikigai.worldNeeds} 
                     onChange={(e) => setIkigai({ ...ikigai, worldNeeds: e.target.value })}
@@ -8740,7 +8741,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       {subTab === "vision" && (
         !vision.image ? (
           <div style={{ padding: 60, textAlign: 'center', border: '2px dashed var(--border)', borderRadius: 30, margin: '20px auto', maxWidth: 800, backdropFilter: 'blur(10px)', background: 'var(--surface-1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
-            <div style={{ fontSize: 60 }}>🖼️</div>
+            <div style={{ fontSize: 60 }}><LuImage style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</div>
             <h2 style={{ fontWeight: 900, margin: 0 }}>MANIFEST YOUR FUTURE</h2>
             <p style={{ color: 'var(--text-dim)', margin: '0 0 10px 0', lineHeight: 1.6 }}>Upload your vision board to display it continuously in high definition.</p>
             <input type="file" id="vb-upload" style={{ display: 'none' }} onChange={handleVBRoute} accept="image/*" />
@@ -8774,7 +8775,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             maxWidth: 500,
             animation: "msgSlide 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
           }}>
-            <div style={{ fontSize: 50, marginBottom: 20 }}>⚔️</div>
+            <div style={{ fontSize: 50, marginBottom: 20 }}><LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</div>
             <h1 style={{ margin: 0, fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: 2 }}>LEVEL UP!</h1>
             <p style={{ fontSize: 14, color: '#a78bfa', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1.5, marginTop: 10 }}>WARRIOR RANKS COMMENDED</p>
             <p style={{ fontSize: 13, color: '#94a3b8', margin: '20px 0 0 0', lineHeight: 1.6 }}>You have advanced to Level {level}! Your power ratio and efficiency metrics have been elevated.</p>
@@ -8886,7 +8887,7 @@ const mapSupabaseUser = (sbUser) => {
     id: sbUser.id,
     email: sbUser.email,
     name: sbUser.user_metadata?.name || sbUser.email.split('@')[0],
-    avatar: sbUser.user_metadata?.avatar || "🥷"
+    avatar: sbUser.user_metadata?.avatar || ""
   };
 };
 
@@ -9222,9 +9223,9 @@ export default function App() {
             window.activeAlarmAudio = null;
           }
           setTriggered(null);
-        }} title="🚨 CRITICAL ALARM STATUS">
+        }} title="CRITICAL ALARM STATUS">
           <div style={{ padding: 10, textAlign: 'center' }}>
-            <div style={{ fontSize: 50, animation: "bounce 1s infinite", marginBottom: 15 }}>⏰</div>
+            <div style={{ fontSize: 50, animation: "bounce 1s infinite", marginBottom: 15 }}><LuClock style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
             <h3 style={{ fontSize: 20, color: '#f87171', margin: '0 0 10px', fontWeight: 900 }}>{triggered.title.toUpperCase()}</h3>
             <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 25, lineHeight: 1.5 }}>{triggered.description || "Mission objective timeline reached!"}</p>
             <Btn onClick={() => {
@@ -9244,7 +9245,7 @@ export default function App() {
 
       {/* 🖼️ IMAGE PREVIEW LIGHTBOX MODAL */}
       {lightboxImg && (
-        <Modal open={true} onClose={() => setLightboxImg(null)} title="👁️ IMAGE PREVIEW" width={800}>
+        <Modal open={true} onClose={() => setLightboxImg(null)} title="️ IMAGE PREVIEW" width={800}>
           <div style={{ padding: 10, textAlign: 'center', background: '#090a0c', borderRadius: 16 }}>
             <img src={lightboxImg} style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12, objectFit: 'contain', border: '1px solid var(--border-subtle)' }} alt="Preview" />
             <Btn onClick={() => setLightboxImg(null)} style={{ marginTop: 20, width: '100%' }}>CLOSE PREVIEW</Btn>
