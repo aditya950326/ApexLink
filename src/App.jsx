@@ -9144,49 +9144,7 @@ export default function App() {
   
   if (view === "auth") return <AuthPage onLogin={handleLogin} users={users} setUsers={setUsers} initialMode={authMode} />;
 
-  if (view === "app" && !isDataLoaded) {
-    return (
-      <div style={{
-        height: '100vh',
-        background: 'var(--bg-base)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: "'Inter', sans-serif",
-        color: '#fff',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        {/* Subtle grid background */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "radial-gradient(circle, var(--accent-bg) 1px, transparent 1px)",
-          backgroundSize: "30px 30px",
-          zIndex: 0
-        }} />
-        
-        <div style={{ zIndex: 1, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img src="/logo.png" alt="Logo" style={{ height: 120, filter: 'drop-shadow(0 0 15px var(--accent-bg))', animation: 'pulse 2s infinite ease-in-out' }} />
-          <h2 style={{ fontSize: 13, fontWeight: 900, letterSpacing: 3, textTransform: 'uppercase', margin: '20px 0 10px', color: '#3bacd6' }}>
-            CONNECTING SECURE SESSION
-          </h2>
-          <div style={{ width: 180, height: 2, background: 'var(--surface-2)', borderRadius: 1, overflow: 'hidden', position: 'relative', margin: '15px 0' }}>
-            <div style={{
-              position: 'absolute',
-              height: '100%',
-              width: '50%',
-              background: '#3bacd6',
-              borderRadius: 1,
-              animation: 'sweep 1.5s infinite ease-in-out'
-            }} />
-          </div>
-          <span style={{ fontSize: 9, color: '#4b5563', letterSpacing: 1 }}>SYNCING WARRIOR ARCHIVES</span>
-        </div>
-      </div>
-    );
-  }
+
 
   const renderTab = () => {
     switch (tab) {
@@ -9267,5 +9225,6 @@ export default function App() {
     </>
   );
 }
+
 
 
