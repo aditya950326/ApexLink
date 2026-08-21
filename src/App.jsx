@@ -1,3 +1,4 @@
+import { generateOptimizedSchedule, computeProductivityProfile } from './scheduler';
 import { LuCalendar, LuBot, LuRocket, LuCrosshair, LuUsers, LuClock, LuUser, LuMail, LuLock, LuEye, LuEyeOff, LuFileText, LuChartBar, LuSettings, LuTrash2, LuTarget, LuPrinter, LuArrowDown, LuSparkles, LuSchool, LuBan, LuLightbulb, LuZap, LuCalendarDays, LuHourglass, LuClipboard, LuFolder, LuKey, LuSearch, LuPenTool, LuEraser, LuShield, LuArrowLeft, LuPencil, LuLockOpen, LuPaperclip, LuPalette, LuSkull, LuHeadphones, LuFile, LuTriangleAlert, LuSiren, LuCircleCheckBig, LuArrowRight, LuSquare, LuMic, LuOctagon, LuTestTube, LuRefreshCcw, LuInbox, LuCircle, LuBell, LuAtom, LuCircleX, LuLink, LuDroplet, LuActivity, LuSmartphone, LuFlame, LuFlower, LuImage, LuVolume2, LuPause, LuPlay, LuBook, LuHeart, LuDumbbell, LuCoins, LuGlobe } from "react-icons/lu";
 /* eslint-disable */
 const loadRazorpay = () => {
@@ -1005,12 +1006,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
       opacity: [0, 0.4],
       duration: 800
     })
-    .add('.auth-svg-border', {
-      strokeDashoffset: [900, 0],
-      opacity: [0, 1],
-      duration: 1000,
-      easing: 'easeInOutCubic'
-    }, '-=500')
+
     .add(logoRef.current, {
       scale: [0.7, 1],
       opacity: [0, 1],
@@ -1082,8 +1078,8 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
     const parent = e.currentTarget.parentElement;
     if (parent) {
       animate(parent, {
-        borderColor: 'var(--surface-3)',
-        backgroundColor: 'rgba(15, 15, 25, 0.5)',
+        borderColor: 'rgba(255, 255, 255, 0.08)',
+        backgroundColor: '#151822',
         boxShadow: '0 0 0px rgba(0,0,0,0)',
         scale: 1,
         duration: 250,
@@ -1384,38 +1380,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         className="auth-card-mockup"
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* Animated SVG Border circuit overlay */}
-        <svg 
-          className="auth-svg-border"
-          viewBox="0 0 420 620" 
-          fill="none" 
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            pointerEvents: "none",
-            zIndex: 1,
-            strokeDasharray: 900,
-            strokeDashoffset: 0
-          }}
-        >
-          <rect 
-            x="2" y="2" width="416" height="616" rx="20" 
-            stroke="url(#authBorderGrad)" 
-            strokeWidth="1.5" 
-          />
-          <defs>
-            <linearGradient id="authBorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3bacd6" stopOpacity="0.8" />
-              <stop offset="50%" stopColor="#6c63ff" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#3bacd6" stopOpacity="0.8" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Inner Light Sweep effect */}
-        <div className="auth-card-light-sweep" />
+        {/* Animated SVG Border circuit overlay removed in favor of static CSS border */}
 
         {/* LOGO & HEADING SECTION */}
         <div style={{ textAlign: "center", marginBottom: 25, position: "relative", zIndex: 5 }}>
@@ -1444,11 +1409,11 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
            <p 
              className="auth-slogan-text cinematic-entry" 
              style={{ 
-               color: "#3bacd6", 
-               fontSize: 12, 
-               fontWeight: 800, 
-               marginTop: 6, 
-               letterSpacing: 4,
+               color: "#94a3b8", 
+               fontSize: 11, 
+               fontWeight: 700, 
+               marginTop: 8, 
+               letterSpacing: 6,
                opacity: 0
              }}
            >
@@ -1504,13 +1469,13 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
           {/* Password Complexity Bar on Signup */}
           {mode === "signup" && form.password && (
-            <div style={{ padding: "0 4px", marginTop: -6 }}>
-              <div style={{ height: 3, width: "100%", background: "var(--surface-3)", borderRadius: 4, overflow: "hidden" }}>
+            <div style={{ padding: "0 10px", marginTop: -4, marginBottom: 4 }}>
+              <div style={{ height: 4, width: "100%", background: "rgba(255,255,255,0.05)", borderRadius: 4, overflow: "hidden" }}>
                 <div style={{ 
                   height: "100%", 
                   width: `${pwStrength}%`, 
-                  background: pwStrength <= 25 ? "#f87171" : pwStrength <= 75 ? "#fbbf24" : "#34d399",
-                  transition: "width 0.3s ease, background 0.3s ease"
+                  background: pwStrength <= 25 ? "#ef4444" : pwStrength <= 75 ? "#f59e0b" : "#10b981",
+                  transition: "width 0.4s ease, background 0.4s ease"
                 }} />
               </div>
             </div>
@@ -1522,30 +1487,30 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           className="auth-utils-row cinematic-entry" 
           style={{ 
             display: 'flex', 
-            justify: 'space-between', 
+            justifyContent: 'space-between', 
             alignItems: 'center', 
             gap: 12,
             margin: '16px 0', 
             fontSize: 12, 
-            color: '#64748b',
+            color: '#94a3b8',
             opacity: 0,
             position: "relative",
             zIndex: 5
           }}
         >
-           <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none' }}>
+           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
              <input 
                type="checkbox" 
                checked={rememberMe} 
                onChange={e => setRememberMe(e.target.checked)} 
-               style={{ accentColor: "#3bacd6", cursor: 'pointer' }}
+               style={{ accentColor: "#3bacd6", cursor: 'pointer', width: 14, height: 14 }}
              /> 
              <span>Remember me</span>
            </label>
            <span 
-             style={{ cursor: 'pointer', transition: 'color 0.2s', whiteSpace: 'nowrap' }}
-             onMouseEnter={e => e.currentTarget.style.color = '#3bacd6'}
-             onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
+             style={{ cursor: 'pointer', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: 600 }}
+             onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+             onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
            >
              Forgot password?
            </span>
@@ -1599,10 +1564,10 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         </button>
 
         {/* OR DIVIDER */}
-        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', gap: 10, position: "relative", zIndex: 5 }}>
-          <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
-          <span style={{ fontSize: 10, color: '#475569', fontWeight: 900, letterSpacing: 1 }}>OR SECURE CONNECT</span>
-          <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0', gap: 14, position: "relative", zIndex: 5 }}>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1))' }} />
+          <span style={{ fontSize: 11, color: '#64748b', fontWeight: 700, letterSpacing: 2 }}>OR SECURE CONNECT</span>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(270deg, transparent, rgba(255,255,255,0.1))' }} />
         </div>
 
         {/* GOOGLE OAUTH BUTTON */}
@@ -1620,21 +1585,22 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           className="auth-google-btn cinematic-entry"
           style={{
             width: '100%',
-            padding: '12px',
-            background: 'var(--surface-1)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 10,
-            color: '#fff',
-            fontWeight: 700,
-            fontSize: 13,
+            padding: '14px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: 'var(--radius-md)',
+            color: '#f8fafc',
+            fontWeight: 600,
+            fontSize: 14,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 10,
+            gap: 12,
             opacity: 0,
             position: "relative",
-            zIndex: 5
+            zIndex: 5,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
           }}
           onMouseEnter={(e) => {
             animate(e.currentTarget, {
@@ -1680,45 +1646,34 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           width: 420px;
           margin-left: auto;
           margin-right: 0;
-          background: rgba(10, 12, 20, 0.65);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
+          background: #11131a;
+          border: 1px solid rgba(108, 130, 255, 0.25);
           border-radius: var(--radius-lg);
           padding: 40px;
           position: relative;
           z-index: 10;
-          box-shadow: var(--shadow-lg);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
           overflow: hidden;
         }
 
-        .auth-card-light-sweep {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 60%;
-          height: 2px;
-          background: linear-gradient(90deg, transparent, #3bacd6, transparent);
-          animation: cardLightSweep 4s linear infinite;
-        }
-
-        @keyframes cardLightSweep {
-          0% { left: -100%; }
-          100% { left: 200%; }
-        }
-
         .input-group {
-          background: rgba(15, 15, 25, 0.5); 
-          backdrop-filter: blur(10px);
-          border: 1px solid var(--surface-3);
+          background: #151822; 
+          border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: var(--radius-md);
           display: flex;
           align-items: center;
           padding: 0 15px;
+          transition: all 0.2s ease;
         }
         
         .input-group input {
           width: 100%; background: none; border: none; padding: 12px 6px; 
           color: #fff; font-size: 14px; outline: none;
+        }
+
+        .input-group input:-webkit-autofill {
+          -webkit-text-fill-color: #fff !important;
+          transition: background-color 5000s ease-in-out 0s;
         }
 
         .enter-terminal-btn {
@@ -3618,8 +3573,14 @@ function VedAI({ user }) {
   const [loading, setLoading] = useState(false);
   const [apiKey, setApiKey] = useLS("apx_gemini_key", "");
   const [showKeyModal, setShowKeyModal] = useState(false);
-  const bottomRef = useRef(null);
+  const [tasks, setTasks] = useLS(`apx_vedai_tasks_${user.id}`, []);
+  const [schedule, setSchedule] = useLS(`apx_vedai_schedule_${user.id}`, null);
+  const [preferences, setPreferences] = useLS(`apx_vedai_prefs_${user.id}`, {
+    wake: "07:00", sleep: "23:00", maxHours: 8, breakMin: 15
+  });
+  const [profile, setProfile] = useState(null);
 
+  const bottomRef = useRef(null);
   const activeChat = chats.find(c => c.id === activeChatId);
 
   const newChat = () => {
@@ -3633,73 +3594,50 @@ function VedAI({ user }) {
     if (activeChatId === id) setActiveChatId(null);
   };
 
-  const generateTimetableLocally = (tasks, constraints) => {
-    const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-    const [wH, wM] = constraints.wake.split(":").map(Number);
-    const [sH, sM] = constraints.sleep.split(":").map(Number);
-    const wakeMin = wH*60+wM;
-    const sleepMin = sH*60+sM;
-    const maxMin = Math.min(constraints.maxHours * 60, sleepMin - wakeMin);
-
-    const sorted = [...tasks].sort((a,b) => {
-      const score = t => t.priority*3 + t.energy;
-      return score(b) - score(a);
-    });
-
-    const isBlocked = (startMin, endMin, blocks = []) => {
-      return blocks.some(b => {
-        const [bh, bm] = b.start.split(":").map(Number);
-        const [eh, em] = b.end.split(":").map(Number);
-        const bs = bh*60+bm, be = eh*60+em;
-        return startMin < be && endMin > bs;
-      });
+  // Load productivity history on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const { data, error } = await supabase.from('vedai_task_sessions').select('*').eq('user_id', user.id);
+        if (data && !error) {
+           const computed = computeProductivityProfile(data);
+           setProfile(computed);
+        }
+      } catch (err) {
+        console.warn("Could not load productivity from DB, using fallback.", err);
+      }
     };
+    loadProfile();
+  }, [user.id]);
 
-    const table = {};
-    DAYS.forEach((day, dayIdx) => {
-      if ((constraints.noWork || []).includes(day)) { table[day] = []; return; }
-      let cursor = wakeMin;
-      let usedMin = 0;
-      const slots = [];
+  const syncSchedule = () => {
+    const p = profile || { strongest_hours: [] };
+    const newSchedule = generateOptimizedSchedule(tasks, preferences, p);
+    setSchedule(newSchedule);
+  };
 
-      sorted.forEach(task => {
-        if (task.type === "specific" && !(task.days || []).includes(day)) return;
-        if (usedMin + task.duration > maxMin) return;
-
-        let start = cursor;
-        if (task.preferStart) {
-          const [ph, pm] = task.preferStart.split(":").map(Number);
-          const preferred = ph*60+pm;
-          if (preferred > cursor && preferred + task.duration <= sleepMin) start = preferred;
-        }
-
-        let attempts = 0;
-        const blocks = constraints.blocks || [];
-        while (attempts < 40 && (isBlocked(start, start + task.duration, blocks) || start + task.duration > sleepMin)) {
-          start += 15;
-          attempts++;
-        }
-        if (start + task.duration > sleepMin) return;
-        if (isBlocked(start, start + task.duration, blocks)) return;
-
-        const sh = Math.floor(start/60), sm = start%60;
-        const eh = Math.floor((start+task.duration)/60), em = (start+task.duration)%60;
-        
-        slots.push({
-          ...task,
-          id: task.id || uid(),
-          start: `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")}`,
-          end: `${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`,
-          startMin: start
-        });
-        cursor = start + task.duration + (constraints.breakMin || 15);
-        usedMin += task.duration + (constraints.breakMin || 15);
-      });
-
-      table[day] = slots.sort((a,b) => a.startMin - b.startMin);
-    });
-
-    return table;
+  const completeTask = async (block) => {
+    // Phase 3: Log actual completion
+    const actualDuration = prompt(`How many minutes did "${block.title}" actually take?`, block.duration);
+    if (!actualDuration) return;
+    
+    const timeSpent = parseInt(actualDuration, 10);
+    const updatedTasks = tasks.map(t => t.id === block.task_id ? { ...t, status: 'Completed', actual_duration: timeSpent } : t);
+    setTasks(updatedTasks);
+    
+    try {
+      await supabase.from('vedai_task_sessions').insert([{
+        user_id: user.id,
+        task_id: block.task_id,
+        planned_start: new Date().toISOString().split('T')[0] + 'T' + block.start_time + ':00Z',
+        planned_duration: block.duration,
+        actual_duration: timeSpent,
+        category: block.category,
+        completion_percentage: 100
+      }]);
+    } catch(err) {
+      console.warn("Supabase not fully setup for vedai_task_sessions yet.");
+    }
   };
 
   const send = async (overrideMsg) => {
@@ -3721,318 +3659,187 @@ function VedAI({ user }) {
     setLoading(true);
 
     try {
-      const stats = parseProductivityLogs(user.id);
-      const systemPrompt = `You are VedAI, a productivity and study assistant for students and professionals. Help with scheduling, motivation, habit building, and productivity analysis. Be concise, actionable, and analytical.
-Here are the user's actual productivity stats computed from their habit logs and collaborative workspace tasks:
-${stats}
+      const systemPrompt = `You are VedAI, an Adaptive Personal Scheduling Agent.
+User Productivity Context: ${profile ? JSON.stringify(profile) : 'New User (No data)'}
+Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
 
-Use this data to give custom recommendations (e.g. noting if they have a weekend slump, or suggesting optimizations).
-
-You also have a custom tool: update_user_timetable. You can call this tool to automatically create or update the user's timetable builder (slots and constraints) based on their study requirements or your optimization suggestions. Ensure you explain why you are updating their schedule before calling the tool.`;
-
-      const tools = [
-        {
+      const tools = [{
           functionDeclarations: [
             {
-              name: "update_user_timetable",
-              description: "Automatically updates or generates the user's study timetable tasks and constraints in the Timetable Builder based on study habits and optimization criteria.",
+              name: "update_schedule",
+              description: "Updates tasks to trigger re-optimization.",
               parameters: {
                 type: "OBJECT",
                 properties: {
-                  tasks: {
+                  newTasks: {
                     type: "ARRAY",
-                    description: "A complete list of study tasks/subjects to schedule.",
                     items: {
                       type: "OBJECT",
                       properties: {
-                        title: { type: "STRING", description: "Subject or task title (e.g. Physics Revision, Math Homework)" },
-                        priority: { type: "NUMBER", description: "Priority level from 1 (lowest) to 5 (highest)" },
-                        duration: { type: "NUMBER", description: "Duration of each session in minutes (e.g. 90, 120, 60)" },
-                        energy: { type: "NUMBER", description: "Energy required from 1 to 5" },
-                        taskType: { 
-                          type: "STRING", 
-                          description: "Category of the study slot (e.g. Deep Work, Revision, Practice, Reading, Exercise, Meeting, Leisure, Other)" 
-                        },
-                        type: { type: "STRING", description: "Whether task repeats daily or specific days (daily or specific)" },
-                        days: { 
-                          type: "ARRAY", 
-                          items: { type: "STRING" },
-                          description: "If type is specific, define which days this task should run (e.g., ['Mon', 'Wed'])"
-                        },
-                        preferStart: { type: "STRING", description: "Preferred start time in 24h format" },
-                        preferEnd: { type: "STRING", description: "Preferred end time in 24h format" }
+                        title: { type: "STRING" },
+                        priority: { type: "STRING", description: "Critical, High, Medium, Low" },
+                        estimated_duration: { type: "NUMBER", description: "Minutes" },
+                        category: { type: "STRING" },
+                        preferred_time: { type: "STRING" }
                       },
-                      required: ["title", "priority", "duration", "energy", "taskType", "type"]
+                      required: ["title", "estimated_duration", "priority"]
                     }
-                  },
-                  constraints: {
-                    type: "OBJECT",
-                    description: "User schedule boundary limits and wake/sleep cycles.",
-                    properties: {
-                      wake: { type: "STRING", description: "Wake up time (e.g. '07:00')" },
-                      sleep: { type: "STRING", description: "Sleep time (e.g. '23:00')" },
-                      maxHours: { type: "NUMBER", description: "Max study hours per day (e.g. 6, 8)" },
-                      breakMin: { type: "NUMBER", description: "Break duration in minutes between tasks (e.g. 15)" },
-                      noWork: { 
-                        type: "ARRAY", 
-                        items: { type: "STRING" },
-                        description: "Days of the week the student does not want to study (e.g., ['Sat', 'Sun'])" 
-                      }
-                    },
-                    required: ["wake", "sleep", "maxHours", "breakMin"]
                   }
                 },
-                required: ["tasks", "constraints"]
+                required: ["newTasks"]
               }
             }
           ]
-        }
-      ];
+      }];
 
       const geminiContents = updatedMessages.map(m => ({
         role: m.role === "assistant" ? "model" : "user",
         parts: [{ text: m.content }]
       }));
 
-      const modelFallbacks = [
-        "gemini-2.5-flash",
-        "gemini-3.5-flash",
-        "gemini-3.1-flash-lite",
-        "gemini-2.0-flash",
-        "gemini-1.5-flash",
-        "gemini-1.5-flash-latest"
-      ];
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: geminiContents, systemInstruction: { parts: [{ text: systemPrompt }] }, tools, generationConfig: { temperature: 0.7 } })
+      });
       
-      let res = null;
-      let data = null;
-      let modelUsed = "";
-      
-      for (const modelName of modelFallbacks) {
-        try {
-          res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "x-goog-api-key": apiKey
-            },
-            body: JSON.stringify({
-              contents: geminiContents,
-              systemInstruction: {
-                parts: [{ text: systemPrompt }]
-              },
-              tools,
-              generationConfig: {
-                temperature: 0.7
-              }
-            })
-          });
-          data = await res.json();
-          
-          if (data.error) {
-            const errMsg = data.error.message || "";
-            if (
-              errMsg.includes("not found") || 
-              errMsg.includes("not supported") || 
-              errMsg.includes("Quota") || 
-              errMsg.includes("quota") ||
-              errMsg.includes("limit")
-            ) {
-              console.warn(`Model ${modelName} failed (quota/not found), trying fallback...`);
-              continue;
-            } else {
-              throw new Error(errMsg);
-            }
-          }
-          
-          modelUsed = modelName;
-          break;
-        } catch (err) {
-          console.error(`Error with model ${modelName}:`, err);
-          if (modelName === modelFallbacks[modelFallbacks.length - 1]) {
-            throw err;
-          }
-        }
-      }
-      
-      if (!res || !data || data.error) {
-        throw new Error("All Gemini models failed to generate content.");
-      }
-
-      console.log("Gemini API Response:", data);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
 
       const candidate = data.candidates?.[0];
       const modelContent = candidate?.content;
       const modelPart = modelContent?.parts?.[0];
       let reply = modelPart?.text || "";
 
-      if (modelPart?.functionCall) {
-        const functionCall = modelPart.functionCall;
-        if (functionCall.name === "update_user_timetable") {
-          const args = functionCall.args;
-          const calculatedTable = generateTimetableLocally(args.tasks, args.constraints);
+      if (modelPart?.functionCall && modelPart.functionCall.name === "update_schedule") {
+          const newTasks = modelPart.functionCall.args.newTasks || [];
+          const updatedTasks = [...tasks, ...newTasks.map(t => ({...t, id: uid(), status: 'Pending'}))];
+          setTasks(updatedTasks);
           
-          localStorage.setItem(`apx_tt_tasks_${user.id}`, JSON.stringify(args.tasks));
-          localStorage.setItem(`apx_tt_con_${user.id}`, JSON.stringify(args.constraints));
-          localStorage.setItem(`apx_timetable_${user.id}`, JSON.stringify(calculatedTable));
-
-          window.dispatchEvent(new Event("storage"));
-
-          const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelUsed}:generateContent?key=${apiKey}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              contents: [
-                ...geminiContents,
-                modelContent,
-                {
-                  role: "function",
-                  parts: [{
-                    functionResponse: {
-                      name: "update_user_timetable",
-                      response: { output: "Timetable generated and saved to LocalStorage database successfully." }
-                    }
-                  }]
-                }
-              ],
-              systemInstruction: {
-                parts: [{ text: systemPrompt }]
-              },
-              generationConfig: {
-                temperature: 0.7
-              }
+              contents: [...geminiContents, modelContent, { role: "function", parts: [{ functionResponse: { name: "update_schedule", response: { output: "Tasks updated." } } }] }]
             })
           });
-
           const followUpData = await followUpRes.json();
-          if (followUpData.error) throw new Error(followUpData.error.message);
-          
-          const followUpCandidate = followUpData.candidates?.[0];
-          reply = followUpCandidate?.content?.parts?.[0]?.text || "Your timetable has been successfully optimized! Open the Timetable tab to view it.";
-        }
+          reply = followUpData.candidates?.[0]?.content?.parts?.[0]?.text || "Schedule updated.";
       }
 
-      if (!reply && !modelPart?.functionCall) {
-        reply = `Debug Info: ${JSON.stringify(data)}`;
-      }
-
-      const aiMsg = { role: "assistant", content: reply || "Successfully processed request.", id: uid() };
+      const aiMsg = { role: "assistant", content: reply || "Done.", id: uid() };
       setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: [...updatedMessages, aiMsg] } : c));
+      
+      if (modelPart?.functionCall) syncSchedule();
     } catch (e) {
-      const errMsg = { role: "assistant", content: `Error: ${e.message}. Please check your Gemini API key and connection settings.`, id: uid() };
+      const errMsg = { role: "assistant", content: `Error: ${e.message}`, id: uid() };
       setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: [...updatedMessages, errMsg] } : c));
     }
     setLoading(false);
   };
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [activeChat?.messages?.length, loading]);
+  useEffect(() => { if(tasks.length > 0 && !schedule) syncSchedule(); }, [tasks, profile]); // Re-sync if profile loads
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      {/* Chat list */}
-      <div style={{ width: 240, borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", flexShrink: 0 }}>
-        <div style={{ padding: "20px 16px 12px" }}>
-          <Btn onClick={newChat} style={{ width: "100%" }}>+ New Chat</Btn>
-        </div>
-        <div style={{ flex: 1, overflowY: "auto", padding: "0 8px" }}>
-          {chats.map(c => (
-            <div key={c.id} onClick={() => setActiveChatId(c.id)}
-              style={{ display: "flex", alignItems: "center", padding: "10px 10px", borderRadius: 8, cursor: "pointer", background: activeChatId === c.id ? "rgba(108,99,255,0.15)" : "transparent", marginBottom: 2 }}>
-              <div style={{ flex: 1, overflow: "hidden" }}>
-                <div style={{ fontSize: 13, fontWeight: activeChatId === c.id ? 600 : 400, color: activeChatId === c.id ? "#a78bfa" : "#aaa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.title}</div>
-                <div style={{ fontSize: 11, color: "#555" }}>{fmtDate(c.createdAt)}</div>
-              </div>
-              <button onClick={e => { e.stopPropagation(); deleteChat(c.id); }} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", padding: 2, fontSize: 14 }}>×</button>
-            </div>
-          ))}
-        </div>
-        <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border-subtle)" }}>
-          <button onClick={() => setShowKeyModal(true)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 12 }}>
-            <LuKey style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {apiKey ? "Gemini API Key Set ✓" : "Set Gemini API Key"}
-          </button>
-        </div>
-      </div>
-      {/* Chat area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ fontWeight: 700, fontSize: 16 }}>{activeChat ? activeChat.title : "VedAI"}</div>
-          <div style={{ marginLeft: "auto" }}>
-            <Btn small variant="secondary" onClick={() => send("Analyze my productivity data and suggest improvements for my schedule and habits.")}><LuSearch style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Analyze My Data</Btn>
+    <div style={{ display: "flex", height: "100vh", background: "var(--bg-base)" }}>
+      <div style={{ width: "40%", borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", flexShrink: 0, background: "var(--surface-1)" }}>
+        <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#a78bfa" }}>VedAI</div>
+            <div style={{ fontSize: 12, color: "#888" }}>Adaptive Personal Scheduling Agent</div>
           </div>
+          <Btn small onClick={newChat}>+ Chat</Btn>
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
           {!activeChat && (
-            <div style={{ textAlign: "center", paddingTop: 40 }}>
-              <div style={{ fontSize: 40, marginBottom: 16 }}><LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#a78bfa", marginBottom: 8 }}>VedAI Productivity Coach</div>
-              <div style={{ color: "#666", fontSize: 14, marginBottom: 24 }}>Analyzing your logs & sync-updating your Timetable in real-time.</div>
-              {[
-                "Analyze Weekend Slump & Streaks",
-                "Auto-Optimize Study Timetable",
-                "Review Habits & Collaboration Logs",
-                "Prioritize Exam Deadlines in Timetable"
-              ].map(p => (
-                <button key={p} onClick={() => { newChat(); setTimeout(() => send(p), 100); }}
-                  style={{ display: "block", width: "100%", maxWidth: 420, margin: "0 auto 10px", padding: "12px 16px", background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)", borderRadius: 10, color: "#a78bfa", cursor: "pointer", fontSize: 14, textAlign: "left", transition: "0.2s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(108,99,255,0.2)"}
-                  onMouseLeave={e => e.currentTarget.style.background = "rgba(108,99,255,0.1)"}
-                >
-                  {p}
-                </button>
-              ))}
+            <div style={{ textAlign: "center", paddingTop: 40, color: "#888" }}>
+              <LuBot size={40} style={{ marginBottom: 16, color: "#a78bfa" }} />
+              <div style={{ fontSize: 16, marginBottom: 8 }}>Ready to plan your day.</div>
+              {profile ? (
+                 <div style={{ fontSize: 12, color: "#22d3ee", background: "rgba(34,211,238,0.1)", padding: "6px", borderRadius: 8, display: "inline-block" }}>
+                    Personalization: High • Capacity: {Math.round(profile.average_daily_capacity || 0)}m/day
+                 </div>
+              ) : (
+                 <div style={{ fontSize: 12 }}>Try: "Schedule my DBMS assignment for 2 hours tomorrow."</div>
+              )}
             </div>
           )}
           {activeChat?.messages?.map(m => (
             <div key={m.id} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-              <div style={{ 
-                maxWidth: "75%", 
-                background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "var(--surface-1)", 
-                backdropFilter: m.role === "user" ? "none" : "blur(16px)",
-                border: m.role === "user" ? "none" : "1px solid var(--surface-2)", 
-                borderLeft: m.role === "user" ? "none" : "4px solid #38bdf8",
-                borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "4px 16px 16px 16px", 
-                padding: m.role === "user" ? "12px 18px" : "18px 22px", 
-                color: m.role === "user" ? "#fff" : "#cbd5e1", 
-                fontSize: 14, 
-                lineHeight: 1.6, 
-                whiteSpace: "pre-wrap", 
-                wordBreak: "break-word",
-                boxShadow: m.role === "user" ? "0 4px 16px rgba(108,99,255,0.25)" : "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
-                animation: "slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards"
-              }}>
-                {m.role === "user" ? m.content : <EHMarkdown text={m.content} />}
+              <div style={{ maxWidth: "85%", background: m.role === "user" ? "linear-gradient(135deg,#6c63ff,#8b5cf6)" : "var(--surface-2)", padding: "12px 16px", borderRadius: 12, color: m.role === "user" ? "#fff" : "#cbd5e1", fontSize: 14 }}>
+                <EHMarkdown text={m.content} />
               </div>
             </div>
           ))}
-          {loading && (
-            <div style={{ display: "flex", justifyContent: "flex-start" }}>
-              <div style={{ background: "var(--surface-2)", border: "1px solid var(--border-subtle)", borderRadius: "16px 16px 16px 4px", padding: "12px 16px" }}>
-                <div style={{ display: "flex", gap: 4 }}>
-                  {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: 'var(--radius-full)', background: "#6c63ff", animation: `bounce ${0.6}s ${i*0.2}s infinite alternate` }} />)}
-                </div>
-              </div>
-            </div>
-          )}
+          {loading && <div style={{ color: "#a78bfa", fontSize: 14 }}>VedAI is thinking...</div>}
           <div ref={bottomRef} />
         </div>
-        <div style={{ padding: "12px 24px 20px", borderTop: "1px solid var(--border-subtle)" }}>
-          <div style={{ display: "flex", gap: 10, background: "var(--surface-2)", border: "1px solid var(--surface-3)", borderRadius: 12, padding: "8px 12px" }}>
-            <textarea value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-              placeholder="Ask VedAI anything... (Enter to send)" rows={1}
-              style={{ flex: 1, background: "none", border: "none", color: "#f1f5f9", fontSize: 14, resize: "none", outline: "none", lineHeight: 1.6, maxHeight: 120, overflowY: "auto" }} />
-            <button onClick={() => send()} disabled={!input.trim() || loading}
-              style={{ background: "linear-gradient(135deg,#6c63ff,#8b5cf6)", border: "none", borderRadius: 8, color: "#fff", padding: "6px 14px", cursor: "pointer", fontWeight: 700, opacity: (!input.trim() || loading) ? 0.5 : 1 }}>↑</button>
+        <div style={{ padding: "16px 24px", borderTop: "1px solid var(--border-subtle)" }}>
+          <div style={{ display: "flex", gap: 10, background: "var(--surface-2)", borderRadius: 12, padding: "8px 12px" }}>
+            <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter") send(); }} placeholder="Tell VedAI what you need to do..." style={{ flex: 1, background: "none", border: "none", color: "#fff", outline: "none" }} />
+            <button onClick={() => send()} style={{ background: "#6c63ff", border: "none", borderRadius: 8, color: "#fff", padding: "6px 12px", cursor: "pointer" }}>↑</button>
           </div>
         </div>
       </div>
+
+      <div style={{ flex: 1, padding: "32px", overflowY: "auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 800 }}>Today's Schedule</div>
+            <div style={{ color: "#888", fontSize: 14 }}>Learning from your productivity patterns • Personalization: {profile ? 'Active' : 'Pending'}</div>
+          </div>
+          {schedule && (
+             <div style={{ background: "rgba(34, 211, 238, 0.1)", color: "#22d3ee", padding: "6px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>
+                Score: {schedule.quality_score}/100
+             </div>
+          )}
+        </div>
+
+        {!schedule || schedule.schedule_blocks.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 20px", background: "var(--surface-1)", borderRadius: 16, border: "1px dashed var(--border-subtle)" }}>
+            <div style={{ color: "#888", marginBottom: 16 }}>No schedule generated yet.</div>
+            <Btn onClick={() => send("Plan my day today.")}>Plan My Day</Btn>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {schedule.schedule_blocks.map((block, i) => (
+              <div key={i} style={{ display: "flex", gap: 20, alignItems: "stretch" }}>
+                <div style={{ width: 100, textAlign: "right", color: "#888", fontSize: 14, paddingTop: 4 }}>
+                  {block.start_time} - {block.end_time}
+                </div>
+                <div style={{ width: 2, background: "var(--border-subtle)", position: "relative" }}>
+                  <div style={{ position: "absolute", left: -4, top: 6, width: 10, height: 10, borderRadius: "50%", background: block.isFixed ? "#ec4899" : "#3b82f6" }} />
+                </div>
+                <div style={{ flex: 1, background: "var(--surface-1)", padding: 20, borderRadius: 16, border: "1px solid var(--border-subtle)", position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: block.priority === 'Critical' ? '#ef4444' : block.priority === 'High' ? '#f59e0b' : '#3b82f6' }} />
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                    <div style={{ fontWeight: 700, fontSize: 16 }}>{block.title}</div>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <div style={{ fontSize: 12, background: "var(--surface-2)", padding: "2px 8px", borderRadius: 10 }}>{block.duration} min</div>
+                      <button onClick={() => completeTask(block)} style={{ background: "#22c55e", border: "none", borderRadius: 12, padding: "4px 10px", color: "white", fontSize: 12, cursor: "pointer", fontWeight: "bold" }}>Complete</button>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#888", marginBottom: 12 }}>{block.category || "General"} • {block.priority || "Medium"}</div>
+                  {block.explanation && (
+                    <div style={{ fontSize: 12, color: "#a78bfa", background: "rgba(167, 139, 250, 0.1)", padding: "8px 12px", borderRadius: 8 }}>
+                      <LuBot size={12} style={{ marginRight: 4 }} /> {block.explanation}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <Modal open={showKeyModal} onClose={() => setShowKeyModal(false)} title="Set Gemini API Key" width={420}>
-        <p style={{ color: "#888", fontSize: 14, marginTop: 0 }}>Enter your Gemini API key to enable VedAI. You can obtain a free key from Google AI Studio. It's stored locally in your browser.</p>
-        <Field label="Gemini API Key"><Inp value={apiKey} onChange={setApiKey} type="password" placeholder="AIzaSy..." /></Field>
+        <p style={{ color: "#888", fontSize: 14 }}>Enter your Gemini API key to enable VedAI.</p>
+        <Field label="Gemini API Key"><Inp value={apiKey} onChange={setApiKey} type="password" /></Field>
         <Btn onClick={() => setShowKeyModal(false)} style={{ width: "100%" }}>Save Key</Btn>
       </Modal>
-      <style>{`@keyframes bounce{to{transform:translateY(-4px)}} @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
   );
 }
+
 
 // ─── REMINDERS ────────────────────────────────────────────────────────────────
 function Reminders({ user, reminders = [], setReminders }) {
