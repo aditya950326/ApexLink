@@ -1193,8 +1193,13 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
         if (error) throw error;
         
+        if (!data.session) {
+          triggerError("Check your email for a confirmation link to continue.");
+          return;
+        }
+
         const newUser = {
-          id: data?.user?.id || `user_${Date.now()}`,
+          id: data.user.id,
           email: emailLower,
           name: form.name.trim(),
           password: pass
@@ -1221,9 +1226,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         if (error) throw error;
 
         const loggedInUser = {
-          id: data?.user?.id || `user_${Date.now()}`,
+          id: data.user.id,
           email: emailLower,
-          name: data?.user?.user_metadata?.name || emailLower.split('@')[0]
+          name: data.user.user_metadata?.name || emailLower.split('@')[0]
         };
         triggerSuccess(null, loggedInUser);
       } catch (err) {
