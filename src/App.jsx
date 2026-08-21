@@ -2247,7 +2247,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
 
     // 🌊 Area Fill
     const grad = ctx.createLinearGradient(0, padT, 0, H - padB);
-    grad.addColorStop(0, 'var(--accent-bg)');
+    grad.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
     grad.addColorStop(1, "rgba(59, 130, 246, 0)");
     ctx.beginPath();
     ctx.moveTo(toX(0), toY(0));
@@ -2266,7 +2266,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
 
     // 🎯 Crosshair logic
     if (hoverData) {
-      ctx.setLineDash([5, 5]); ctx.strokeStyle = 'var(--accent-bg)';
+      ctx.setLineDash([5, 5]); ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)';
       ctx.beginPath(); ctx.moveTo(toX(hoverData.index), padT); ctx.lineTo(toX(hoverData.index), H - padB); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(toX(hoverData.index), toY(hoverData.value), 6, 0, Math.PI * 2); ctx.fill();
@@ -8808,7 +8808,7 @@ export default function App() {
         }
 
         // Pull Profiles Data & Vault Password
-        const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
         if (profile) {
           localStorage.setItem(`apx_vpass_v5_${currentUser.id}`, JSON.stringify(profile.vault_password));
         }
