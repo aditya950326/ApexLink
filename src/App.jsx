@@ -519,8 +519,44 @@ function useLS(key, init) {
     }
   });
 
+  const prevKeyRef = useRef(key);
+  const skipNextWriteRef = useRef(true);
+
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(v));
+    const handleStorageChange = () => {
+      try {
+        const s = localStorage.getItem(key);
+        if (s && s !== "undefined") {
+          setV(JSON.parse(s));
+        } else {
+          setV(init);
+        }
+      } catch (e) {
+        setV(init);
+      }
+    };
+
+    if (prevKeyRef.current !== key) {
+      prevKeyRef.current = key;
+      skipNextWriteRef.current = true;
+      handleStorageChange();
+    }
+
+    window.addEventListener('apx-data-loaded', handleStorageChange);
+    return () => window.removeEventListener('apx-data-loaded', handleStorageChange);
+  }, [key]);
+
+  useEffect(() => {
+    if (skipNextWriteRef.current) {
+      skipNextWriteRef.current = false;
+      return;
+    }
+
+    const currentLs = localStorage.getItem(key);
+    const newLs = JSON.stringify(v);
+    if (currentLs === newLs) return;
+
+    localStorage.setItem(key, newLs);
 
     const syncToSupabase = async () => {
       try {
@@ -8833,6 +8869,7 @@ export default function App() {
             previousStreak: r.previous_streak
           }))));
         }
+        window.dispatchEvent(new Event('apx-data-loaded'));
         setIsDataLoaded(true);
       } catch (err) {
         console.error("Failed to pull data from Supabase:", err);
