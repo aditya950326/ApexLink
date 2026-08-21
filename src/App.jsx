@@ -1194,7 +1194,8 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         if (error) throw error;
         
         if (!data.session) {
-          triggerError("Check your email for a confirmation link to continue.");
+          triggerError("Account already exists. Please login instead.");
+          setTimeout(() => setMode("login"), 1500);
           return;
         }
 
