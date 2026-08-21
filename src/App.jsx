@@ -1205,22 +1205,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         triggerSuccess("Sign up successful! Entering workspace...", newUser);
       } catch (err) {
         setIsSubmitting(false);
-        // Fallback for local dev/testing if Supabase isn't reachable
-        const existingUser = users?.find(u => u && u.email && u.email.toLowerCase() === emailLower);
-        if (existingUser) {
-          triggerError("An account with this email already exists.");
-          return;
-        }
-        const localNewUser = {
-          id: `user_${Date.now()}`,
-          email: emailLower,
-          name: form.name.trim(),
-          password: pass
-        };
-        if (setUsers) {
-          setUsers(prev => [...(prev || []), localNewUser]);
-        }
-        triggerSuccess(null, localNewUser);
+        triggerError(err.message || "An error occurred during sign up.");
       }
     } else {
       setIsSubmitting(true);
@@ -1243,27 +1228,6 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         triggerSuccess(null, loggedInUser);
       } catch (err) {
         setIsSubmitting(false);
-        // Local user authentication fallback
-        const matchedLocalUser = users?.find(u => u && u.email && u.email.toLowerCase() === emailLower);
-        if (matchedLocalUser) {
-          if (matchedLocalUser.password === pass) {
-            triggerSuccess(null, matchedLocalUser);
-            return;
-          } else {
-            triggerError("Invalid email or password.");
-            return;
-          }
-        }
-        // Demo account fallback if email is test/demo or any user during demo testing
-        if (emailLower.includes("demo") || emailLower.includes("test") || err.message === "Failed to fetch") {
-          const demoUser = {
-            id: `demo_${Date.now()}`,
-            email: emailLower,
-            name: emailLower.split('@')[0].toUpperCase()
-          };
-          triggerSuccess(null, demoUser);
-          return;
-        }
         triggerError(err.message || "Invalid email or password.");
       }
     }
