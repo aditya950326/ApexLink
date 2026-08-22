@@ -1193,9 +1193,16 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
         if (error) throw error;
         
-        if (!data.session) {
+        // 1. Detect if the email already exists (Supabase anti-enumeration feature returns empty identities)
+        if (data?.user && data.user.identities && data.user.identities.length === 0) {
           triggerError("Account already exists. Please login instead.");
           setTimeout(() => setMode("login"), 1500);
+          return;
+        }
+
+        // 2. Detect if email confirmation is turned ON in Supabase
+        if (!data.session) {
+          triggerError("Please check your email to confirm your account!");
           return;
         }
 
