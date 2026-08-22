@@ -40,7 +40,7 @@ function LandingPage({ onEnterAuth }) {
     if (playPromise !== undefined) {
       playPromise.then(() => {
         setBgVideoReady(true);
-      }).catch(() => {});
+      }).catch(() => { });
     }
   }, []);
 
@@ -93,37 +93,37 @@ function LandingPage({ onEnterAuth }) {
       opacity: [0, 1],
       duration: 600,
     })
-    .add('.nav-item, .auth-trigger, .prime-trigger', {
-      translateY: [-20, 0],
-      opacity: [0, 1],
-      delay: stagger(60),
-      duration: 600,
-    }, '-=400')
-    .add('.cinematic-title', {
-      translateY: [30, 0],
-      opacity: [0, 1],
-      duration: 750,
-      easing: 'easeOutExpo'
-    }, '-=350')
-    .add('.warrior-slogan', {
-      translateY: [20, 0],
-      opacity: [0, 0.9],
-      duration: 650,
-      easing: 'easeOutQuad'
-    }, '-=400')
-    .add('.prime-cta, .video-trigger', {
-      translateY: [20, 0],
-      opacity: [0, 1],
-      delay: stagger(100),
-      duration: 600,
-      easing: 'easeOutCubic'
-    }, '-=300')
-    .add('.marquee-viewport-full', {
-      translateY: [25, 0],
-      opacity: [0, 1],
-      duration: 700,
-      easing: 'easeOutQuad'
-    }, '-=350');
+      .add('.nav-item, .auth-trigger, .prime-trigger', {
+        translateY: [-20, 0],
+        opacity: [0, 1],
+        delay: stagger(60),
+        duration: 600,
+      }, '-=400')
+      .add('.cinematic-title', {
+        translateY: [30, 0],
+        opacity: [0, 1],
+        duration: 750,
+        easing: 'easeOutExpo'
+      }, '-=350')
+      .add('.warrior-slogan', {
+        translateY: [20, 0],
+        opacity: [0, 0.9],
+        duration: 650,
+        easing: 'easeOutQuad'
+      }, '-=400')
+      .add('.prime-cta, .video-trigger', {
+        translateY: [20, 0],
+        opacity: [0, 1],
+        delay: stagger(100),
+        duration: 600,
+        easing: 'easeOutCubic'
+      }, '-=300')
+      .add('.marquee-viewport-full', {
+        translateY: [25, 0],
+        opacity: [0, 1],
+        duration: 700,
+        easing: 'easeOutQuad'
+      }, '-=350');
 
   }, []);
 
@@ -198,18 +198,18 @@ function LandingPage({ onEnterAuth }) {
   ];
 
   return (
-    <div ref={containerRef} style={{ 
-      height: '100vh', 
-      background: 'var(--bg-base)', 
-      color: '#fff', 
+    <div ref={containerRef} style={{
+      height: '100vh',
+      background: 'var(--bg-base)',
+      color: '#fff',
       fontFamily: "'Inter', sans-serif",
-      overflow: 'hidden', 
-      position: 'relative' 
+      overflow: 'hidden',
+      position: 'relative'
     }}>
 
       {/* 🔮 AMBIENT GLOW SPHERES (Background Ambient Motion) */}
-      <div 
-        className="ambient-orb-1" 
+      <div
+        className="ambient-orb-1"
         style={{
           position: 'absolute',
           top: '15%',
@@ -221,10 +221,10 @@ function LandingPage({ onEnterAuth }) {
           filter: 'blur(50px)',
           zIndex: 0,
           pointerEvents: 'none'
-        }} 
+        }}
       />
-      <div 
-        className="ambient-orb-2" 
+      <div
+        className="ambient-orb-2"
         style={{
           position: 'absolute',
           bottom: '20%',
@@ -236,7 +236,7 @@ function LandingPage({ onEnterAuth }) {
           filter: 'blur(60px)',
           zIndex: 0,
           pointerEvents: 'none'
-        }} 
+        }}
       />
 
       {/* 🎨 LAYER 0: MATCHING BACKGROUND POSTER */}
@@ -249,7 +249,7 @@ function LandingPage({ onEnterAuth }) {
         backgroundPosition: "center",
         filter: "brightness(0.5)",
       }} />
-      
+
       {/* 🎭 LAYER 1: CINEMATIC LOOPING VIDEO */}
       <video
         ref={bgVideoRef}
@@ -280,16 +280,16 @@ function LandingPage({ onEnterAuth }) {
       </video>
 
       {/* 🌫️ LAYER 1.5: GRADIENT MASK */}
-      <div 
+      <div
         ref={overlayRef}
-        style={{ 
-          position: 'absolute', 
-          inset: 0, 
+        style={{
+          position: 'absolute',
+          inset: 0,
           zIndex: 1,
           background: 'linear-gradient(to right, rgba(2,2,5,0.8), transparent 40%, transparent 60%, rgba(2,2,5,0.8))',
           pointerEvents: 'none',
           opacity: 0
-        }} 
+        }}
       />
 
       {/* 🧭 LAYER 2: NAVIGATION */}
@@ -299,8 +299,8 @@ function LandingPage({ onEnterAuth }) {
             <span key={t} className="nav-item anime-reveal" style={{ opacity: 0 }}>{t}</span>
           ))}
           <div className="anime-reveal" style={{ width: '1px', height: '14px', background: 'var(--border-strong)', opacity: 0 }} />
-          <button 
-            onClick={() => onEnterAuth('login')} 
+          <button
+            onClick={() => onEnterAuth('login')}
             onMouseEnter={handleBtnHoverEnter}
             onMouseLeave={handleBtnHoverLeave}
             onMouseDown={handleBtnClickDown}
@@ -310,8 +310,8 @@ function LandingPage({ onEnterAuth }) {
           >
             LOG IN
           </button>
-          <button 
-            onClick={() => onEnterAuth('signup')} 
+          <button
+            onClick={() => onEnterAuth('signup')}
             onMouseEnter={handleBtnHoverEnter}
             onMouseLeave={handleBtnHoverLeave}
             onMouseDown={handleBtnClickDown}
@@ -325,46 +325,46 @@ function LandingPage({ onEnterAuth }) {
       </nav>
 
       {/* ⚔️ HERO MAIN VIEWPORT (Exact Original Layout Structure) */}
-      <main style={{ 
-        position: 'relative', 
-        zIndex: 10, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: '100vh', 
-        boxSizing: 'border-box' 
+      <main style={{
+        position: 'relative',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        boxSizing: 'border-box'
       }}>
-        
-        <div style={{ 
-          flex: 1, 
-          display: 'flex', 
-          alignItems: 'center', 
-          padding: '0 80px 0 8%', 
-          maxWidth: 800 
+
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 80px 0 8%',
+          maxWidth: 800
         }}>
           <div className="reveal-anim" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             <h1 className="cinematic-title anime-reveal" style={{ opacity: 0 }}>ApexLink</h1>
-            
-            <h2 className="warrior-slogan anime-reveal" style={{ 
-              fontSize: '22px', 
-              fontWeight: 900, 
-              color: '#7bcdf6', 
-              margin: '15px 0 0', 
-              textTransform: 'uppercase', 
-              letterSpacing: '14px', 
-              paddingLeft: '14px', 
+
+            <h2 className="warrior-slogan anime-reveal" style={{
+              fontSize: '22px',
+              fontWeight: 900,
+              color: '#7bcdf6',
+              margin: '15px 0 0',
+              textTransform: 'uppercase',
+              letterSpacing: '14px',
+              paddingLeft: '14px',
               opacity: 0,
-              textShadow: '0 0 25px rgba(252, 249, 254, 0.5)', 
+              textShadow: '0 0 25px rgba(252, 249, 254, 0.5)',
               display: 'block',
               textAlign: 'center'
             }}>
               FORGE.FOCUS.CONQUER
             </h2>
 
-            <div style={{ height: '40px' }} /> 
-            
+            <div style={{ height: '40px' }} />
+
             <div style={{ display: 'flex', gap: 30, justifyContent: 'center' }}>
-              <button 
-                onClick={() => onEnterAuth('signup')} 
+              <button
+                onClick={() => onEnterAuth('signup')}
                 onMouseEnter={handleBtnHoverEnter}
                 onMouseLeave={handleBtnHoverLeave}
                 onMouseDown={handleBtnClickDown}
@@ -374,8 +374,8 @@ function LandingPage({ onEnterAuth }) {
               >
                 Start Mission
               </button>
-              <button 
-                onClick={() => setShowVideo(true)} 
+              <button
+                onClick={() => setShowVideo(true)}
                 onMouseEnter={handleBtnHoverEnter}
                 onMouseLeave={handleBtnHoverLeave}
                 onMouseDown={handleBtnClickDown}
@@ -392,9 +392,9 @@ function LandingPage({ onEnterAuth }) {
         <div className="marquee-viewport-full anime-reveal" style={{ marginBottom: '10px', opacity: 0 }}>
           <div className="marquee-content">
             {[...features, ...features, ...features].map((f, i) => (
-              <div 
-                key={i} 
-                className="feat-card" 
+              <div
+                key={i}
+                className="feat-card"
                 style={{ borderLeft: `3px solid ${f.color}` }}
                 onMouseEnter={handleCardHoverEnter}
                 onMouseLeave={handleCardHoverLeave}
@@ -409,24 +409,24 @@ function LandingPage({ onEnterAuth }) {
 
       {/* 📺 VIDEO OVERLAY MODAL */}
       {showVideo && (
-        <div 
+        <div
           style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', 
-            backdropFilter: 'blur(15px)', zIndex: 2000, 
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)',
+            backdropFilter: 'blur(15px)', zIndex: 2000,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
           onClick={() => setShowVideo(false)}
         >
-          <div 
+          <div
             style={{
-              width: '90%', maxWidth: '1000px', background: 'var(--bg-base)', 
+              width: '90%', maxWidth: '1000px', background: 'var(--bg-base)',
               border: '1px solid rgba(8, 66, 212, 0.5)', borderRadius: 'var(--radius-md)',
               padding: '10px', position: 'relative',
               boxShadow: 'var(--shadow-glow)'
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button 
+            <button
               onClick={() => setShowVideo(false)}
               style={{
                 position: 'absolute', top: '-40px', right: '0', background: 'none', border: 'none',
@@ -506,7 +506,7 @@ const fmtDate = (d) => new Date(d).toLocaleDateString("en-IN", { day: "2-digit",
 const fmtTime = (d) => new Date(d).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
 const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
- // For Thought Pattern Breaker
+// For Thought Pattern Breaker
 
 // 1. UPDATED useLS HELPER WITH SUPABASE BACKGROUND SYNC
 function useLS(key, init) {
@@ -570,9 +570,12 @@ function useLS(key, init) {
             id: t.id,
             user_id: userId,
             name: t.name,
-            notes: t.notes || "",
+            notes: typeof t.notes === `object` ? JSON.stringify(t.notes) : String(t.notes || ``),
             completed: t.completed || false,
-            deadline: t.deadline || null
+            deadline: t.deadline || null,
+            target_minutes: t.targetMinutes || 60,
+            logs: t.logs || {},
+            goals: t.goals || []
           }));
           const activeIds = v.map();
           if (activeIds.length > 0) {
@@ -597,123 +600,123 @@ function useLS(key, init) {
             is_archived: false
           }));
           const activeIds = v.map(n => String(n.id));
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', activeIds).throwOnError();
-          } else {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).throwOnError();
-          }
-          if (rows.length > 0) {
-            await supabase.from('notes').upsert(rows).throwOnError();
-          }
+          await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', activeIds).throwOnError();
+        } else {
+          await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).throwOnError();
         }
+        if (rows.length > 0) {
+          await supabase.from('notes').upsert(rows).throwOnError();
+        }
+      }
 
         // Sync Vault Archived Notes
         if (key === `apx_vault_v5_${userId}` && Array.isArray(v)) {
-          const rows = v.map(n => ({
-            id: String(n.id),
-            user_id: userId,
-            title: n.title,
-            content: n.content || "",
-            image: n.image || null,
-            color: n.color || '#6c63ff',
-            is_archived: true
-          }));
-          const activeIds = v.map(n => String(n.id));
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', activeIds).throwOnError();
-          } else {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).throwOnError();
-          }
-          if (rows.length > 0) {
-            await supabase.from('notes').upsert(rows).throwOnError();
-          }
-        }
-
-        // Sync Vault Password
-        if (key === `apx_vpass_v5_${userId}`) {
-          await supabase.from('profiles').update({ vault_password: v }).eq('id', userId).throwOnError();
-        }
-
-        // Sync Reminders
-        if (key === `apx_rem_${userId}` && Array.isArray(v)) {
-          const rows = v.map(r => ({
-            id: r.id,
-            user_id: userId,
-            title: r.title,
-            description: r.description || "",
-            datetime: r.datetime,
-            urgency: r.urgency || 'normal'
-          }));
-          const activeIds = v.map();
-          if (activeIds.length > 0) {
-            await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
-          } else {
-            await supabase.from('reminders').delete().eq('user_id', userId).throwOnError();
-          }
-          if (rows.length > 0) {
-            await supabase.from('reminders').upsert(rows).throwOnError();
-          }
-        }
-
-        // Sync Habit Logs
-        if (key === `apx_habits_${userId}` && v && typeof v === 'object') {
-          const rows = [];
-          Object.entries(v).forEach(([dateStr, habitVals]) => {
-            if (habitVals && typeof habitVals === 'object') {
-              Object.entries(habitVals).forEach(([habitId, val]) => {
-                rows.push({
-                  user_id: userId,
-                  habit_id: habitId,
-                  log_date: dateStr,
-                  value: String(val)
-                });
-              });
-            }
-          });
-          await supabase.from('habit_logs').delete().eq('user_id', userId).throwOnError();
-          if (rows.length > 0) {
-            await supabase.from('habit_logs').upsert(rows).throwOnError();
-          }
-        }
-
-        // Sync Execution Hub Chats
-        if (key === `apx_chats_${userId}` && Array.isArray(v)) {
-          const rows = v.map(c => ({
-            id: c.id,
-            user_id: userId,
-            title: c.title,
-            messages: c.messages || []
-          }));
-          const activeIds = v.map();
-          if (activeIds.length > 0) {
-            await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
-          } else {
-            await supabase.from('chats').delete().eq('user_id', userId).throwOnError();
-          }
-          if (rows.length > 0) {
-            await supabase.from('chats').upsert(rows).throwOnError();
-          }
-        }
-
-        // Sync User Rooms Mappings
-        if (key === `apx_rooms_${userId}` && Array.isArray(v)) {
-          const rows = v.map(roomId => ({
-            user_id: userId,
-            room_id: roomId
-          }));
-          await supabase.from('user_rooms').delete().eq('user_id', userId).throwOnError();
-          if (rows.length > 0) {
-            await supabase.from('user_rooms').upsert(rows).throwOnError();
-          }
-        }
-      } catch (err) {
-        console.error("Supabase useLS sync failure:", err);
+        const rows = v.map(n => ({
+          id: String(n.id),
+          user_id: userId,
+          title: n.title,
+          content: n.content || "",
+          image: n.image || null,
+          color: n.color || '#6c63ff',
+          is_archived: true
+        }));
+        const activeIds = v.map(n => String(n.id));
+        await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', activeIds).throwOnError();
+      } else {
+        await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).throwOnError();
       }
-    };
+      if (rows.length > 0) {
+        await supabase.from('notes').upsert(rows).throwOnError();
+      }
+    }
 
-    const timer = setTimeout(syncToSupabase, 800);
-    return () => clearTimeout(timer);
+    // Sync Vault Password
+    if (key === `apx_vpass_v5_${userId}`) {
+      await supabase.from('profiles').update({ vault_password: v }).eq('id', userId).throwOnError();
+    }
+
+    // Sync Reminders
+    if (key === `apx_rem_${userId}` && Array.isArray(v)) {
+      const rows = v.map(r => ({
+        id: r.id,
+        user_id: userId,
+        title: r.title,
+        description: r.description || "",
+        datetime: r.datetime,
+        urgency: r.urgency || 'normal'
+      }));
+      const activeIds = v.map();
+      if (activeIds.length > 0) {
+        await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
+      } else {
+        await supabase.from('reminders').delete().eq('user_id', userId).throwOnError();
+      }
+      if (rows.length > 0) {
+        await supabase.from('reminders').upsert(rows).throwOnError();
+      }
+    }
+
+    // Sync Habit Logs
+    if (key === `apx_habits_${userId}` && v && typeof v === 'object') {
+      const rows = [];
+      Object.entries(v).forEach(([dateStr, habitVals]) => {
+        if (habitVals && typeof habitVals === 'object') {
+          Object.entries(habitVals).forEach(([habitId, val]) => {
+            rows.push({
+              user_id: userId,
+              habit_id: habitId,
+              log_date: dateStr,
+              value: String(val)
+            });
+          });
+        }
+      });
+      await supabase.from('habit_logs').delete().eq('user_id', userId).throwOnError();
+      if (rows.length > 0) {
+        await supabase.from('habit_logs').upsert(rows).throwOnError();
+      }
+    }
+
+    // Sync Execution Hub Chats
+    if (key === `apx_chats_${userId}` && Array.isArray(v)) {
+      const rows = v.map(c => ({
+        id: c.id,
+        user_id: userId,
+        title: c.title,
+        messages: c.messages || []
+      }));
+      const activeIds = v.map();
+      if (activeIds.length > 0) {
+        await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
+      } else {
+        await supabase.from('chats').delete().eq('user_id', userId).throwOnError();
+      }
+      if (rows.length > 0) {
+        await supabase.from('chats').upsert(rows).throwOnError();
+      }
+    }
+
+    // Sync User Rooms Mappings
+    if (key === `apx_rooms_${userId}` && Array.isArray(v)) {
+      const rows = v.map(roomId => ({
+        user_id: userId,
+        room_id: roomId
+      }));
+      await supabase.from('user_rooms').delete().eq('user_id', userId).throwOnError();
+      if (rows.length > 0) {
+        await supabase.from('user_rooms').upsert(rows).throwOnError();
+      }
+    }
+  } catch (err) {
+    console.error("Supabase useLS sync failure:", err);
+  }
+};
+
+const timer = setTimeout(syncToSupabase, 800);
+return () => clearTimeout(timer);
   }, [key, v]);
 
-  return [v, setV];
+return [v, setV];
 }
 
 // ─── AI PRODUCTIVITY LOG PARSER ─────────────────────────────────────────────
@@ -742,7 +745,7 @@ const parseProductivityLogs = (userId) => {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return;
     const dayOfWeek = date.getDay();
-    
+
     const dayHabits = habitLogs[dateStr] || {};
     habits.forEach(h => {
       habitPossibleByDay[dayOfWeek]++;
@@ -771,7 +774,7 @@ const parseProductivityLogs = (userId) => {
     const tasksDone = taskCompletionsByDay[i];
     report += `- ${DAYS_ENG[i]}: Habit Completion Rate = ${habitRatio}%, Collaborative Tasks Completed = ${tasksDone}\n`;
   }
-  
+
   const expVal = localStorage.getItem(`apx_warrior_exp_${userId}`) || "0";
   report += `Current Gamified Warrior EXP: ${expVal} points.\n`;
 
@@ -796,15 +799,15 @@ function useShared(key, init) {
   const write = useCallback((updater) => {
     setV(prev => {
       const next = typeof updater === "function" ? updater(prev) : updater;
-      try { localStorage.setItem(key, JSON.stringify(next)); window.dispatchEvent(new StorageEvent("storage", { key, newValue: JSON.stringify(next) })); } catch {}
+      try { localStorage.setItem(key, JSON.stringify(next)); window.dispatchEvent(new StorageEvent("storage", { key, newValue: JSON.stringify(next) })); } catch { }
       return next;
     });
   }, [key]);
   useEffect(() => {
-    const onStorage = (e) => { if (e.key !== key) return; try { if (e.newValue) setV(JSON.parse(e.newValue)); } catch {} };
+    const onStorage = (e) => { if (e.key !== key) return; try { if (e.newValue) setV(JSON.parse(e.newValue)); } catch { } };
     window.addEventListener("storage", onStorage);
     const interval = setInterval(() => {
-      try { const s = localStorage.getItem(key); if (s) setV(prev => { const next = JSON.parse(s); return JSON.stringify(next) !== JSON.stringify(prev) ? next : prev; }); } catch {}
+      try { const s = localStorage.getItem(key); if (s) setV(prev => { const next = JSON.parse(s); return JSON.stringify(next) !== JSON.stringify(prev) ? next : prev; }); } catch { }
     }, 1500);
     return () => { window.removeEventListener("storage", onStorage); clearInterval(interval); };
   }, [key]);
@@ -832,8 +835,8 @@ function useShared(key, init) {
         }));
 
         const activeIds = v.map();
-          if (activeIds.length > 0) {
-            await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', activeIds).throwOnError();
+        if (activeIds.length > 0) {
+          await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', activeIds).throwOnError();
         } else {
           await supabase.from('rooms').delete().eq('creator_id', userId).throwOnError();
         }
@@ -857,29 +860,29 @@ function useShared(key, init) {
 function ApexLogo({ size = 48, textSize = 20, showText = true }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
-      <img 
-        src="/logo.png" 
-        alt="Logo" 
-        style={{ width: size, height: size, objectFit: "contain" }} 
+      <img
+        src="/logo.png"
+        alt="Logo"
+        style={{ width: size, height: size, objectFit: "contain" }}
       />
       {showText && (
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-          <span style={{ 
-            fontSize: textSize, 
-            fontWeight: 800, 
-            background: "linear-gradient(135deg,#3bacd6,#1e6fa8)", 
-            WebkitBackgroundClip: "text", 
-            WebkitTextFillColor: "transparent", 
+          <span style={{
+            fontSize: textSize,
+            fontWeight: 800,
+            background: "linear-gradient(135deg,#3bacd6,#1e6fa8)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
             letterSpacing: 0.5
           }}>
             ApexLink
           </span>
-          <span style={{ 
-            fontSize: Math.max(9, textSize * 0.65), 
-            color: "#4a90b8", 
-            fontWeight: 500, 
-            letterSpacing: 0.8, 
-            marginTop: 1 
+          <span style={{
+            fontSize: Math.max(9, textSize * 0.65),
+            color: "#4a90b8",
+            fontWeight: 500,
+            letterSpacing: 0.8,
+            marginTop: 1
           }}>
             Productivity Planner
           </span>
@@ -1041,46 +1044,46 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
       duration: 800
     })
 
-    .add(logoRef.current, {
-      scale: [0.7, 1],
-      opacity: [0, 1],
-      duration: 700
-    }, '-=600')
-    .add(titleRef.current, {
-      translateY: [20, 0],
-      opacity: [0, 1],
-      duration: 600
-    }, '-=400')
-    .add('.auth-slogan-text', {
-      opacity: [0, 0.8],
-      letterSpacing: ['10px', '4px'],
-      duration: 500
-    }, '-=350')
-    .add('.auth-input-item', {
-      translateY: [20, 0],
-      opacity: [0, 1],
-      delay: stagger(80),
-      duration: 600
-    }, '-=300')
-    .add('.auth-utils-row', {
-      opacity: [0, 1],
-      duration: 400
-    }, '-=200')
-    .add(submitBtnRef.current, {
-      scale: [0.9, 1],
-      opacity: [0, 1],
-      duration: 600,
-      easing: 'easeOutBack'
-    }, '-=200')
-    .add('.auth-google-btn', {
-      translateY: [15, 0],
-      opacity: [0, 1],
-      duration: 500
-    }, '-=300')
-    .add('.auth-switch-row', {
-      opacity: [0, 1],
-      duration: 500
-    }, '-=200');
+      .add(logoRef.current, {
+        scale: [0.7, 1],
+        opacity: [0, 1],
+        duration: 700
+      }, '-=600')
+      .add(titleRef.current, {
+        translateY: [20, 0],
+        opacity: [0, 1],
+        duration: 600
+      }, '-=400')
+      .add('.auth-slogan-text', {
+        opacity: [0, 0.8],
+        letterSpacing: ['10px', '4px'],
+        duration: 500
+      }, '-=350')
+      .add('.auth-input-item', {
+        translateY: [20, 0],
+        opacity: [0, 1],
+        delay: stagger(80),
+        duration: 600
+      }, '-=300')
+      .add('.auth-utils-row', {
+        opacity: [0, 1],
+        duration: 400
+      }, '-=200')
+      .add(submitBtnRef.current, {
+        scale: [0.9, 1],
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'easeOutBack'
+      }, '-=200')
+      .add('.auth-google-btn', {
+        translateY: [15, 0],
+        opacity: [0, 1],
+        duration: 500
+      }, '-=300')
+      .add('.auth-switch-row', {
+        opacity: [0, 1],
+        duration: 500
+      }, '-=200');
 
   }, []);
 
@@ -1190,7 +1193,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         setIsSubmitting(false);
 
         if (error) throw error;
-        
+
         // 1. Detect if the email already exists (Supabase anti-enumeration feature returns empty identities)
         if (data?.user && data.user.identities && data.user.identities.length === 0) {
           triggerError("Account already exists. Please login instead.");
@@ -1285,16 +1288,16 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeaveContainer}
-      style={{ 
-        minHeight: "100vh", 
+      style={{
+        minHeight: "100vh",
         width: "100vw",
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "flex-end", 
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
         padding: "0 8%",
         position: "relative",
         overflow: "hidden",
@@ -1306,7 +1309,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
     >
 
       {/* 🌟 LAYER 0: CURSOR FOLLOW SPOTLIGHT GLOW */}
-      <div 
+      <div
         ref={cursorGlowRef}
         style={{
           position: "absolute",
@@ -1379,15 +1382,15 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
       </video>
 
       {/* 🌫️ LAYER 2: DARK EDGE VIGNETTE OVERLAY */}
-      <div style={{ 
+      <div style={{
         position: "absolute", inset: 0, zIndex: 1,
         background: "radial-gradient(circle at center, transparent 0%, rgba(2,2,5,0.4) 55%, rgba(2,2,5,0.92) 100%)",
-        pointerEvents: "none" 
+        pointerEvents: "none"
       }} />
 
       {/* 🛡️ LAYER 3: 3D ANIMATED TRANSLUCENT AUTH CARD */}
-      <div 
-        ref={cardRef} 
+      <div
+        ref={cardRef}
         className="auth-card-mockup"
         style={{ transformStyle: "preserve-3d" }}
       >
@@ -1395,41 +1398,41 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
         {/* LOGO & HEADING SECTION */}
         <div style={{ textAlign: "center", marginBottom: 25, position: "relative", zIndex: 5 }}>
-           <div ref={logoRef} style={{ display: 'flex', justifyContent: 'center', marginBottom: -20, opacity: 0 }} className="cinematic-entry">
-             <img src="/logo.png" alt="Logo" style={{ height: 210, filter: 'drop-shadow(0 0 25px var(--accent-bg))' }} />
-           </div>
-           
-           <h1 
-             ref={titleRef} 
-             className="cinematic-entry"
-             style={{ 
-               fontSize: 32, 
-               fontWeight: 900, 
-               color: "#fff", 
-               letterSpacing: 3, 
-               marginTop: -25,
-               opacity: 0,
-               background: "linear-gradient(180deg, #ffffff 30%, #94a3b8 100%)",
-               WebkitBackgroundClip: "text",
-               WebkitTextFillColor: "transparent"
-             }}
-           >
-             APEXLINK
-           </h1>
-           
-           <p 
-             className="auth-slogan-text cinematic-entry" 
-             style={{ 
-               color: "#94a3b8", 
-               fontSize: 11, 
-               fontWeight: 700, 
-               marginTop: 8, 
-               letterSpacing: 6,
-               opacity: 0
-             }}
-           >
-             FORGE . FOCUS . CONQUER
-           </p>
+          <div ref={logoRef} style={{ display: 'flex', justifyContent: 'center', marginBottom: -20, opacity: 0 }} className="cinematic-entry">
+            <img src="/logo.png" alt="Logo" style={{ height: 210, filter: 'drop-shadow(0 0 25px var(--accent-bg))' }} />
+          </div>
+
+          <h1
+            ref={titleRef}
+            className="cinematic-entry"
+            style={{
+              fontSize: 32,
+              fontWeight: 900,
+              color: "#fff",
+              letterSpacing: 3,
+              marginTop: -25,
+              opacity: 0,
+              background: "linear-gradient(180deg, #ffffff 30%, #94a3b8 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent"
+            }}
+          >
+            APEXLINK
+          </h1>
+
+          <p
+            className="auth-slogan-text cinematic-entry"
+            style={{
+              color: "#94a3b8",
+              fontSize: 11,
+              fontWeight: 700,
+              marginTop: 8,
+              letterSpacing: 6,
+              opacity: 0
+            }}
+          >
+            FORGE . FOCUS . CONQUER
+          </p>
         </div>
 
         {/* INPUT FORM FIELDS */}
@@ -1437,10 +1440,10 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           {mode === "signup" && (
             <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0 }}>
               <span className="input-icon"><LuUser style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
-              <input 
-                placeholder="Name" 
-                value={form.name} 
-                onChange={e => handleInputChange('name', e.target.value)} 
+              <input
+                placeholder="Name"
+                value={form.name}
+                onChange={e => handleInputChange('name', e.target.value)}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
@@ -1449,11 +1452,11 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
           <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0 }}>
             <span className="input-icon"><LuMail style={{ display: 'inline-block', verticalAlign: 'middle' }} />️</span>
-            <input 
-              placeholder="Email" 
-              type="email" 
-              value={form.email} 
-              onChange={e => handleInputChange('email', e.target.value)} 
+            <input
+              placeholder="Email"
+              type="email"
+              value={form.email}
+              onChange={e => handleInputChange('email', e.target.value)}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
             />
@@ -1461,16 +1464,16 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
 
           <div className="input-group auth-input-item cinematic-entry" style={{ opacity: 0, position: 'relative' }}>
             <span className="input-icon"><LuLock style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
-            <input 
-              placeholder="Password" 
-              type={showPassword ? "text" : "password"} 
-              value={form.password} 
-              onChange={e => handleInputChange('password', e.target.value)} 
+            <input
+              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+              value={form.password}
+              onChange={e => handleInputChange('password', e.target.value)}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
-              onKeyDown={e => e.key === 'Enter' && handle()} 
+              onKeyDown={e => e.key === 'Enter' && handle()}
             />
-            <span 
+            <span
               onClick={() => setShowPassword(!showPassword)}
               style={{ cursor: 'pointer', opacity: 0.6, fontSize: 13, userSelect: 'none', paddingLeft: 8 }}
             >
@@ -1482,9 +1485,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
           {mode === "signup" && form.password && (
             <div style={{ padding: "0 10px", marginTop: -4, marginBottom: 4 }}>
               <div style={{ height: 4, width: "100%", background: "rgba(255,255,255,0.05)", borderRadius: 4, overflow: "hidden" }}>
-                <div style={{ 
-                  height: "100%", 
-                  width: `${pwStrength}%`, 
+                <div style={{
+                  height: "100%",
+                  width: `${pwStrength}%`,
                   background: pwStrength <= 25 ? "#ef4444" : pwStrength <= 75 ? "#f59e0b" : "#10b981",
                   transition: "width 0.4s ease, background 0.4s ease"
                 }} />
@@ -1494,46 +1497,46 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         </div>
 
         {/* UTILS ROW */}
-        <div 
-          className="auth-utils-row cinematic-entry" 
-          style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
+        <div
+          className="auth-utils-row cinematic-entry"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             gap: 12,
-            margin: '16px 0', 
-            fontSize: 12, 
+            margin: '16px 0',
+            fontSize: 12,
             color: '#94a3b8',
             opacity: 0,
             position: "relative",
             zIndex: 5
           }}
         >
-           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
-             <input 
-               type="checkbox" 
-               checked={rememberMe} 
-               onChange={e => setRememberMe(e.target.checked)} 
-               style={{ accentColor: "#3bacd6", cursor: 'pointer', width: 14, height: 14 }}
-             /> 
-             <span>Remember me</span>
-           </label>
-           <span 
-             style={{ cursor: 'pointer', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: 600 }}
-             onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-             onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
-           >
-             Forgot password?
-           </span>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={e => setRememberMe(e.target.checked)}
+              style={{ accentColor: "#3bacd6", cursor: 'pointer', width: 14, height: 14 }}
+            />
+            <span>Remember me</span>
+          </label>
+          <span
+            style={{ cursor: 'pointer', transition: 'color 0.2s', whiteSpace: 'nowrap', fontWeight: 600 }}
+            onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+            onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
+          >
+            Forgot password?
+          </span>
         </div>
 
         {/* ERROR MESSAGE DISPLAY */}
         {err && (
-          <div style={{ 
-            color: "#f87171", 
-            fontSize: 12, 
-            marginBottom: 12, 
-            textAlign: "center", 
+          <div style={{
+            color: "#f87171",
+            fontSize: 12,
+            marginBottom: 12,
+            textAlign: "center",
             fontWeight: 700,
             background: "rgba(248, 113, 113, 0.1)",
             padding: "8px 12px",
@@ -1547,9 +1550,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         )}
 
         {/* MAGNETIC ENTER TERMINAL BUTTON */}
-        <button 
+        <button
           ref={submitBtnRef}
-          onClick={handle} 
+          onClick={handle}
           disabled={isSubmitting}
           className="enter-terminal-btn cinematic-entry"
           style={{ opacity: 0, position: "relative", zIndex: 5 }}
@@ -1582,7 +1585,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         </div>
 
         {/* GOOGLE OAUTH BUTTON */}
-        <button 
+        <button
           onClick={async () => {
             setErr("");
             const { data, error } = await supabase.auth.signInWithOAuth({
@@ -1592,7 +1595,7 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
               }
             });
             if (error) triggerError(error.message);
-          }} 
+          }}
           className="auth-google-btn cinematic-entry"
           style={{
             width: '100%',
@@ -1639,9 +1642,9 @@ function AuthPage({ onLogin, users, setUsers, initialMode = "login" }) {
         {/* SWITCH MODE ROW */}
         <div className="auth-switch-row cinematic-entry" style={{ textAlign: 'center', marginTop: 22, opacity: 0, position: "relative", zIndex: 5 }}>
           <span style={{ color: '#64748b', fontSize: 13 }}>
-            {mode === "login" ? "New to the path?" : "Already a warrior?"} 
-            <button 
-              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} 
+            {mode === "login" ? "New to the path?" : "Already a warrior?"}
+            <button
+              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
               style={{ background: 'none', border: 'none', color: '#3bacd6', fontWeight: 800, cursor: 'pointer', marginLeft: 6 }}
               onMouseEnter={(e) => animate(e.currentTarget, { color: '#a78bfa', duration: 200 })}
               onMouseLeave={(e) => animate(e.currentTarget, { color: '#3bacd6', duration: 200 })}
@@ -1735,50 +1738,50 @@ const TABS = [
 function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatch, setStopwatch, counter, setCounter }) {
   const [collapsed, setCollapsed] = useState(false);
   const [showWarConsole, setShowWarConsole] = useState(false);
-  const fmt = (s) => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   return (
-    <div style={{ 
-      display: "flex", 
-      minHeight: "100vh", 
+    <div style={{
+      display: "flex",
+      minHeight: "100vh",
       // 🟢 1. GLOBAL WALLPAPER
-      backgroundImage: "url('/global-wallpaper.png')", 
+      backgroundImage: "url('/global-wallpaper.png')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundAttachment: 'fixed',
-      fontFamily: "'Segoe UI',system-ui,sans-serif", 
+      fontFamily: "'Segoe UI',system-ui,sans-serif",
       color: "#e2e8f0",
       position: "relative",
       overflow: "hidden"
     }}>
-      
+
       {/* 🌫️ 2. DARK OVERLAY (Ensures text is readable over wallpaper) */}
-      <div style={{ 
-        position: 'absolute', 
-        inset: 0, 
-        background: 'rgba(2, 2, 5, 0.40)', 
-        zIndex: 0 
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'rgba(2, 2, 5, 0.40)',
+        zIndex: 0
       }} />
 
       {/* 🧭 3. GLASS SIDEBAR WITH ORGANIC WAVE ANIMATION */}
-<div style={{ 
-  width: collapsed ? 80 : 260, 
-  backgroundImage: "linear-gradient(rgba(10, 10, 15, 0.5), rgba(10, 10, 15, 0.5)), url('/sidebar-bg.png')",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backdropFilter: "blur(25px)",
-  borderRight: "1px solid var(--border-subtle)", 
-  display: "flex", 
-  flexDirection: "column", 
-  /* 🌊 WAVY TRANSITION: Uses a custom cubic-bezier for a spring-like organic feel */
-  transition: "width 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55)", 
-  flexShrink: 0,
-  position: "relative",
-  zIndex: 100,
-  overflow: "visible" 
-}}>
-  
-  <style>{`
+      <div style={{
+        width: collapsed ? 80 : 260,
+        backgroundImage: "linear-gradient(rgba(10, 10, 15, 0.5), rgba(10, 10, 15, 0.5)), url('/sidebar-bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backdropFilter: "blur(25px)",
+        borderRight: "1px solid var(--border-subtle)",
+        display: "flex",
+        flexDirection: "column",
+        /* 🌊 WAVY TRANSITION: Uses a custom cubic-bezier for a spring-like organic feel */
+        transition: "width 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55)",
+        flexShrink: 0,
+        position: "relative",
+        zIndex: 100,
+        overflow: "visible"
+      }}>
+
+        <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
     
     .lux-tab {
@@ -1840,177 +1843,177 @@ function Layout({ user, tab, setTab, onLogout, children, pomo, setPomo, stopwatc
       box-shadow: var(--shadow-glow);
     }
   `}</style>
-  
-  {/* Sidebar Header */}
-  <div style={{ 
-    padding: "20px 14px", 
-    display: "flex", 
-    alignItems: "center", 
-    justifyContent: collapsed ? "center" : "space-between", 
-    minHeight: 80,
-    position: 'relative'
-  }}>
-    <div style={{ 
-      opacity: collapsed ? 0 : 1, 
-      transform: `scale(${collapsed ? 0.5 : 0.9})`,
-      transition: "all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55)",
-      transformOrigin: "left",
-      width: collapsed ? 0 : 'auto',
-      overflow: 'hidden'
-    }}>
-      <ApexLogo size={50} textSize={14} showText={true} />
-    </div>
 
-    {/* ⚔️ Ninja War Console Trigger */}
-    {!collapsed && (
-      <button 
-        onClick={() => setShowWarConsole(!showWarConsole)}
-        style={{ 
-          background: showWarConsole ? 'var(--accent-bg)' : "var(--surface-2)",
-          border: "1px solid var(--accent-bg)",
-          borderRadius: 8,
-          width: 32, height: 32,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", transition: "0.3s",
-          color: "#3bacd6", fontSize: 16,
-          boxShadow: showWarConsole ? "0 0 15px var(--accent-bg)" : "none"
-        }}
-        title="Ninja War Console"
-      >
-        <img src="/shuriken.png" style={{ width: 20, height: 20, filter: 'drop-shadow(0 0 2px #3bacd6)' }} alt="️" />
-      </button>
-    )}
+        {/* Sidebar Header */}
+        <div style={{
+          padding: "20px 14px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: collapsed ? "center" : "space-between",
+          minHeight: 80,
+          position: 'relative'
+        }}>
+          <div style={{
+            opacity: collapsed ? 0 : 1,
+            transform: `scale(${collapsed ? 0.5 : 0.9})`,
+            transition: "all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55)",
+            transformOrigin: "left",
+            width: collapsed ? 0 : 'auto',
+            overflow: 'hidden'
+          }}>
+            <ApexLogo size={50} textSize={14} showText={true} />
+          </div>
 
-    {/* Expandable War Console Panel */}
-    {showWarConsole && !collapsed && (
-      <div style={{
-        position: 'absolute', top: 75, left: 14, right: 14,
-        background: 'rgba(10, 10, 15, 0.98)', backdropFilter: 'blur(30px)',
-        border: '1px solid var(--accent-bg)', borderRadius: 12,
-        padding: "18px 14px", zIndex: 1000, boxShadow: 'var(--shadow-lg)',
-        animation: 'revealDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        fontFamily: "'Orbitron', sans-serif"
-      }}>
-        <style>{`
+          {/* ⚔️ Ninja War Console Trigger */}
+          {!collapsed && (
+            <button
+              onClick={() => setShowWarConsole(!showWarConsole)}
+              style={{
+                background: showWarConsole ? 'var(--accent-bg)' : "var(--surface-2)",
+                border: "1px solid var(--accent-bg)",
+                borderRadius: 8,
+                width: 32, height: 32,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", transition: "0.3s",
+                color: "#3bacd6", fontSize: 16,
+                boxShadow: showWarConsole ? "0 0 15px var(--accent-bg)" : "none"
+              }}
+              title="Ninja War Console"
+            >
+              <img src="/shuriken.png" style={{ width: 20, height: 20, filter: 'drop-shadow(0 0 2px #3bacd6)' }} alt="️" />
+            </button>
+          )}
+
+          {/* Expandable War Console Panel */}
+          {showWarConsole && !collapsed && (
+            <div style={{
+              position: 'absolute', top: 75, left: 14, right: 14,
+              background: 'rgba(10, 10, 15, 0.98)', backdropFilter: 'blur(30px)',
+              border: '1px solid var(--accent-bg)', borderRadius: 12,
+              padding: "18px 14px", zIndex: 1000, boxShadow: 'var(--shadow-lg)',
+              animation: 'revealDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              fontFamily: "'Orbitron', sans-serif"
+            }}>
+              <style>{`
           @keyframes revealDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         `}</style>
 
-        {/* Console Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--border-subtle)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <img src="/shuriken.png" style={{ width: 14, height: 14 }} alt="" />
-            <span style={{ fontSize: 9, fontWeight: 900, color: '#3bacd6', letterSpacing: 2 }}>WAR CONSOLE</span>
-          </div>
-          <button onClick={() => setShowWarConsole(false)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center' }}>✕</button>
-        </div>
-        
-        {/* Pomodoro Row */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 8, color: '#94a3b8', fontWeight: 900, marginBottom: 6, letterSpacing: 2 }}>MISSION CLOCK</div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 18, fontWeight: 900, color: '#fff', fontFamily: 'monospace', letterSpacing: 1 }}>{fmt(pomo.time)}</span>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button onClick={() => setPomo(p => ({ ...p, active: !p.active, lastTick: Date.now() }))} style={{ background: pomo.active ? '#ef4444' : '#22c55e', color: '#000', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: 9, fontWeight: 900, cursor: 'pointer' }}>{pomo.active ? 'STOP' : 'START'}</button>
-              <button onClick={() => setPomo({ ...pomo, time: 1500, active: false })} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+              {/* Console Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <img src="/shuriken.png" style={{ width: 14, height: 14 }} alt="" />
+                  <span style={{ fontSize: 9, fontWeight: 900, color: '#3bacd6', letterSpacing: 2 }}>WAR CONSOLE</span>
+                </div>
+                <button onClick={() => setShowWarConsole(false)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center' }}>✕</button>
+              </div>
+
+              {/* Pomodoro Row */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 8, color: '#94a3b8', fontWeight: 900, marginBottom: 6, letterSpacing: 2 }}>MISSION CLOCK</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 18, fontWeight: 900, color: '#fff', fontFamily: 'monospace', letterSpacing: 1 }}>{fmt(pomo.time)}</span>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={() => setPomo(p => ({ ...p, active: !p.active, lastTick: Date.now() }))} style={{ background: pomo.active ? '#ef4444' : '#22c55e', color: '#000', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: 9, fontWeight: 900, cursor: 'pointer' }}>{pomo.active ? 'STOP' : 'START'}</button>
+                    <button onClick={() => setPomo({ ...pomo, time: 1500, active: false })} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stopwatch Row */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 8, color: '#94a3b8', fontWeight: 900, marginBottom: 6, letterSpacing: 2 }}>STOPWATCH</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 18, fontWeight: 900, color: '#22c55e', fontFamily: 'monospace', letterSpacing: 1 }}>{fmt(stopwatch.time)}</span>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={() => setStopwatch(s => ({ ...s, active: !s.active, lastTick: Date.now() }))} style={{ background: stopwatch.active ? '#ef4444' : '#22c55e', color: '#000', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: 9, fontWeight: 900, cursor: 'pointer' }}>{stopwatch.active ? 'STOP' : 'RUN'}</button>
+                    <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false })} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rep Counter Row */}
+              <div>
+                <div style={{ fontSize: 8, color: '#94a3b8', fontWeight: 900, marginBottom: 6, letterSpacing: 2 }}>ACTION COUNT</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 22, fontWeight: 900, color: '#f59e0b' }}>{counter}</span>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={() => setCounter(c => c + 1)} style={{ background: '#f59e0b', color: '#000', border: "none", borderRadius: 4, padding: "4px 14px", fontSize: 14, fontWeight: 900, cursor: "pointer" }}>+</button>
+                    <button onClick={() => setCounter(0)} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              background: "var(--surface-2)",
+              border: "1px solid var(--surface-3)",
+              color: "#fff",
+              cursor: "pointer",
+              width: 32, height: 32,
+              borderRadius: 8,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "transform 0.4s ease"
+            }}
+          >
+            <span style={{ transform: `rotate(${collapsed ? 180 : 0}deg)`, transition: "transform 0.5s" }}>
+              {collapsed ? "»" : "«"}
+            </span>
+          </button>
         </div>
 
-        {/* Stopwatch Row */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 8, color: '#94a3b8', fontWeight: 900, marginBottom: 6, letterSpacing: 2 }}>STOPWATCH</div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 18, fontWeight: 900, color: '#22c55e', fontFamily: 'monospace', letterSpacing: 1 }}>{fmt(stopwatch.time)}</span>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button onClick={() => setStopwatch(s => ({ ...s, active: !s.active, lastTick: Date.now() }))} style={{ background: stopwatch.active ? '#ef4444' : '#22c55e', color: '#000', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: 9, fontWeight: 900, cursor: 'pointer' }}>{stopwatch.active ? 'STOP' : 'RUN'}</button>
-              <button onClick={() => setStopwatch({ ...stopwatch, time: 0, active: false })} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
-            </div>
-          </div>
-        </div>
+        {/* Navigation Links */}
+        <nav style={{ flex: 1, paddingTop: "10px", overflowY: "auto", overflowX: "hidden" }}>
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className="lux-tab"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: collapsed ? "center" : "flex-start",
+                gap: 12,
+                padding: "0 14px",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                background: tab === t.id ? 'var(--accent-bg)' : "transparent",
+                color: tab === t.id ? "#3bacd6" : "#94a3b8"
+              }}
+            >
+              {tab === t.id && <div className="active-bar" />}
 
-        {/* Rep Counter Row */}
-        <div>
-          <div style={{ fontSize: 8, color: '#94a3b8', fontWeight: 900, marginBottom: 6, letterSpacing: 2 }}>ACTION COUNT</div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 22, fontWeight: 900, color: '#f59e0b' }}>{counter}</span>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button onClick={() => setCounter(c => c + 1)} style={{ background: '#f59e0b', color: '#000', border: "none", borderRadius: 4, padding: "4px 14px", fontSize: 14, fontWeight: 900, cursor: "pointer" }}>+</button>
-              <button onClick={() => setCounter(0)} style={{ background: 'var(--surface-2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 7px', fontSize: 11, cursor: 'pointer' }}>↺</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
-    
-    <button 
-      onClick={() => setCollapsed(!collapsed)} 
-      style={{ 
-        background: "var(--surface-2)", 
-        border: "1px solid var(--surface-3)", 
-        color: "#fff", 
-        cursor: "pointer", 
-        width: 32, height: 32,
-        borderRadius: 8,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        transition: "transform 0.4s ease"
-      }}
-    >
-      <span style={{ transform: `rotate(${collapsed ? 180 : 0}deg)`, transition: "transform 0.5s" }}>
-        {collapsed ? "»" : "«"}
-      </span>
-    </button>
-  </div>
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{t.icon}</span>
 
-  {/* Navigation Links */}
-  <nav style={{ flex: 1, paddingTop: "10px", overflowY: "auto", overflowX: "hidden" }}>
-    {TABS.map(t => (
-      <button 
-        key={t.id} 
-        onClick={() => setTab(t.id)} 
-        className="lux-tab"
-        style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: collapsed ? "center" : "flex-start",
-          gap: 12, 
-          padding: "0 14px", 
-          borderRadius: 10, 
-          border: "none", 
-          cursor: "pointer", 
-          background: tab === t.id ? 'var(--accent-bg)' : "transparent", 
-          color: tab === t.id ? "#3bacd6" : "#94a3b8"
-        }}
-      >
-        {tab === t.id && <div className="active-bar" />}
-        
-        <span style={{ fontSize: 18, flexShrink: 0 }}>{t.icon}</span>
-        
+              {!collapsed && (
+                <span className="wavy-label" style={{ fontWeight: 700, fontSize: 11, whiteSpace: "nowrap", letterSpacing: "1.5px", textTransform: "uppercase" }}>
+                  {t.label}
+                </span>
+              )}
+
+              <div className="lux-popup">
+                {t.label.toUpperCase()} // ACTIVE
+              </div>
+            </button>
+          ))}
+        </nav>
+
+        {/* User Profile Area */}
         {!collapsed && (
-          <span className="wavy-label" style={{ fontWeight: 700, fontSize: 11, whiteSpace: "nowrap", letterSpacing: "1.5px", textTransform: "uppercase" }}>
-            {t.label}
-          </span>
+          <div className="wavy-label" style={{
+            padding: "20px 16px",
+            borderTop: "1px solid var(--surface-2)",
+            background: "rgba(0,0,0,0.2)",
+            fontFamily: "'Orbitron', sans-serif"
+          }}>
+            <div style={{ fontSize: 9, color: "#3bacd6", textTransform: "uppercase", fontWeight: 900, marginBottom: 4, letterSpacing: '2px' }}>OPERATOR</div>
+            <div style={{ fontWeight: 700, fontSize: 12, color: "#fff", letterSpacing: '1px' }}>{user.name}</div>
+          </div>
         )}
-
-        <div className="lux-popup">
-          {t.label.toUpperCase()} // ACTIVE
-        </div>
-      </button>
-    ))}
-  </nav>
-
-  {/* User Profile Area */}
-  {!collapsed && (
-    <div className="wavy-label" style={{ 
-      padding: "20px 16px", 
-      borderTop: "1px solid var(--surface-2)", 
-      background: "rgba(0,0,0,0.2)",
-      fontFamily: "'Orbitron', sans-serif"
-    }}>
-      <div style={{ fontSize: 9, color: "#3bacd6", textTransform: "uppercase", fontWeight: 900, marginBottom: 4, letterSpacing: '2px' }}>OPERATOR</div>
-      <div style={{ fontWeight: 700, fontSize: 12, color: "#fff", letterSpacing: '1px' }}>{user.name}</div>
-    </div>
-  )}
-</div>
+      </div>
       {/* ⚔️ 4. MAIN CONTENT AREA (Transparent to show wallpaper) */}
       <div style={{ flex: 1, overflow: "auto", minWidth: 0, position: "relative", zIndex: 5, background: "transparent" }}>
         {children}
@@ -2105,7 +2108,7 @@ function TaskGoals({ task, onUpdate, onBack }) {
 
   return (
     <div style={{ animation: "revealUp 0.4s ease-out" }}>
-      <PageHeader title={`${task.name} Goals`} actions={<button onClick={onBack} className="click-scale" style={{padding:"8px 16px", background:"var(--surface-3)", border:"none", borderRadius:8, color:"#fff", cursor:"pointer"}}>← Back</button>} />
+      <PageHeader title={`${task.name} Goals`} actions={<button onClick={onBack} className="click-scale" style={{ padding: "8px 16px", background: "var(--surface-3)", border: "none", borderRadius: 8, color: "#fff", cursor: "pointer" }}>← Back</button>} />
       <div style={{ padding: "24px 32px", maxWidth: 600 }}>
         <div style={{ display: 'flex', gap: 10, marginBottom: 30 }}>
           <Inp value={newGoal} onChange={setNewGoal} placeholder="Add a new milestone" onKeyDown={e => e.key === 'Enter' && addGoal()} />
@@ -2141,7 +2144,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const activeDaysCount = isCurrentMonth ? now.getDate() : daysInMonth;
   const monthName = new Date(year, month).toLocaleDateString("en-US", { month: "long", year: "numeric" });
-  
+
   const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
   const logs = task.logs || {};
   const dates = Array.from({ length: daysInMonth }, (_, i) => `${monthPrefix}-${String(i + 1).padStart(2, "0")}`);
@@ -2168,7 +2171,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
     const padL = 60, padR = 30;
     const graphWidth = rect.width - padL - padR;
     const index = Math.round(((x - padL) / graphWidth) * (daysInMonth - 1));
-    
+
     if (index >= 0 && index < daysInMonth && index < (isCurrentMonth ? activeDaysCount : daysInMonth)) {
       setHoverData({ index, date: dates[index], value: vals[index], x: x, y: e.clientY - rect.top });
     } else { setHoverData(null); }
@@ -2201,7 +2204,7 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
       const y = toY(val);
       ctx.fillStyle = "var(--text-muted)";
       ctx.fillText(`${val}m`, padL - 15, y);
-      
+
       // Horizontal grid lines
       ctx.strokeStyle = "var(--surface-1)";
       ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
@@ -2226,14 +2229,14 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
     grad.addColorStop(1, "rgba(59, 130, 246, 0)");
     ctx.beginPath();
     ctx.moveTo(toX(0), toY(0));
-    for(let i=0; i < drawLimit; i++) ctx.lineTo(toX(i), toY(vals[i]));
+    for (let i = 0; i < drawLimit; i++) ctx.lineTo(toX(i), toY(vals[i]));
     ctx.lineTo(toX(Math.max(0, drawLimit - 1)), toY(0));
     ctx.fillStyle = grad; ctx.fill();
 
     // ☄️ Stroke Path
     ctx.strokeStyle = "#3b82f6"; ctx.lineWidth = 3; ctx.lineJoin = "round";
     ctx.beginPath();
-    for(let i=0; i < drawLimit; i++) {
+    for (let i = 0; i < drawLimit; i++) {
       if (i === 0) ctx.moveTo(toX(i), toY(vals[i]));
       else ctx.lineTo(toX(i), toY(vals[i]));
     }
@@ -2250,24 +2253,24 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
 
   return (
     <div style={{ animation: "revealUp 0.5s ease-out", background: 'var(--bg-base)', color: "#f8fafc" }}>
-      <PageHeader 
-        title={`${capTaskName} Intel`} 
+      <PageHeader
+        title={`${capTaskName} Intel`}
         subtitle={`${monthName} (Active Days: ${activeDaysCount})`}
         actions={
           <div style={{ display: 'flex', gap: 10 }}>
-            <Btn className="click-scale" onClick={() => { month === 0 ? (setMonth(11), setYear(y=>y-1)) : setMonth(m=>m-1); }}>‹</Btn>
-            <Btn className="click-scale" onClick={() => { month === 11 ? (setMonth(0), setYear(y=>y+1)) : setMonth(m=>m+1); }}>›</Btn>
+            <Btn className="click-scale" onClick={() => { month === 0 ? (setMonth(11), setYear(y => y - 1)) : setMonth(m => m - 1); }}>‹</Btn>
+            <Btn className="click-scale" onClick={() => { month === 11 ? (setMonth(0), setYear(y => y + 1)) : setMonth(m => m + 1); }}>›</Btn>
             <Btn variant="secondary" className="click-scale" onClick={onBack}>← Back</Btn>
           </div>
-        } 
+        }
       />
-      
+
       <div style={{ padding: "0 32px 32px", display: "grid", gridTemplateColumns: "1fr 340px", gap: 24 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {/* TOP CARDS */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
-            {[{l:"DONE",v:doneCount,c:"#22c55e"},{l:"ACTIVE",v:activeDaysCount,c:"#3b82f6"},{l:"TARGET",v:target+'m',c:"#f59e0b"}].map((s,i)=>(
-              <div key={i} className="reveal-item" style={{ animationDelay:`${i*0.1}s`, background: "#0f172a", padding: 24, borderRadius: 20, borderLeft: `4px solid ${s.c}`, boxShadow: 'var(--shadow-sm)' }}>
+            {[{ l: "DONE", v: doneCount, c: "#22c55e" }, { l: "ACTIVE", v: activeDaysCount, c: "#3b82f6" }, { l: "TARGET", v: target + 'm', c: "#f59e0b" }].map((s, i) => (
+              <div key={i} className="reveal-item" style={{ animationDelay: `${i * 0.1}s`, background: "#0f172a", padding: 24, borderRadius: 20, borderLeft: `4px solid ${s.c}`, boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ color: "#64748b", fontSize: 11, fontWeight: 900, letterSpacing: 1 }}>{s.l}</div>
                 <div style={{ fontSize: 32, fontWeight: 900, marginTop: 5 }}>{s.v}</div>
               </div>
@@ -2280,19 +2283,19 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
               <div style={{ fontWeight: 900, color: "#3b82f6", fontSize: 11, letterSpacing: 2 }}>ACTIVITY OSCILLOSCOPE</div>
               <div style={{ color: "#475569", fontSize: 10, fontWeight: 800 }}>Y: MINUTES | X: DAYS</div>
             </div>
-            
+
             <div style={{ position: 'relative' }} onMouseMove={handleMouseMove} onMouseLeave={() => setHoverData(null)}>
               <canvas ref={canvasRef} style={{ width: "100%", height: "340px", cursor: 'crosshair' }} />
-              
+
               {hoverData && (
-                <div style={{ 
+                <div style={{
                   position: 'absolute', left: hoverData.x + 20, top: hoverData.y - 40,
                   background: 'rgba(15, 23, 42, 0.98)', border: '1px solid #3b82f6',
                   padding: '12px 16px', borderRadius: 12, pointerEvents: 'none', backdropFilter: 'blur(10px)', zIndex: 10,
                   boxShadow: 'var(--shadow-lg)'
                 }}>
                   <div style={{ fontSize: 10, color: '#64748b', fontWeight: 900, marginBottom: 4 }}>DAY {hoverData.index + 1}</div>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>{hoverData.value}<span style={{fontSize: 12, color: '#3b82f6'}}>m</span></div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>{hoverData.value}<span style={{ fontSize: 12, color: '#3b82f6' }}>m</span></div>
                 </div>
               )}
             </div>
@@ -2302,29 +2305,29 @@ function Analytics({ task, year, month, onBack, setYear, setMonth, capTaskName }
         {/* RIGHT COLUMN */}
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <Card style={{ background: "#0f172a", borderRadius: 24, padding: 32, textAlign: 'center' }}>
-             <div style={{ fontWeight: 900, color: "#94a3b8", fontSize: 11, marginBottom: 25, letterSpacing: 1 }}>PRODUCTIVITY INDEX</div>
-             <div style={{ position: 'relative', width: 160, height: 160, margin: '0 auto' }}>
-                <svg width="160" height="160" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="var(--surface-1)" strokeWidth="8" />
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="#3b82f6" strokeWidth="8" strokeLinecap="round"
-                    strokeDasharray={`${(productivity * frame) * 2.76}, 276`} transform="rotate(-90 50 50)" 
-                    style={{ filter: "drop-shadow(0 0 5px var(--accent-bg))" }} />
-                </svg>
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 28, fontWeight: 900 }}>{Math.round(productivity * frame)}%</div>
-             </div>
+            <div style={{ fontWeight: 900, color: "#94a3b8", fontSize: 11, marginBottom: 25, letterSpacing: 1 }}>PRODUCTIVITY INDEX</div>
+            <div style={{ position: 'relative', width: 160, height: 160, margin: '0 auto' }}>
+              <svg width="160" height="160" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="44" fill="none" stroke="var(--surface-1)" strokeWidth="8" />
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#3b82f6" strokeWidth="8" strokeLinecap="round"
+                  strokeDasharray={`${(productivity * frame) * 2.76}, 276`} transform="rotate(-90 50 50)"
+                  style={{ filter: "drop-shadow(0 0 5px var(--accent-bg))" }} />
+              </svg>
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 28, fontWeight: 900 }}>{Math.round(productivity * frame)}%</div>
+            </div>
           </Card>
 
           <Card style={{ background: "#0f172a", borderRadius: 24, padding: 32 }}>
-             <div style={{ fontWeight: 900, color: "#94a3b8", fontSize: 11, marginBottom: 20, letterSpacing: 1 }}>SUCCESS MATRIX</div>
-             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
-               {vals.map((v, i) => (
-                 <div key={i} className="reveal-item" style={{ 
-                   animationDelay: `${i*0.01}s`,
-                   aspectRatio: '1', borderRadius: 5, 
-                   background: v >= target * 0.8 ? '#3b82f6' : (v > 0 ? '#1d4ed8' : ((i+1) <= activeDaysCount ? '#1e293b' : 'var(--surface-1)'))
-                 }} />
-               ))}
-             </div>
+            <div style={{ fontWeight: 900, color: "#94a3b8", fontSize: 11, marginBottom: 20, letterSpacing: 1 }}>SUCCESS MATRIX</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
+              {vals.map((v, i) => (
+                <div key={i} className="reveal-item" style={{
+                  animationDelay: `${i * 0.01}s`,
+                  aspectRatio: '1', borderRadius: 5,
+                  background: v >= target * 0.8 ? '#3b82f6' : (v > 0 ? '#1d4ed8' : ((i + 1) <= activeDaysCount ? '#1e293b' : 'var(--surface-1)'))
+                }} />
+              ))}
+            </div>
           </Card>
         </div>
       </div>
@@ -2337,8 +2340,8 @@ function MonthlyChecklist({ task, tasks, updateLog, onBack }) {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
-  const [view, setView] = useState("calendar"); 
-  
+  const [view, setView] = useState("calendar");
+
   const days = new Date(year, month + 1, 0).getDate();
   const [editing, setEditing] = useState(null);
   const [editVal, setEditVal] = useState("");
@@ -2354,7 +2357,7 @@ function MonthlyChecklist({ task, tasks, updateLog, onBack }) {
   };
 
   const colors = { done: "#22c55e", partial: "#f59e0b", notdone: "#ef4444", empty: "var(--surface-2)" };
-  const monthStr = `${year}-${String(month+1).padStart(2,"0")}`;
+  const monthStr = `${year}-${String(month + 1).padStart(2, "0")}`;
   const currentMonthObj = new Date(year, month, 1);
   const monthName = currentMonthObj.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   const firstDow = currentMonthObj.getDay();
@@ -2372,27 +2375,27 @@ function MonthlyChecklist({ task, tasks, updateLog, onBack }) {
         </div>
       } />
       <div style={{ padding: "24px 32px" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:24 }}>
-          <button className="click-scale" onClick={() => { if (month===0){setMonth(11);setYear(y=>y-1);}else setMonth(m=>m-1); }} style={{ background:"var(--border-subtle)", border:"none", color:"#fff", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>‹</button>
-          <div style={{ fontWeight:800, fontSize:18, minWidth:180, textAlign:"center" }}>{monthName.toUpperCase()}</div>
-          <button className="click-scale" onClick={() => { if (month===11){setMonth(0);setYear(y=>y+1);}else setMonth(m=>m+1); }} style={{ background:"var(--border-subtle)", border:"none", color:"#fff", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>›</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+          <button className="click-scale" onClick={() => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); }} style={{ background: "var(--border-subtle)", border: "none", color: "#fff", borderRadius: 8, padding: "8px 16px", cursor: "pointer" }}>‹</button>
+          <div style={{ fontWeight: 800, fontSize: 18, minWidth: 180, textAlign: "center" }}>{monthName.toUpperCase()}</div>
+          <button className="click-scale" onClick={() => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); }} style={{ background: "var(--border-subtle)", border: "none", color: "#fff", borderRadius: 8, padding: "8px 16px", cursor: "pointer" }}>›</button>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:10 }}>
-          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>(<div key={d} style={{ textAlign:"center", fontSize:11, color:"#444", fontWeight:900 }}>{d.toUpperCase()}</div>))}
-          {Array(firstDow).fill(null).map((_,i)=><div key={"e"+i} />)}
-          {Array.from({length: days}, (_, i) => i + 1).map((day, i) => {
-            const dateStr = `${monthStr}-${String(day).padStart(2,"0")}`;
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 10 }}>
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (<div key={d} style={{ textAlign: "center", fontSize: 11, color: "#444", fontWeight: 900 }}>{d.toUpperCase()}</div>))}
+          {Array(firstDow).fill(null).map((_, i) => <div key={"e" + i} />)}
+          {Array.from({ length: days }, (_, i) => i + 1).map((day, i) => {
+            const dateStr = `${monthStr}-${String(day).padStart(2, "0")}`;
             const mins = task.logs?.[dateStr];
             const status = getStatus(mins);
             return (
-              <div key={day} onClick={() => { setEditing(dateStr); setEditVal(mins || ""); }} className="click-scale hover-lift reveal-item" style={{ animationDelay: `${i * 0.01}s`, aspectRatio:"1", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:14, background: colors[status], cursor:"pointer", fontSize: 16, fontWeight: 900 }}>{day}</div>
+              <div key={day} onClick={() => { setEditing(dateStr); setEditVal(mins || ""); }} className="click-scale hover-lift reveal-item" style={{ animationDelay: `${i * 0.01}s`, aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 14, background: colors[status], cursor: "pointer", fontSize: 16, fontWeight: 900 }}>{day}</div>
             );
           })}
         </div>
         <Modal open={!!editing} onClose={() => setEditing(null)} title={`LOG DATA: ${editing}`}>
           <div style={{ animation: "revealUp 0.3s ease" }}>
             <Field label="Minutes Invested"><Inp type="number" value={editVal} onChange={setEditVal} /></Field>
-            <Btn className="click-scale" onClick={() => { updateLog(task.id, editing, editVal); setEditing(null); }} style={{ width:"100%", marginTop: 10 }}>SAVE TO DATABASE</Btn>
+            <Btn className="click-scale" onClick={() => { updateLog(task.id, editing, editVal); setEditing(null); }} style={{ width: "100%", marginTop: 10 }}>SAVE TO DATABASE</Btn>
           </div>
         </Modal>
       </div>
@@ -2413,7 +2416,7 @@ function Dashboard({ user }) {
       const updatedTasks = tasks.map(t => ({
         ...t,
         name: t.name ? t.name.charAt(0).toUpperCase() + t.name.slice(1) : t.name,
-        goals: t.goals || [] 
+        goals: t.goals || []
       }));
       setTasks(updatedTasks);
     }
@@ -2451,9 +2454,9 @@ function Dashboard({ user }) {
 
       <PageHeader
         title={`Welcome, ${user.name}!`}
-        actions={<button className="click-scale" onClick={() => setShowAdd(true)} style={{ padding:"10px 22px", background:"#3b82f6", border:"none", borderRadius:12, color:"#fff", fontWeight:800, cursor:"pointer", boxShadow: 'var(--shadow-sm)' }}>+ NEW MISSION</button>}
+        actions={<button className="click-scale" onClick={() => setShowAdd(true)} style={{ padding: "10px 22px", background: "#3b82f6", border: "none", borderRadius: 12, color: "#fff", fontWeight: 800, cursor: "pointer", boxShadow: 'var(--shadow-sm)' }}>+ NEW MISSION</button>}
       />
-      
+
       <div style={{ padding: "24px 32px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(310px,1fr))", gap: 20 }}>
           {tasks.map((task, index) => (
@@ -2467,8 +2470,8 @@ function Dashboard({ user }) {
                   <button className="click-scale" onClick={() => deleteTask(task.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18 }}><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <button className="click-scale" onClick={() => setView({ type: "checklist", task })} style={{ padding:"12px", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:600, width:"100%" }}><LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> CHECKLIST</button>
-                  <button className="click-scale" onClick={() => setView({ type: "goals", task })} style={{ padding:"12px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", cursor:"pointer", fontWeight:800, width:"100%" }}><LuTarget style={{ display: 'inline-block', verticalAlign: 'middle' }} /> GOALS</button>
+                  <button className="click-scale" onClick={() => setView({ type: "checklist", task })} style={{ padding: "12px", background: "var(--surface-2)", border: "1px solid var(--surface-3)", borderRadius: 10, color: "#fff", cursor: "pointer", fontWeight: 600, width: "100%" }}><LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> CHECKLIST</button>
+                  <button className="click-scale" onClick={() => setView({ type: "goals", task })} style={{ padding: "12px", background: "#3b82f6", border: "none", borderRadius: 10, color: "#fff", cursor: "pointer", fontWeight: 800, width: "100%" }}><LuTarget style={{ display: 'inline-block', verticalAlign: 'middle' }} /> GOALS</button>
                 </div>
               </Card>
             </div>
@@ -2477,8 +2480,8 @@ function Dashboard({ user }) {
       </div>
 
       <Modal open={showAdd} onClose={() => setShowAdd(false)} title="New Objective">
-        <Field label="Task Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
-        <Field label="Target (Min)"><Inp type="number" value={form.target} onChange={v => setForm({...form, target: v})} /></Field>
+        <Field label="Task Name"><Inp value={form.name} onChange={v => setForm({ ...form, name: v })} /></Field>
+        <Field label="Target (Min)"><Inp type="number" value={form.target} onChange={v => setForm({ ...form, target: v })} /></Field>
         <Btn className="click-scale" onClick={addTask} style={{ width: "100%", marginTop: 10 }}>ACTIVATE</Btn>
       </Modal>
     </div>
@@ -2497,16 +2500,16 @@ function TimetableBuilder({ user }) {
     blocks: []
   });
   const [history, setHistory] = useLS(`apx_tt_history_${user.id}`, []);
-  const [form, setForm] = useState({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
+  const [form, setForm] = useState({ title: "", priority: 3, duration: 120, energy: 3, type: "daily", days: [], preferStart: "", preferEnd: "", taskType: "Deep Work", recurrence: "daily" });
   const [blockForm, setBlockForm] = useState({ start: "09:00", end: "16:00", label: "College / Class", days: ["Mon", "Tue", "Wed", "Thu", "Fri"] });
   const [aiOptimizing, setAiOptimizing] = useState(false);
   const [apiKey] = useLS("apx_gemini_key", "");
   const [showKeyModal, setShowKeyModal] = useState(false);
   const exportRef = useRef(null);
 
-  const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-  const TASK_TYPES = ["Deep Work","Revision","Practice","Reading","Exercise","Meeting","Leisure","Other"];
-  const COLOR_MAP = { "Deep Work":"#6c63ff","Revision":"#3b82f6","Practice":"#22c55e","Reading":"#f59e0b","Exercise":"#ef4444","Meeting":"#ec4899","Leisure":"#8b5cf6","Other":"#64748b","Blocked":"#ef4444" };
+  const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const TASK_TYPES = ["Deep Work", "Revision", "Practice", "Reading", "Exercise", "Meeting", "Leisure", "Other"];
+  const COLOR_MAP = { "Deep Work": "#6c63ff", "Revision": "#3b82f6", "Practice": "#22c55e", "Reading": "#f59e0b", "Exercise": "#ef4444", "Meeting": "#ec4899", "Leisure": "#8b5cf6", "Other": "#64748b", "Blocked": "#ef4444" };
 
   const PRESETS = [
     {
@@ -2547,7 +2550,7 @@ function TimetableBuilder({ user }) {
   const addTask = () => {
     if (!form.title.trim()) return;
     setTasks([...tasks, { ...form, id: uid(), duration: Number(form.duration), priority: Number(form.priority), energy: Number(form.energy) }]);
-    setForm({ title:"", priority:3, duration:120, energy:3, type:"daily", days:[], preferStart:"", preferEnd:"", taskType:"Deep Work", recurrence:"daily" });
+    setForm({ title: "", priority: 3, duration: 120, energy: 3, type: "daily", days: [], preferStart: "", preferEnd: "", taskType: "Deep Work", recurrence: "daily" });
   };
 
   const addBlock = () => {
@@ -2571,12 +2574,12 @@ function TimetableBuilder({ user }) {
   const generate = () => {
     const [wH, wM] = constraints.wake.split(":").map(Number);
     const [sH, sM] = constraints.sleep.split(":").map(Number);
-    const wakeMin = wH*60+wM;
-    const sleepMin = sH*60+sM;
+    const wakeMin = wH * 60 + wM;
+    const sleepMin = sH * 60 + sM;
     const maxMin = Math.min(constraints.maxHours * 60, sleepMin - wakeMin);
 
-    const sorted = [...tasks].sort((a,b) => {
-      const score = t => t.priority*3 + t.energy;
+    const sorted = [...tasks].sort((a, b) => {
+      const score = t => t.priority * 3 + t.energy;
       return score(b) - score(a);
     });
 
@@ -2598,7 +2601,7 @@ function TimetableBuilder({ user }) {
           start: b.start,
           end: b.end,
           startMin: sh * 60 + sm,
-          duration: (eh*60+em) - (sh*60+sm),
+          duration: (eh * 60 + em) - (sh * 60 + sm),
           priority: 5,
           energy: 1,
           isBlockSlot: true
@@ -2613,7 +2616,7 @@ function TimetableBuilder({ user }) {
         let start = cursor;
         if (task.preferStart) {
           const [ph, pm] = task.preferStart.split(":").map(Number);
-          const preferred = ph*60+pm;
+          const preferred = ph * 60 + pm;
           if (preferred >= wakeMin && preferred + task.duration <= sleepMin && !overlapsAny(preferred, preferred + task.duration, slots)) {
             start = preferred;
           }
@@ -2627,11 +2630,12 @@ function TimetableBuilder({ user }) {
         if (start + task.duration > sleepMin) return;
         if (overlapsAny(start, start + task.duration, slots)) return;
 
-        const sh = Math.floor(start/60), sm = start%60;
-        const eh = Math.floor((start+task.duration)/60), em = (start+task.duration)%60;
-        slots.push({ ...task,
-          start: `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")}`,
-          end: `${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`,
+        const sh = Math.floor(start / 60), sm = start % 60;
+        const eh = Math.floor((start + task.duration) / 60), em = (start + task.duration) % 60;
+        slots.push({
+          ...task,
+          start: `${String(sh).padStart(2, "0")}:${String(sm).padStart(2, "0")}`,
+          end: `${String(eh).padStart(2, "0")}:${String(em).padStart(2, "0")}`,
           startMin: start,
           isBlockSlot: false
         });
@@ -2640,7 +2644,7 @@ function TimetableBuilder({ user }) {
       });
 
       // Sort by start time for display
-      table[day] = slots.sort((a,b) => a.startMin - b.startMin);
+      table[day] = slots.sort((a, b) => a.startMin - b.startMin);
     });
 
     setTimetable(table);
@@ -2649,7 +2653,7 @@ function TimetableBuilder({ user }) {
     // Snapshot configuration to history
     const newHistoryItem = {
       id: uid(),
-      name: `Schedule generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+      name: `Schedule generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
       createdAt: new Date().toISOString(),
       tasks: [...tasks],
       constraints: { ...constraints },
@@ -2708,16 +2712,16 @@ Instructions:
             start: b.start,
             end: b.end,
             startMin: sh * 60 + sm,
-            duration: (eh*60+em) - (sh*60+sm),
+            duration: (eh * 60 + em) - (sh * 60 + sm),
             priority: 5,
             energy: 1,
             isBlockSlot: true
           });
         });
-        finalTable[day] = slots.sort((a,b) => {
+        finalTable[day] = slots.sort((a, b) => {
           const [ah, am] = a.start.split(":").map(Number);
           const [bh, bm] = b.start.split(":").map(Number);
-          return (ah*60+am) - (bh*60+bm);
+          return (ah * 60 + am) - (bh * 60 + bm);
         });
       });
 
@@ -2764,27 +2768,27 @@ Instructions:
 
     const sh = Math.floor(startMin / 60), sm = startMin % 60;
     const eh = Math.floor(endMin / 60), em = endMin % 60;
-    
-    const newStart = `${String(sh).padStart(2,"0")}:${String(sm).padStart(2,"0")}`;
-    const newEnd = `${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`;
+
+    const newStart = `${String(sh).padStart(2, "0")}:${String(sm).padStart(2, "0")}`;
+    const newEnd = `${String(eh).padStart(2, "0")}:${String(em).padStart(2, "0")}`;
 
     const updated = { ...timetable };
     updated[sourceDay] = (updated[sourceDay] || []).filter(s => s.id !== slotId);
-    
-    const moved = { 
-      ...targetSlot, 
-      start: newStart, 
-      end: newEnd, 
-      startMin 
+
+    const moved = {
+      ...targetSlot,
+      start: newStart,
+      end: newEnd,
+      startMin
     };
 
-    updated[targetDay] = [...(updated[targetDay] || []), moved].sort((a,b) => a.startMin - b.startMin);
+    updated[targetDay] = [...(updated[targetDay] || []), moved].sort((a, b) => a.startMin - b.startMin);
     setTimetable(updated);
 
     // Save update to history
     const newHistoryItem = {
       id: uid(),
-      name: `Drag-adjusted Schedule (${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`,
+      name: `Drag-adjusted Schedule (${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
       createdAt: new Date().toISOString(),
       tasks: [...tasks],
       constraints: { ...constraints },
@@ -2836,11 +2840,11 @@ Instructions:
   };
 
   // Build 30-minute rows for grid (5:00 to 22:30)
-  const HOURS = Array.from({length:18}, (_,i)=>i+5); // 5..22
+  const HOURS = Array.from({ length: 18 }, (_, i) => i + 5); // 5..22
   const ROWS = [];
   HOURS.forEach(h => {
-    ROWS.push({ hour: h, minute: 0, label: `${String(h).padStart(2,"0")}:00` });
-    ROWS.push({ hour: h, minute: 30, label: `${String(h).padStart(2,"0")}:30` });
+    ROWS.push({ hour: h, minute: 0, label: `${String(h).padStart(2, "0")}:00` });
+    ROWS.push({ hour: h, minute: 30, label: `${String(h).padStart(2, "0")}:30` });
   });
 
   const filteredRows = ROWS.filter(row => {
@@ -2863,8 +2867,8 @@ Instructions:
     if (!exportRef.current) return;
     try {
       const html2canvas = (await import("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.esm.js")).default;
-      const canvas = await html2canvas(exportRef.current, { backgroundColor:"#0a0a0f", scale:2 });
-      const a = document.createElement("a"); a.download="timetable.png"; a.href=canvas.toDataURL(); a.click();
+      const canvas = await html2canvas(exportRef.current, { backgroundColor: "#0a0a0f", scale: 2 });
+      const a = document.createElement("a"); a.download = "timetable.png"; a.href = canvas.toDataURL(); a.click();
     } catch { printTimetableCleanly(); }
   };
 
@@ -2951,8 +2955,8 @@ Instructions:
   return (
     <div>
       <PageHeader title="Timetable Planner" subtitle="Interactive schedule builder with custom commitments and AI helper"
-        actions={subtab==="timetable" && timetable ? (
-          <div style={{display:"flex",gap:8}}>
+        actions={subtab === "timetable" && timetable ? (
+          <div style={{ display: "flex", gap: 8 }}>
             <Btn variant="secondary" onClick={printTimetableCleanly}><LuPrinter style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Print Timetable</Btn>
             <Btn onClick={downloadImage}><LuArrowDown style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Download Image</Btn>
           </div>
@@ -2960,21 +2964,21 @@ Instructions:
       />
 
       {/* Navigation Subtabs */}
-      <div style={{ display:"flex", borderBottom:"1px solid var(--border-subtle)", marginBottom:20 }}>
+      <div style={{ display: "flex", borderBottom: "1px solid var(--border-subtle)", marginBottom: 20 }}>
         {[
-          ["setup","+ Task & Block Setup"],
-          ["timetable","Interactive Schedule"],
-          ["analytics","Productivity Analytics"],
-          ["printable","Printable Export"]
-        ].map(([id,lbl])=>(
-          <button key={id} onClick={()=>setSubtab(id)}
-            style={{ padding:"12px 20px", background:"none", border:"none", color:subtab===id?"#a78bfa":"#64748b", fontWeight:subtab===id?800:600, borderBottom:subtab===id?"2px solid #a78bfa":"none", cursor:"pointer", transition:"0.2s", fontSize:13 }}>{lbl}</button>
+          ["setup", "+ Task & Block Setup"],
+          ["timetable", "Interactive Schedule"],
+          ["analytics", "Productivity Analytics"],
+          ["printable", "Printable Export"]
+        ].map(([id, lbl]) => (
+          <button key={id} onClick={() => setSubtab(id)}
+            style={{ padding: "12px 20px", background: "none", border: "none", color: subtab === id ? "#a78bfa" : "#64748b", fontWeight: subtab === id ? 800 : 600, borderBottom: subtab === id ? "2px solid #a78bfa" : "none", cursor: "pointer", transition: "0.2s", fontSize: 13 }}>{lbl}</button>
         ))}
       </div>
 
       {/* ── SETUP TAB ── */}
       {subtab === "setup" && (
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
           {/* Presets Row */}
           <div style={{ gridColumn: "1/-1", display: "flex", gap: 12, background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 16, padding: "16px 20px", alignItems: "center" }}>
             <span style={{ fontSize: 13, fontWeight: 800, color: "#cbd5e1", letterSpacing: 0.5, fontFamily: "Orbitron" }}><LuSparkles style={{ display: 'inline-block', verticalAlign: 'middle' }} /> LOAD STUDY PRESETS:</span>
@@ -2991,62 +2995,62 @@ Instructions:
 
           {/* Create Task Form */}
           <Card>
-            <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Create New Task</div>
-            <Field label="Title *"><Inp value={form.title} onChange={v=>setForm({...form,title:v})} placeholder="e.g., Physics Revision" /></Field>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-              <Field label="Priority (1-5) *"><Inp type="number" value={form.priority} onChange={v=>setForm({...form,priority:v})} min="1" max="5" /></Field>
-              <Field label="Duration (hours) *"><Inp type="number" value={Math.round(form.duration/60*10)/10} onChange={v=>setForm({...form,duration:Math.round(Number(v)*60)})} min="0.5" max="8" step="0.5" /></Field>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 18 }}>Create New Task</div>
+            <Field label="Title *"><Inp value={form.title} onChange={v => setForm({ ...form, title: v })} placeholder="e.g., Physics Revision" /></Field>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Field label="Priority (1-5) *"><Inp type="number" value={form.priority} onChange={v => setForm({ ...form, priority: v })} min="1" max="5" /></Field>
+              <Field label="Duration (hours) *"><Inp type="number" value={Math.round(form.duration / 60 * 10) / 10} onChange={v => setForm({ ...form, duration: Math.round(Number(v) * 60) })} min="0.5" max="8" step="0.5" /></Field>
             </div>
-            <Field label="Deadline *"><Inp type="date" value={form.deadline||""} onChange={v=>setForm({...form,deadline:v})} /></Field>
+            <Field label="Deadline *"><Inp type="date" value={form.deadline || ""} onChange={v => setForm({ ...form, deadline: v })} /></Field>
             <Field label="Energy Level (1-5) *">
-              <div style={{ display:"flex", gap:8 }}>
-                {[1,2,3,4,5].map(n=>(
-                  <button key={n} onClick={()=>setForm({...form,energy:n})} style={{ flex:1, padding:"8px 0", borderRadius:8, border:"1px solid var(--border-strong)", background:form.energy===n?"#3b82f6":"transparent", color:form.energy===n?"#fff":"#888", cursor:"pointer", fontWeight:700, fontSize:15 }}>{n}</button>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[1, 2, 3, 4, 5].map(n => (
+                  <button key={n} onClick={() => setForm({ ...form, energy: n })} style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: "1px solid var(--border-strong)", background: form.energy === n ? "#3b82f6" : "transparent", color: form.energy === n ? "#fff" : "#888", cursor: "pointer", fontWeight: 700, fontSize: 15 }}>{n}</button>
                 ))}
               </div>
             </Field>
             <Field label="Type *">
-              <Sel value={form.taskType} onChange={v=>setForm({...form,taskType:v})}>
-                {TASK_TYPES.map(t=><option key={t} value={t}>{t}</option>)}
+              <Sel value={form.taskType} onChange={v => setForm({ ...form, taskType: v })}>
+                {TASK_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </Sel>
             </Field>
             <Field label="Task Recurrence Type *">
-              <Sel value={form.type} onChange={v=>setForm({...form,type:v})}>
+              <Sel value={form.type} onChange={v => setForm({ ...form, type: v })}>
                 <option value="daily">Daily Task</option>
                 <option value="specific">Specific Days</option>
               </Sel>
             </Field>
-            {form.type==="specific" && (
+            {form.type === "specific" && (
               <Field label="Select Days">
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                  {DAYS.map(d=>(
-                    <button key={d} onClick={()=>setForm({...form,days:form.days.includes(d)?form.days.filter(x=>x!==d):[...form.days,d]})}
-                      style={{ padding:"5px 12px", borderRadius:7, border:"1px solid var(--border-strong)", background:form.days.includes(d)?"#6c63ff":"transparent", color:form.days.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13 }}>{d}</button>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {DAYS.map(d => (
+                    <button key={d} onClick={() => setForm({ ...form, days: form.days.includes(d) ? form.days.filter(x => x !== d) : [...form.days, d] })}
+                      style={{ padding: "5px 12px", borderRadius: 7, border: "1px solid var(--border-strong)", background: form.days.includes(d) ? "#6c63ff" : "transparent", color: form.days.includes(d) ? "#fff" : "#888", cursor: "pointer", fontSize: 13 }}>{d}</button>
                   ))}
                 </div>
               </Field>
             )}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-              <Field label="Preferred Start"><Inp type="time" value={form.preferStart} onChange={v=>setForm({...form,preferStart:v})} /></Field>
-              <Field label="Preferred End"><Inp type="time" value={form.preferEnd} onChange={v=>setForm({...form,preferEnd:v})} /></Field>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Field label="Preferred Start"><Inp type="time" value={form.preferStart} onChange={v => setForm({ ...form, preferStart: v })} /></Field>
+              <Field label="Preferred End"><Inp type="time" value={form.preferEnd} onChange={v => setForm({ ...form, preferEnd: v })} /></Field>
             </div>
-            <Btn onClick={addTask} style={{ width:"100%", marginTop:4 }}>Add Task</Btn>
+            <Btn onClick={addTask} style={{ width: "100%", marginTop: 4 }}>Add Task</Btn>
           </Card>
 
           {/* Constraints & Blocks Card */}
           <Card>
-            <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:18 }}>Constraints & Study Slots</div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-              <Field label="Wake Up Time"><Inp type="time" value={constraints.wake} onChange={v=>setConstraints({...constraints,wake:v})} /></Field>
-              <Field label="Sleep Time"><Inp type="time" value={constraints.sleep} onChange={v=>setConstraints({...constraints,sleep:v})} /></Field>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 18 }}>Constraints & Study Slots</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Field label="Wake Up Time"><Inp type="time" value={constraints.wake} onChange={v => setConstraints({ ...constraints, wake: v })} /></Field>
+              <Field label="Sleep Time"><Inp type="time" value={constraints.sleep} onChange={v => setConstraints({ ...constraints, sleep: v })} /></Field>
             </div>
-            <Field label="Max Study Hours/Day"><Inp type="number" value={constraints.maxHours} onChange={v=>setConstraints({...constraints,maxHours:Number(v)})} min="1" max="18" /></Field>
-            <Field label="Break Duration (minutes)"><Inp type="number" value={constraints.breakMin} onChange={v=>setConstraints({...constraints,breakMin:Number(v)})} min="0" max="60" /></Field>
+            <Field label="Max Study Hours/Day"><Inp type="number" value={constraints.maxHours} onChange={v => setConstraints({ ...constraints, maxHours: Number(v) })} min="1" max="18" /></Field>
+            <Field label="Break Duration (minutes)"><Inp type="number" value={constraints.breakMin} onChange={v => setConstraints({ ...constraints, breakMin: Number(v) })} min="0" max="60" /></Field>
             <Field label="No Study Days">
-              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                {DAYS.map(d=>(
-                  <button key={d} onClick={()=>setConstraints({...constraints,noWork:constraints.noWork.includes(d)?constraints.noWork.filter(x=>x!==d):[...constraints.noWork,d]})}
-                    style={{ padding:"5px 11px", borderRadius:20, border:"1px solid var(--border-strong)", background:constraints.noWork.includes(d)?"#ef4444":"transparent", color:constraints.noWork.includes(d)?"#fff":"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>{d}</button>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {DAYS.map(d => (
+                  <button key={d} onClick={() => setConstraints({ ...constraints, noWork: constraints.noWork.includes(d) ? constraints.noWork.filter(x => x !== d) : [...constraints.noWork, d] })}
+                    style={{ padding: "5px 11px", borderRadius: 20, border: "1px solid var(--border-strong)", background: constraints.noWork.includes(d) ? "#ef4444" : "transparent", color: constraints.noWork.includes(d) ? "#fff" : "#888", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>{d}</button>
                 ))}
               </div>
             </Field>
@@ -3070,21 +3074,21 @@ Instructions:
                 </div>
               </Field>
               <Btn small onClick={addBlock} style={{ width: "100%", marginBottom: 16 }}>Add Busy block</Btn>
-              
+
               {/* Blocks list */}
               {(constraints.blocks || []).map(b => (
                 <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 10, padding: "8px 14px", marginBottom: 6 }}>
                   <span style={{ fontSize: 12, color: "#f87171", flex: 1, fontWeight: 600 }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {b.label} ({b.start}–{b.end}) on {b.days.join(", ")}</span>
-                  <button onClick={() => removeBlock(b.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18, fontWeight:"bold" }}>×</button>
+                  <button onClick={() => removeBlock(b.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18, fontWeight: "bold" }}>×</button>
                 </div>
               ))}
             </div>
 
-            <div style={{ marginTop:24, display:"flex", gap:12 }}>
-              <button onClick={generate} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#8b5cf6,#ec4899)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ marginTop: 24, display: "flex", gap: 12 }}>
+              <button onClick={generate} style={{ flex: 1, padding: "12px 0", background: "linear-gradient(135deg,#8b5cf6,#ec4899)", border: "none", borderRadius: 12, color: "#fff", fontWeight: 800, fontSize: 13, cursor: "pointer", boxShadow: 'var(--shadow-sm)' }}>
                 <LuSparkles style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Auto Schedule Tasks
               </button>
-              <button onClick={generateWithAI} disabled={aiOptimizing} style={{ flex:1, padding:"12px 0", background:"linear-gradient(135deg,#3b82f6,#22c55e)", border:"none", borderRadius:12, color:"#fff", fontWeight:800, fontSize:13, cursor:"pointer", boxShadow: 'var(--shadow-sm)', opacity:aiOptimizing?0.5:1 }}>
+              <button onClick={generateWithAI} disabled={aiOptimizing} style={{ flex: 1, padding: "12px 0", background: "linear-gradient(135deg,#3b82f6,#22c55e)", border: "none", borderRadius: 12, color: "#fff", fontWeight: 800, fontSize: 13, cursor: "pointer", boxShadow: 'var(--shadow-sm)', opacity: aiOptimizing ? 0.5 : 1 }}>
                 {aiOptimizing ? <><LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Analyzing...</> : <><LuBot style={{ display: 'inline-block', verticalAlign: 'middle' }} /> AI Optimize</>}
               </button>
             </div>
@@ -3092,40 +3096,40 @@ Instructions:
 
           {/* Active Tasks List */}
           {tasks.length > 0 && (
-            <div style={{ gridColumn:"1/-1" }}>
+            <div style={{ gridColumn: "1/-1" }}>
               <Card>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
-                  <div style={{ fontSize:14, fontWeight:800, color:"#aaa", letterSpacing:0.5 }}>ACTIVE TASKS ({tasks.length})</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#aaa", letterSpacing: 0.5 }}>ACTIVE TASKS ({tasks.length})</div>
                   {/* Category segment distribution bar */}
                   {(() => {
                     const counts = {};
                     tasks.forEach(t => { counts[t.taskType] = (counts[t.taskType] || 0) + t.duration; });
-                    const totalDuration = tasks.reduce((s,t) => s + t.duration, 0);
+                    const totalDuration = tasks.reduce((s, t) => s + t.duration, 0);
                     return (
-                      <div style={{ display:"flex", gap:3, width:260, height:8, borderRadius:4, overflow:"hidden", background:"var(--surface-2)" }}>
+                      <div style={{ display: "flex", gap: 3, width: 260, height: 8, borderRadius: 4, overflow: "hidden", background: "var(--surface-2)" }}>
                         {Object.keys(counts).map(type => {
                           const pct = Math.round((counts[type] / totalDuration) * 100);
                           return (
                             <div key={type} style={{ width: `${pct}%`, background: COLOR_MAP[type] || "#6c63ff", height: "100%" }}
-                              title={`${type}: ${pct}% (${Math.round(counts[type]/60*10)/10}h)`} />
+                              title={`${type}: ${pct}% (${Math.round(counts[type] / 60 * 10) / 10}h)`} />
                           );
                         })}
                       </div>
                     );
                   })()}
                 </div>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:10 }}>
-                  {tasks.map(t=>(
-                    <div key={t.id} style={{ background:"var(--surface-1)", border:"1px solid var(--surface-2)", borderRadius:10, padding:"12px 14px", display:"flex", flexDirection:"column", gap:6 }}>
-                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                        <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>{t.title}</span>
-                        <button onClick={()=>setTasks(tasks.filter(x=>x.id!==t.id))} style={{ background:"none", border:"none", color:"#f87171", cursor:"pointer" }}>×</button>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 10 }}>
+                  {tasks.map(t => (
+                    <div key={t.id} style={{ background: "var(--surface-1)", border: "1px solid var(--surface-2)", borderRadius: 10, padding: "12px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <span style={{ fontWeight: 700, fontSize: 14, color: "#f1f5f9" }}>{t.title}</span>
+                        <button onClick={() => setTasks(tasks.filter(x => x.id !== t.id))} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer" }}>×</button>
                       </div>
-                      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                        <span style={{ fontSize:11, background:COLOR_MAP[t.taskType]+"22", color:COLOR_MAP[t.taskType], padding:"2px 8px", borderRadius:20, fontWeight:700 }}>{t.taskType}</span>
-                        <span style={{ fontSize:11, color:"#888" }}>P{t.priority} · {t.duration}min · E{t.energy}</span>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 11, background: COLOR_MAP[t.taskType] + "22", color: COLOR_MAP[t.taskType], padding: "2px 8px", borderRadius: 20, fontWeight: 700 }}>{t.taskType}</span>
+                        <span style={{ fontSize: 11, color: "#888" }}>P{t.priority} · {t.duration}min · E{t.energy}</span>
                       </div>
-                      <div style={{ fontSize:11, color:"#64748b" }}>{t.type === "specific" ? t.days.join(",") : "Daily"}</div>
+                      <div style={{ fontSize: 11, color: "#64748b" }}>{t.type === "specific" ? t.days.join(",") : "Daily"}</div>
                     </div>
                   ))}
                 </div>
@@ -3139,25 +3143,25 @@ Instructions:
       {subtab === "timetable" && (
         timetable ? (
           <div>
-            <div style={{ color:"#888", fontSize:12, marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
+            <div style={{ color: "#888", fontSize: 12, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
               <span><LuLightbulb style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Drag study cards to adjust timeslots. Warning conflict warnings automatically check constraints.</span>
             </div>
-            <div style={{ overflowX:"auto" }}>
-              <table style={{ width:"100%", borderCollapse:"collapse", minWidth:800 }}>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 800 }}>
                 <thead>
-                  <tr style={{ background:"var(--surface-1)" }}>
-                    <th style={{ padding:"10px 14px", fontSize:13, color:"#64748b", fontWeight:700, border:"1px solid var(--surface-2)", width:70, textAlign:"center" }}>Time</th>
-                    {DAYS.map(d=>(
-                      <th key={d} style={{ padding:"10px 14px", fontSize:13, color:"#a78bfa", fontWeight:700, border:"1px solid var(--surface-2)", textAlign:"center" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</th>
+                  <tr style={{ background: "var(--surface-1)" }}>
+                    <th style={{ padding: "10px 14px", fontSize: 13, color: "#64748b", fontWeight: 700, border: "1px solid var(--surface-2)", width: 70, textAlign: "center" }}>Time</th>
+                    {DAYS.map(d => (
+                      <th key={d} style={{ padding: "10px 14px", fontSize: 13, color: "#a78bfa", fontWeight: 700, border: "1px solid var(--surface-2)", textAlign: "center" }}>{d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRows.map(row=>{
+                  {filteredRows.map(row => {
                     return (
                       <tr key={row.label}>
-                        <td style={{ padding:"8px 12px", border:"1px solid var(--surface-2)", color:"#64748b", fontSize:12, verticalAlign:"middle", whiteSpace:"nowrap", textAlign:"center" }}>{row.label}</td>
-                        {DAYS.map(d=>{
+                        <td style={{ padding: "8px 12px", border: "1px solid var(--surface-2)", color: "#64748b", fontSize: 12, verticalAlign: "middle", whiteSpace: "nowrap", textAlign: "center" }}>{row.label}</td>
+                        {DAYS.map(d => {
                           const state = getRenderState(d, row.hour, row.minute);
                           if (!state.render) return null;
                           const slot = state.slot;
@@ -3169,11 +3173,11 @@ Instructions:
                                 const { day: sourceDay, slotId } = JSON.parse(e.dataTransfer.getData("text/plain"));
                                 handleMoveSlot(sourceDay, slotId, d, row.hour, row.minute);
                               }}
-                              style={{ 
-                                padding:"4px 6px", 
-                                border:"1px solid var(--surface-2)", 
-                                verticalAlign:"top", 
-                                minWidth:110, 
+                              style={{
+                                padding: "4px 6px",
+                                border: "1px solid var(--surface-2)",
+                                verticalAlign: "top",
+                                minWidth: 110,
                                 height: 48 * state.rowSpan,
                                 background: !slot && isCellBlocked(d, row.hour, row.minute) ? "rgba(239, 68, 68, 0.03)" : "transparent"
                               }}
@@ -3183,13 +3187,13 @@ Instructions:
                                   onDragStart={e => {
                                     e.dataTransfer.setData("text/plain", JSON.stringify({ day: d, slotId: slot.id }));
                                   }}
-                                  style={{ 
-                                    background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : color+"15", 
-                                    borderLeft:`4px solid ${color}`, 
-                                    borderRadius:8, 
+                                  style={{
+                                    background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : color + "15",
+                                    borderLeft: `4px solid ${color}`,
+                                    borderRadius: 8,
                                     padding: slot.isBlockSlot ? "5px 10px" : "6px 10px",
-                                    border:`1px solid ${color}33`,
-                                    boxShadow:`0 4px 12px ${color}11`,
+                                    border: `1px solid ${color}33`,
+                                    boxShadow: `0 4px 12px ${color}11`,
                                     cursor: slot.isBlockSlot ? "not-allowed" : "grab",
                                     height: "100%",
                                     boxSizing: "border-box",
@@ -3201,18 +3205,18 @@ Instructions:
                                 >
                                   {slot.isBlockSlot ? (
                                     <>
-                                      <span style={{ fontSize:11, fontWeight:800, color:"#ef4444" }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {slot.title}</span>
-                                      <span style={{ fontSize:10, color:"#ef4444", fontWeight:700 }}>{slot.start}–{slot.end}</span>
+                                      <span style={{ fontSize: 11, fontWeight: 800, color: "#ef4444" }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {slot.title}</span>
+                                      <span style={{ fontSize: 10, color: "#ef4444", fontWeight: 700 }}>{slot.start}–{slot.end}</span>
                                     </>
                                   ) : (
                                     <>
                                       <div>
-                                        <div style={{ fontSize:12, fontWeight:800, color:"#f1f5f9", lineHeight:1.2 }}>{slot.title}</div>
-                                        <div style={{ fontSize:10, color:color, fontWeight:700, marginTop:3 }}>{slot.taskType}</div>
+                                        <div style={{ fontSize: 12, fontWeight: 800, color: "#f1f5f9", lineHeight: 1.2 }}>{slot.title}</div>
+                                        <div style={{ fontSize: 10, color: color, fontWeight: 700, marginTop: 3 }}>{slot.taskType}</div>
                                       </div>
-                                      <div style={{ fontSize:10, color:"#888", marginTop:4, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                                      <div style={{ fontSize: 10, color: "#888", marginTop: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                         <span>{slot.start}–{slot.end}</span>
-                                        {!slot.isBlockSlot && <span style={{ color:"#a78bfa", fontWeight:700 }}><LuZap style={{ display: 'inline-block', verticalAlign: 'middle' }} />{slot.energy}</span>}
+                                        {!slot.isBlockSlot && <span style={{ color: "#a78bfa", fontWeight: 700 }}><LuZap style={{ display: 'inline-block', verticalAlign: 'middle' }} />{slot.energy}</span>}
                                       </div>
                                     </>
                                   )}
@@ -3230,10 +3234,10 @@ Instructions:
           </div>
         ) : (
           <Card>
-            <div style={{ textAlign:"center", color:"#555", padding:60 }}>
-              <div style={{fontSize:40,marginBottom:12}}><LuCalendarDays style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
+            <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}><LuCalendarDays style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
               <div>No weekly timetable generated yet.</div>
-              <Btn style={{marginTop:16}} onClick={()=>setSubtab("setup")}>Go to Setup →</Btn>
+              <Btn style={{ marginTop: 16 }} onClick={() => setSubtab("setup")}>Go to Setup →</Btn>
             </div>
           </Card>
         )
@@ -3245,7 +3249,7 @@ Instructions:
           {/* Charts Row */}
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }}>
             <Card>
-              <div style={{ fontSize:16, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Weekly Productive Hours Distribution</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", marginBottom: 16 }}>Weekly Productive Hours Distribution</div>
               {timetable ? (
                 <div style={{ padding: "10px 0" }}>
                   <svg viewBox="0 0 500 200" style={{ width: "100%", height: 200 }}>
@@ -3267,7 +3271,7 @@ Instructions:
                           <rect x={60 + i * 60} y={170 - barHeight} width="24" height={barHeight} fill="url(#barGrad)" rx="4" />
                           <text x={72 + i * 60} y="190" fill="#64748b" fontSize="11" textAnchor="middle">{d}</text>
                           <text x={72 + i * 60} y={160 - barHeight} fill="#fff" fontSize="10" textAnchor="middle" fontWeight="bold">
-                            {totalMin > 0 ? `${Math.round(totalMin/60*10)/10}h` : "0h"}
+                            {totalMin > 0 ? `${Math.round(totalMin / 60 * 10) / 10}h` : "0h"}
                           </text>
                         </g>
                       );
@@ -3276,28 +3280,28 @@ Instructions:
                   </svg>
                 </div>
               ) : (
-                <div style={{ color:"#555", textAlign:"center", padding:40 }}>Generate schedule to view stats.</div>
+                <div style={{ color: "#555", textAlign: "center", padding: 40 }}>Generate schedule to view stats.</div>
               )}
             </Card>
 
             <Card>
-              <div style={{ fontSize:15, fontWeight:700, color:"#f1f5f9", marginBottom:16 }}>Total Work Breakdown</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#f1f5f9", marginBottom: 16 }}>Total Work Breakdown</div>
               {timetable ? (
-                <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   {[
                     ["Total Study Tasks", tasks.length, "#6c63ff"],
                     ["Committed Busy Blocks", (constraints.blocks || []).length, "#ef4444"],
-                    ["Work Days/Week", DAYS.filter(d=>!constraints.noWork.includes(d)).length, "#22c55e"],
-                    ["Weekly Study Hours", Math.round(DAYS.reduce((acc,d)=>acc+getDayTotal(d), 0) / 60 * 10) / 10 + " hrs", "#f59e0b"]
-                  ].map(([l,v,c]) => (
-                    <div key={l} style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                      <span style={{ fontSize:13, color:"#64748b" }}>{l}</span>
-                      <span style={{ fontSize:14, fontWeight:800, color:c }}>{v}</span>
+                    ["Work Days/Week", DAYS.filter(d => !constraints.noWork.includes(d)).length, "#22c55e"],
+                    ["Weekly Study Hours", Math.round(DAYS.reduce((acc, d) => acc + getDayTotal(d), 0) / 60 * 10) / 10 + " hrs", "#f59e0b"]
+                  ].map(([l, v, c]) => (
+                    <div key={l} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 13, color: "#64748b" }}>{l}</span>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: c }}>{v}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div style={{ color:"#555", textAlign:"center", padding:30 }}>No data.</div>
+                <div style={{ color: "#555", textAlign: "center", padding: 30 }}>No data.</div>
               )}
             </Card>
           </div>
@@ -3361,52 +3365,52 @@ Instructions:
       {subtab === "printable" && (
         timetable ? (
           <div>
-            <div style={{ display:"flex", gap:10, marginBottom:20 }}>
+            <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
               <Btn onClick={printTimetableCleanly}><LuPrinter style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Print Timetable (PDF)</Btn>
               <Btn variant="secondary" onClick={downloadImage}><LuArrowDown style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Download Image (PNG)</Btn>
             </div>
             {/* Print canvas */}
-            <div ref={exportRef} id="tt-print" style={{ background:"#fff", color:"#111", borderRadius:12, padding:"32px 28px", fontFamily:"'Segoe UI',sans-serif" }}>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20, paddingBottom:16, borderBottom:"2px solid #e5e7eb" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div ref={exportRef} id="tt-print" style={{ background: "#fff", color: "#111", borderRadius: 12, padding: "32px 28px", fontFamily: "'Segoe UI',sans-serif" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, paddingBottom: 16, borderBottom: "2px solid #e5e7eb" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <img src="/logo.png" alt="Logo" style={{ width: 48, height: 48, objectFit: "contain" }} />
                   <div>
-                    <div style={{ fontSize:18, fontWeight:800, color:"#1e6fa8" }}>ApexLink</div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "#1e6fa8" }}>ApexLink</div>
                   </div>
                 </div>
-                <div style={{ textAlign:"right" }}>
-                  <div style={{ fontSize:16, fontWeight:700, color:"#111" }}>Weekly Schedule</div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#111" }}>Weekly Schedule</div>
                 </div>
               </div>
-              <table style={{ width:"100%", borderCollapse:"collapse" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
-                    <th style={{ border:"1px solid #ddd", padding:"8px 10px", fontSize:12, fontWeight:700, color:"#333", textAlign:"left", background:"#f8f8f8", width: 70 }}>Time</th>
-                    {DAYS.map(d=>(
-                      <th key={d} style={{ border:"1px solid #ddd", padding:"8px 10px", fontSize:12, fontWeight:700, color:"#333", textAlign:"center", background:"#f8f8f8" }}>
-                        {d==="Mon"?"Monday":d==="Tue"?"Tuesday":d==="Wed"?"Wednesday":d==="Thu"?"Thursday":d==="Fri"?"Friday":d==="Sat"?"Saturday":"Sunday"}
+                    <th style={{ border: "1px solid #ddd", padding: "8px 10px", fontSize: 12, fontWeight: 700, color: "#333", textAlign: "left", background: "#f8f8f8", width: 70 }}>Time</th>
+                    {DAYS.map(d => (
+                      <th key={d} style={{ border: "1px solid #ddd", padding: "8px 10px", fontSize: 12, fontWeight: 700, color: "#333", textAlign: "center", background: "#f8f8f8" }}>
+                        {d === "Mon" ? "Monday" : d === "Tue" ? "Tuesday" : d === "Wed" ? "Wednesday" : d === "Thu" ? "Thursday" : d === "Fri" ? "Friday" : d === "Sat" ? "Saturday" : "Sunday"}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRows.map(row=>{
+                  {filteredRows.map(row => {
                     return (
                       <tr key={row.label}>
-                        <td style={{ border:"1px solid #ddd", padding:"6px 10px", fontSize:11, color:"#555", fontWeight:600, whiteSpace:"nowrap" }}>{row.label}</td>
-                        {DAYS.map(d=>{
+                        <td style={{ border: "1px solid #ddd", padding: "6px 10px", fontSize: 11, color: "#555", fontWeight: 600, whiteSpace: "nowrap" }}>{row.label}</td>
+                        {DAYS.map(d => {
                           const state = getRenderState(d, row.hour, row.minute);
                           if (!state.render) return null;
                           const slot = state.slot;
-                          const color = slot ? (COLOR_MAP[slot.taskType]||"#6c63ff") : null;
+                          const color = slot ? (COLOR_MAP[slot.taskType] || "#6c63ff") : null;
                           return (
-                            <td key={d} rowSpan={state.rowSpan} style={{ border:"1px solid #ddd", padding:"4px 6px", verticalAlign:"top", minWidth:80, height:36 * state.rowSpan }}>
+                            <td key={d} rowSpan={state.rowSpan} style={{ border: "1px solid #ddd", padding: "4px 6px", verticalAlign: "top", minWidth: 80, height: 36 * state.rowSpan }}>
                               {slot && (
-                                <div style={{ 
-                                  background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : "#f0f0ff", 
-                                  borderLeft:`3px solid ${color}`, 
-                                  borderRadius:4, 
-                                  padding:"4px 6px",
+                                <div style={{
+                                  background: slot.isBlockSlot ? "rgba(239, 68, 68, 0.08)" : "#f0f0ff",
+                                  borderLeft: `3px solid ${color}`,
+                                  borderRadius: 4,
+                                  padding: "4px 6px",
                                   height: "100%",
                                   boxSizing: "border-box",
                                   display: "flex",
@@ -3416,13 +3420,13 @@ Instructions:
                                 }}>
                                   {slot.isBlockSlot ? (
                                     <>
-                                      <span style={{ fontSize:9, fontWeight:700, color:"#ef4444" }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {slot.title}</span>
-                                      <span style={{ fontSize:8, color:"#ef4444", fontWeight:600 }}>{slot.start}–{slot.end}</span>
+                                      <span style={{ fontSize: 9, fontWeight: 700, color: "#ef4444" }}><LuBan style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {slot.title}</span>
+                                      <span style={{ fontSize: 8, color: "#ef4444", fontWeight: 600 }}>{slot.start}–{slot.end}</span>
                                     </>
                                   ) : (
                                     <>
-                                      <div style={{ fontSize:10, fontWeight:700, color:"#111" }}>{slot.title}</div>
-                                      <div style={{ fontSize:9, color:"#666", marginTop: 2 }}>{slot.start}–{slot.end}</div>
+                                      <div style={{ fontSize: 10, fontWeight: 700, color: "#111" }}>{slot.title}</div>
+                                      <div style={{ fontSize: 9, color: "#666", marginTop: 2 }}>{slot.start}–{slot.end}</div>
                                     </>
                                   )}
                                 </div>
@@ -3463,7 +3467,7 @@ Instructions:
             `}</style>
           </div>
         ) : (
-          <Card><div style={{ textAlign:"center", color:"#555", padding:40 }}>Generate schedule first.</div></Card>
+          <Card><div style={{ textAlign: "center", color: "#555", padding: 40 }}>Generate schedule first.</div></Card>
         )
       )}
     </div>
@@ -3505,7 +3509,7 @@ function EHMarkdown({ text }) {
   }
 
   const lines = text.split("\n");
-  
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {lines.map((line, idx) => {
@@ -3538,10 +3542,10 @@ function EHMarkdown({ text }) {
         const isNumbered = /^\d+\.\s/.test(trimmed);
 
         if (isBullet || isNumbered) {
-          let content = isBullet 
-            ? trimmed.replace(/^[\*\-]\s*/, "") 
+          let content = isBullet
+            ? trimmed.replace(/^[\*\-]\s*/, "")
             : trimmed.replace(/^\d+\.\s*/, "");
-            
+
           const parts = parseBold(content);
 
           return (
@@ -3553,11 +3557,11 @@ function EHMarkdown({ text }) {
         }
 
         const parts = parseBold(trimmed);
-        
-        const isHeadingObs = (trimmed.startsWith("**") && trimmed.endsWith("**")) || 
-                             (trimmed.startsWith("**") && trimmed.endsWith(":**")) ||
-                             (trimmed.startsWith("**") && trimmed.endsWith("**:") && trimmed.length > 4);
-                             
+
+        const isHeadingObs = (trimmed.startsWith("**") && trimmed.endsWith("**")) ||
+          (trimmed.startsWith("**") && trimmed.endsWith(":**")) ||
+          (trimmed.startsWith("**") && trimmed.endsWith("**:") && trimmed.length > 4);
+
         if (isHeadingObs) {
           return (
             <div key={idx} style={{ fontSize: 13, fontWeight: 800, color: "#38bdf8", marginTop: 18, marginBottom: 6, textTransform: "uppercase", letterSpacing: 1.5, fontFamily: "Orbitron", borderLeft: "3px solid #38bdf8", paddingLeft: 8 }}>
@@ -3611,8 +3615,8 @@ function VedAI({ user }) {
       try {
         const { data, error } = await supabase.from('vedai_task_sessions').select('*').eq('user_id', user.id);
         if (data && !error) {
-           const computed = computeProductivityProfile(data);
-           setProfile(computed);
+          const computed = computeProductivityProfile(data);
+          setProfile(computed);
         }
       } catch (err) {
         console.warn("Could not load productivity from DB, using fallback.", err);
@@ -3631,11 +3635,11 @@ function VedAI({ user }) {
     // Phase 3: Log actual completion
     const actualDuration = prompt(`How many minutes did "${block.title}" actually take?`, block.duration);
     if (!actualDuration) return;
-    
+
     const timeSpent = parseInt(actualDuration, 10);
     const updatedTasks = tasks.map(t => t.id === block.task_id ? { ...t, status: 'Completed', actual_duration: timeSpent } : t);
     setTasks(updatedTasks);
-    
+
     try {
       await supabase.from('vedai_task_sessions').insert([{
         user_id: user.id,
@@ -3646,7 +3650,7 @@ function VedAI({ user }) {
         category: block.category,
         completion_percentage: 100
       }]);
-    } catch(err) {
+    } catch (err) {
       console.warn("Supabase not fully setup for vedai_task_sessions yet.");
     }
   };
@@ -3675,32 +3679,32 @@ User Productivity Context: ${profile ? JSON.stringify(profile) : 'New User (No d
 Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
 
       const tools = [{
-          functionDeclarations: [
-            {
-              name: "update_schedule",
-              description: "Updates tasks to trigger re-optimization.",
-              parameters: {
-                type: "OBJECT",
-                properties: {
-                  newTasks: {
-                    type: "ARRAY",
-                    items: {
-                      type: "OBJECT",
-                      properties: {
-                        title: { type: "STRING" },
-                        priority: { type: "STRING", description: "Critical, High, Medium, Low" },
-                        estimated_duration: { type: "NUMBER", description: "Minutes" },
-                        category: { type: "STRING" },
-                        preferred_time: { type: "STRING" }
-                      },
-                      required: ["title", "estimated_duration", "priority"]
-                    }
+        functionDeclarations: [
+          {
+            name: "update_schedule",
+            description: "Updates tasks to trigger re-optimization.",
+            parameters: {
+              type: "OBJECT",
+              properties: {
+                newTasks: {
+                  type: "ARRAY",
+                  items: {
+                    type: "OBJECT",
+                    properties: {
+                      title: { type: "STRING" },
+                      priority: { type: "STRING", description: "Critical, High, Medium, Low" },
+                      estimated_duration: { type: "NUMBER", description: "Minutes" },
+                      category: { type: "STRING" },
+                      preferred_time: { type: "STRING" }
+                    },
+                    required: ["title", "estimated_duration", "priority"]
                   }
-                },
-                required: ["newTasks"]
-              }
+                }
+              },
+              required: ["newTasks"]
             }
-          ]
+          }
+        ]
       }];
 
       const geminiContents = updatedMessages.map(m => ({
@@ -3712,7 +3716,7 @@ Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contents: geminiContents, systemInstruction: { parts: [{ text: systemPrompt }] }, tools, generationConfig: { temperature: 0.7 } })
       });
-      
+
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
 
@@ -3722,23 +3726,23 @@ Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
       let reply = modelPart?.text || "";
 
       if (modelPart?.functionCall && modelPart.functionCall.name === "update_schedule") {
-          const newTasks = modelPart.functionCall.args.newTasks || [];
-          const updatedTasks = [...tasks, ...newTasks.map(t => ({...t, id: uid(), status: 'Pending'}))];
-          setTasks(updatedTasks);
-          
-          const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [...geminiContents, modelContent, { role: "function", parts: [{ functionResponse: { name: "update_schedule", response: { output: "Tasks updated." } } }] }]
-            })
-          });
-          const followUpData = await followUpRes.json();
-          reply = followUpData.candidates?.[0]?.content?.parts?.[0]?.text || "Schedule updated.";
+        const newTasks = modelPart.functionCall.args.newTasks || [];
+        const updatedTasks = [...tasks, ...newTasks.map(t => ({ ...t, id: uid(), status: 'Pending' }))];
+        setTasks(updatedTasks);
+
+        const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [...geminiContents, modelContent, { role: "function", parts: [{ functionResponse: { name: "update_schedule", response: { output: "Tasks updated." } } }] }]
+          })
+        });
+        const followUpData = await followUpRes.json();
+        reply = followUpData.candidates?.[0]?.content?.parts?.[0]?.text || "Schedule updated.";
       }
 
       const aiMsg = { role: "assistant", content: reply || "Done.", id: uid() };
       setChats(prev => prev.map(c => c.id === chat.id ? { ...c, messages: [...updatedMessages, aiMsg] } : c));
-      
+
       if (modelPart?.functionCall) syncSchedule();
     } catch (e) {
       const errMsg = { role: "assistant", content: `Error: ${e.message}`, id: uid() };
@@ -3748,7 +3752,7 @@ Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
   };
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [activeChat?.messages?.length, loading]);
-  useEffect(() => { if(tasks.length > 0 && !schedule) syncSchedule(); }, [tasks, profile]); // Re-sync if profile loads
+  useEffect(() => { if (tasks.length > 0 && !schedule) syncSchedule(); }, [tasks, profile]); // Re-sync if profile loads
 
   return (
     <div style={{ display: "flex", height: "100vh", background: "var(--bg-base)" }}>
@@ -3766,11 +3770,11 @@ Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
               <LuBot size={40} style={{ marginBottom: 16, color: "#a78bfa" }} />
               <div style={{ fontSize: 16, marginBottom: 8 }}>Ready to plan your day.</div>
               {profile ? (
-                 <div style={{ fontSize: 12, color: "#22d3ee", background: "rgba(34,211,238,0.1)", padding: "6px", borderRadius: 8, display: "inline-block" }}>
-                    Personalization: High • Capacity: {Math.round(profile.average_daily_capacity || 0)}m/day
-                 </div>
+                <div style={{ fontSize: 12, color: "#22d3ee", background: "rgba(34,211,238,0.1)", padding: "6px", borderRadius: 8, display: "inline-block" }}>
+                  Personalization: High • Capacity: {Math.round(profile.average_daily_capacity || 0)}m/day
+                </div>
               ) : (
-                 <div style={{ fontSize: 12 }}>Try: "Schedule my DBMS assignment for 2 hours tomorrow."</div>
+                <div style={{ fontSize: 12 }}>Try: "Schedule my DBMS assignment for 2 hours tomorrow."</div>
               )}
             </div>
           )}
@@ -3799,9 +3803,9 @@ Current Tasks: ${JSON.stringify(tasks.filter(t => t.status !== 'Completed'))}`;
             <div style={{ color: "#888", fontSize: 14 }}>Learning from your productivity patterns • Personalization: {profile ? 'Active' : 'Pending'}</div>
           </div>
           {schedule && (
-             <div style={{ background: "rgba(34, 211, 238, 0.1)", color: "#22d3ee", padding: "6px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>
-                Score: {schedule.quality_score}/100
-             </div>
+            <div style={{ background: "rgba(34, 211, 238, 0.1)", color: "#22d3ee", padding: "6px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>
+              Score: {schedule.quality_score}/100
+            </div>
           )}
         </div>
 
@@ -3858,7 +3862,7 @@ function Reminders({ user, reminders = [], setReminders }) {
   const [form, setForm] = useState({ title: "", description: "", datetime: "", urgency: "normal" });
   const [now, setNow] = useState(new Date());
   const [editingReminderId, setEditingReminderId] = useState(null);
-  
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDayMissions, setSelectedDayMissions] = useState(null);
 
@@ -3890,13 +3894,13 @@ function Reminders({ user, reminders = [], setReminders }) {
     if (!form.title || !form.datetime) return;
     const capTitle = form.title.charAt(0).toUpperCase() + form.title.slice(1);
     if (editingReminderId) {
-      setReminders(reminders.map(x => x.id === editingReminderId ? { 
-        ...x, 
-        title: capTitle, 
-        description: form.description, 
-        datetime: form.datetime, 
+      setReminders(reminders.map(x => x.id === editingReminderId ? {
+        ...x,
+        title: capTitle,
+        description: form.description,
+        datetime: form.datetime,
         urgency: form.urgency,
-        triggered: false 
+        triggered: false
       } : x));
       setEditingReminderId(null);
     } else {
@@ -3949,18 +3953,18 @@ function Reminders({ user, reminders = [], setReminders }) {
       `}</style>
 
       <PageHeader title="Mission Reminders" subtitle="Strategic focal point for your objectives"
-        actions={<Btn className="click-scale" onClick={() => setShowAdd(true)} style={{boxShadow: 'var(--shadow-glow)'}}>+ Add Mission</Btn>} />
-      
+        actions={<Btn className="click-scale" onClick={() => setShowAdd(true)} style={{ boxShadow: 'var(--shadow-glow)' }}>+ Add Mission</Btn>} />
+
       <div style={{ padding: "0 32px 32px", display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 32 }}>
-        
+
         {/* LEFT: ENLARGED TACTICAL CALENDAR */}
         <div className="calendar-container">
           <div style={{ background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(12px)", borderRadius: 32, padding: 40, border: "1px solid rgba(34, 211, 238, 0.1)", boxShadow: 'var(--shadow-lg)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
               <div style={{ fontSize: 24, fontWeight: 900, color: "#22d3ee", letterSpacing: 3, textShadow: "0 0 10px rgba(34, 211, 238, 0.3)" }}>{monthLabel.toUpperCase()}</div>
               <div style={{ display: 'flex', gap: 15 }}>
-                 <button className="click-scale" onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} style={{ background: "#0f172a", border: "1px solid #1e293b", color: "#fff", padding: "10px 18px", borderRadius: 12, cursor: "pointer", fontWeight: 900 }}>‹</button>
-                 <button className="click-scale" onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))} style={{ background: "#0f172a", border: "1px solid #1e293b", color: "#fff", padding: "10px 18px", borderRadius: 12, cursor: "pointer", fontWeight: 900 }}>›</button>
+                <button className="click-scale" onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} style={{ background: "#0f172a", border: "1px solid #1e293b", color: "#fff", padding: "10px 18px", borderRadius: 12, cursor: "pointer", fontWeight: 900 }}>‹</button>
+                <button className="click-scale" onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))} style={{ background: "#0f172a", border: "1px solid #1e293b", color: "#fff", padding: "10px 18px", borderRadius: 12, cursor: "pointer", fontWeight: 900 }}>›</button>
               </div>
             </div>
 
@@ -3973,15 +3977,15 @@ function Reminders({ user, reminders = [], setReminders }) {
                 const day = i + 1;
                 const dStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const activeOnDay = reminders.some(r => r.datetime.startsWith(dStr) && !r.done);
-                
+
                 return (
-                  <div key={day} 
-                    onClick={() => handleDateClick(day)} 
+                  <div key={day}
+                    onClick={() => handleDateClick(day)}
                     className={`day-cell click-scale ${activeOnDay ? 'active-mission-day' : ''} reveal-item`}
-                    style={{ 
+                    style={{
                       animationDelay: `${i * 0.01}s`,
-                      aspectRatio: "1.1", borderRadius: 20, display: "flex", flexDirection: 'column', alignItems: "center", justifyContent: "center", 
-                      background: activeOnDay ? "rgba(34, 211, 238, 0.08)" : "var(--surface-1)", 
+                      aspectRatio: "1.1", borderRadius: 20, display: "flex", flexDirection: 'column', alignItems: "center", justifyContent: "center",
+                      background: activeOnDay ? "rgba(34, 211, 238, 0.08)" : "var(--surface-1)",
                       border: activeOnDay ? "2px solid rgba(34, 211, 238, 0.5)" : "1px solid var(--surface-1)",
                       cursor: "pointer"
                     }}>
@@ -3997,25 +4001,25 @@ function Reminders({ user, reminders = [], setReminders }) {
         {/* RIGHT: TIMELINE SIDEBAR */}
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div style={{ fontSize: 11, fontWeight: 900, color: "#22d3ee", letterSpacing: 2, borderLeft: "3px solid #22d3ee", paddingLeft: 10 }}>ACTIVE_MISSIONS</div>
-          
+
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {upcoming.map((r, i) => (
               <Card key={r.id} className="reveal-item hover-lift" style={{ animationDelay: `${i * 0.1}s`, background: "rgba(15, 23, 42, 0.8)", border: "1px solid var(--surface-1)", borderLeft: "4px solid #3b82f6", padding: 20 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
                   <div style={{ fontWeight: 900, fontSize: 18, color: "#08b1f9", letterSpacing: 0.5 }}>{r.title.toUpperCase()}</div>
-                  <div style={{ fontSize: 10, fontWeight: 900, color: "#475569", fontFamily: "monospace" }}>{new Date(r.datetime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                  <div style={{ fontSize: 10, fontWeight: 900, color: "#475569", fontFamily: "monospace" }}>{new Date(r.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
                 <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 20, lineHeight: 1.5 }}>{r.description}</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-                   <div>
-                      <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", letterSpacing: 1 }}>TIME_REMAINING</div>
-                      <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{getCountdown(r.datetime)}</div>
-                   </div>
-                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <Btn small variant="secondary" className="click-scale" onClick={() => startEditReminder(r)}>EDIT</Btn>
-                      <Btn small variant="secondary" className="click-scale" onClick={() => setReminders(reminders.map(x => x.id === r.id ? {...x, done: true} : x))}>DISMISS</Btn>
-                      <button className="click-scale" onClick={() => setReminders(reminders.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 20, padding: "0 6px" }} title="Delete Reminder"><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
-                   </div>
+                  <div>
+                    <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", letterSpacing: 1 }}>TIME_REMAINING</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{getCountdown(r.datetime)}</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <Btn small variant="secondary" className="click-scale" onClick={() => startEditReminder(r)}>EDIT</Btn>
+                    <Btn small variant="secondary" className="click-scale" onClick={() => setReminders(reminders.map(x => x.id === r.id ? { ...x, done: true } : x))}>DISMISS</Btn>
+                    <button className="click-scale" onClick={() => setReminders(reminders.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 20, padding: "0 6px" }} title="Delete Reminder"><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
+                  </div>
                 </div>
               </Card>
             ))}
@@ -4026,22 +4030,22 @@ function Reminders({ user, reminders = [], setReminders }) {
       {/* MISSION DIALOGS */}
       <Modal open={showAdd} onClose={closeAddModal} title={editingReminderId ? "UPDATE_MISSION" : "INITIALIZE_MISSION"}>
         <div style={{ animation: "revealUp 0.4s ease-out" }}>
-           <Field label="DESIGNATION"><Inp value={form.title} onChange={v => setForm({...form, title: v})} placeholder="Mission Name" /></Field>
-           <Field label="TEMPORAL_MARK"><Inp type="datetime-local" value={form.datetime} onChange={v => setForm({...form, datetime: v})} /></Field>
-           <Field label="INTEL_BRIEF"><Inp value={form.description} onChange={v => setForm({...form, description: v})} placeholder="Objective details..." /></Field>
-           <Btn className="click-scale" onClick={addReminder} style={{ width: "100%", marginTop: 15, padding: 15, fontWeight: 900 }}>{editingReminderId ? "UPDATE MISSION" : "DEPLOY MISSION"}</Btn>
+          <Field label="DESIGNATION"><Inp value={form.title} onChange={v => setForm({ ...form, title: v })} placeholder="Mission Name" /></Field>
+          <Field label="TEMPORAL_MARK"><Inp type="datetime-local" value={form.datetime} onChange={v => setForm({ ...form, datetime: v })} /></Field>
+          <Field label="INTEL_BRIEF"><Inp value={form.description} onChange={v => setForm({ ...form, description: v })} placeholder="Objective details..." /></Field>
+          <Btn className="click-scale" onClick={addReminder} style={{ width: "100%", marginTop: 15, padding: 15, fontWeight: 900 }}>{editingReminderId ? "UPDATE MISSION" : "DEPLOY MISSION"}</Btn>
         </div>
       </Modal>
 
       <Modal open={!!selectedDayMissions} onClose={() => setSelectedDayMissions(null)} title={`DAY_${selectedDayMissions?.day}_INTEL`}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
           {selectedDayMissions?.missions.map((m, i) => (
-            <div key={m.id} className="reveal-item" style={{ animationDelay: `${i*0.1}s`, padding: 20, background: 'var(--surface-1)', borderRadius: 16, border: '1px solid var(--surface-2)' }}>
+            <div key={m.id} className="reveal-item" style={{ animationDelay: `${i * 0.1}s`, padding: 20, background: 'var(--surface-1)', borderRadius: 16, border: '1px solid var(--surface-2)' }}>
               <div style={{ fontWeight: 900, color: m.done ? '#475569' : '#22d3ee', fontSize: 16 }}>{m.title}</div>
               <div style={{ fontSize: 11, color: '#64748b', marginTop: 5, fontFamily: 'monospace' }}>{new Date(m.datetime).toLocaleTimeString()}</div>
             </div>
           ))}
-          <Btn className="click-scale" onClick={() => { setForm({...form, datetime: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}-${String(selectedDayMissions.day).padStart(2,'0')}T10:00` }); setSelectedDayMissions(null); setShowAdd(true); }}>+ ADD NEW OBJECTIVE</Btn>
+          <Btn className="click-scale" onClick={() => { setForm({ ...form, datetime: `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(selectedDayMissions.day).padStart(2, '0')}T10:00` }); setSelectedDayMissions(null); setShowAdd(true); }}>+ ADD NEW OBJECTIVE</Btn>
         </div>
       </Modal>
 
@@ -4068,7 +4072,7 @@ const DrawingCanvas = ({ onSave, onCancel, initialColor }) => {
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.fillStyle = "#ffffff"; 
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
 
@@ -4116,8 +4120,8 @@ const DrawingCanvas = ({ onSave, onCancel, initialColor }) => {
 
       <canvas
         ref={canvasRef}
-        width={1200} 
-        height={800} 
+        width={1200}
+        height={800}
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={() => setIsDrawing(false)}
@@ -4138,8 +4142,8 @@ function StickyNotes({ user }) {
   const [notes, setNotes] = useLS(`apx_notes_v5_${user.id}`, []);
   const [archived, setArchived] = useLS(`apx_vault_v5_${user.id}`, []);
   const [vaultPass, setVaultPass] = useLS(`apx_vpass_v5_${user.id}`, null);
-  
-  const [view, setView] = useState("active"); 
+
+  const [view, setView] = useState("active");
   const [showAdd, setShowAdd] = useState(false);
   const [vaultLocked, setVaultLocked] = useState(true);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
@@ -4234,12 +4238,12 @@ function StickyNotes({ user }) {
         !vaultPass ? (
           <div style={{ textAlign: 'center', background: 'var(--surface-1)', padding: 40, borderRadius: 32, border: '1px solid var(--surface-3)', maxWidth: 420, margin: '100px auto', boxSizing: 'border-box' }}>
             <h2 style={{ fontWeight: 900, marginBottom: 20 }}>Initialize Vault</h2>
-            <input 
-              type="password" 
-              placeholder="Set Access Code" 
-              value={newPass} 
-              onChange={e => setNewPass(e.target.value)} 
-              style={{ width: '100%', padding: 16, borderRadius: 16, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid var(--surface-3)', marginBottom: 20, boxSizing: 'border-box', outline: 'none' }} 
+            <input
+              type="password"
+              placeholder="Set Access Code"
+              value={newPass}
+              onChange={e => setNewPass(e.target.value)}
+              style={{ width: '100%', padding: 16, borderRadius: 16, background: 'rgba(0,0,0,0.3)', color: '#fff', border: '1px solid var(--surface-3)', marginBottom: 20, boxSizing: 'border-box', outline: 'none' }}
             />
             <button onClick={initializeVault} style={{ width: '100%', padding: 16, background: '#22c55e', color: '#fff', borderRadius: 16, border: 'none', fontWeight: 900, cursor: 'pointer' }}>ACTIVATE</button>
           </div>
@@ -4247,16 +4251,16 @@ function StickyNotes({ user }) {
           <div style={{ textAlign: 'center', background: 'rgba(15,23,42,0.3)', backdropFilter: 'blur(40px)', padding: 50, borderRadius: 32, border: '1px solid rgba(34,211,238,0.2)', maxWidth: 420, margin: '100px auto', boxSizing: 'border-box' }}>
             <h2 style={{ fontWeight: 900, marginBottom: 25 }}>Authorization Required</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <input 
-                type="password" 
-                placeholder="••••••••" 
-                value={passInput} 
-                onChange={e => setPassInput(e.target.value)} 
-                onKeyDown={e => e.key === 'Enter' && (passInput === vaultPass ? setVaultLocked(false) : alert("Access Denied"))} 
-                style={{ padding: 18, borderRadius: 16, background: 'var(--surface-1)', color: '#fff', border: '1px solid var(--surface-3)', textAlign: 'center', width: '100%', fontSize: 22, boxSizing: 'border-box', outline: 'none' }} 
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={passInput}
+                onChange={e => setPassInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && (passInput === vaultPass ? setVaultLocked(false) : alert("Access Denied"))}
+                style={{ padding: 18, borderRadius: 16, background: 'var(--surface-1)', color: '#fff', border: '1px solid var(--surface-3)', textAlign: 'center', width: '100%', fontSize: 22, boxSizing: 'border-box', outline: 'none' }}
               />
-              <button 
-                onClick={() => passInput === vaultPass ? setVaultLocked(false) : alert("Access Denied")} 
+              <button
+                onClick={() => passInput === vaultPass ? setVaultLocked(false) : alert("Access Denied")}
                 style={{ width: '100%', padding: 18, background: 'linear-gradient(to right, #3b82f6, #06b6d4)', color: '#fff', borderRadius: 16, border: 'none', fontWeight: 900, cursor: 'pointer', letterSpacing: 1 }}
               >
                 DECRYPT
@@ -4287,19 +4291,19 @@ function StickyNotes({ user }) {
       )}
 
       {showAdd && (
-        <div style={{ 
-          position: "fixed", 
-          inset: 0, 
-          marginLeft: window.innerWidth > 1024 ? "260px" : "0", 
-          background: "rgba(2,8,23,0.9)", 
-          backdropFilter: "blur(25px)", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          zIndex: 10000 
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          marginLeft: window.innerWidth > 1024 ? "260px" : "0",
+          background: "rgba(2,8,23,0.9)",
+          backdropFilter: "blur(25px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 10000
         }}>
-          <div style={{ 
-            width: isDrawingMode ? "90%" : "450px", 
+          <div style={{
+            width: isDrawingMode ? "90%" : "450px",
             maxWidth: isDrawingMode ? "1100px" : "450px",
             transition: "all 0.4s ease",
             display: 'flex',
@@ -4308,9 +4312,9 @@ function StickyNotes({ user }) {
             {!isDrawingMode ? (
               <div style={{ background: "#0f172a", padding: 30, borderRadius: 36, border: "1px solid rgba(255,255,255,0.12)", width: '100%', boxSizing: 'border-box' }}>
                 <h2 style={{ marginBottom: 25, fontWeight: 900 }}>{editId ? "Edit Objective" : "New Intel"}</h2>
-                <input placeholder="Objective Name" value={form.title} onChange={e => setForm({...form, title: e.target.value})} style={{ width: "100%", padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", boxSizing: 'border-box' }} />
-                <textarea placeholder="Details..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} style={{ width: "100%", height: 100, padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", resize: 'none', boxSizing: 'border-box' }} />
-                
+                <input placeholder="Objective Name" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={{ width: "100%", padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", boxSizing: 'border-box' }} />
+                <textarea placeholder="Details..." value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} style={{ width: "100%", height: 100, padding: 16, marginBottom: 15, borderRadius: 14, background: "rgba(0,0,0,0.3)", border: "1px solid var(--surface-3)", color: "#fff", resize: 'none', boxSizing: 'border-box' }} />
+
                 <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
                   <button onClick={() => document.getElementById('note-img-up').click()} style={{ flex: 1, padding: 12, borderRadius: 12, background: "var(--surface-2)", color: "#fff", border: "1px solid var(--surface-3)", cursor: "pointer" }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ATTACH</button>
                   <button onClick={() => setIsDrawingMode(true)} style={{ flex: 1, padding: 12, borderRadius: 12, background: 'var(--accent-bg)', color: "#60a5fa", border: "1px solid var(--accent-bg)", cursor: "pointer" }}><LuPalette style={{ display: 'inline-block', verticalAlign: 'middle' }} /> DRAW</button>
@@ -4323,10 +4327,10 @@ function StickyNotes({ user }) {
                 <button onClick={closeModal} style={{ width: "100%", marginTop: 15, background: "none", border: "none", color: "#64748b", cursor: 'pointer' }}>Cancel</button>
               </div>
             ) : (
-              <DrawingCanvas 
+              <DrawingCanvas
                 initialColor={form.color}
                 onCancel={() => setIsDrawingMode(false)}
-                onSave={(img) => { setForm({...form, image: img}); setIsDrawingMode(false); }}
+                onSave={(img) => { setForm({ ...form, image: img }); setIsDrawingMode(false); }}
               />
             )}
           </div>
@@ -4345,7 +4349,7 @@ function FriendCircles({ user }) {
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
   const [activeRoomId, setActiveRoomId] = useState(null);
-  
+
   const [form, setForm] = useState({ name: "", password: "" });
   const [joinForm, setJoinForm] = useState({ id: "", password: "" });
   const [joinErr, setJoinErr] = useState("");
@@ -4353,10 +4357,10 @@ function FriendCircles({ user }) {
   const createRoom = () => {
     if (!form.name.trim()) return;
     const newId = uid();
-    const newRoom = { 
-      id: newId, name: form.name, password: form.password, creator: user.id, 
+    const newRoom = {
+      id: newId, name: form.name, password: form.password, creator: user.id,
       members: [{ id: user.id, name: user.name }], tasks: [], messages: [], streak: 0,
-      restoreState: null, previousStreak: 0 
+      restoreState: null, previousStreak: 0
     };
     setAllRooms(prev => [...prev.filter(r => r.id !== newId), newRoom]);
     setRooms(prev => [...new Set([...prev, newId])]);
@@ -4369,9 +4373,9 @@ function FriendCircles({ user }) {
     if (!room) return setJoinErr("Room not found.");
     if (room.password && room.password !== joinForm.password) return setJoinErr("Wrong password.");
     if (room.members.some(m => m.id === user.id)) {
-        setActiveRoomId(room.id);
-        setShowJoin(false);
-        return;
+      setActiveRoomId(room.id);
+      setShowJoin(false);
+      return;
     }
     const updated = { ...room, members: [...room.members, { id: user.id, name: user.name }] };
     setAllRooms(prev => prev.map(r => r.id === room.id ? updated : r));
@@ -4385,22 +4389,22 @@ function FriendCircles({ user }) {
 
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column", animation: "fadeIn 0.3s ease" }}>
-      <PageHeader 
-        title="Friend Circles" 
+      <PageHeader
+        title="Friend Circles"
         subtitle="Collaborate and stay accountable together"
-        actions={<><Btn variant="secondary" onClick={() => setShowJoin(true)}>Join Room</Btn><Btn onClick={() => setShowCreate(true)}>+ Create Room</Btn></>} 
+        actions={<><Btn variant="secondary" onClick={() => setShowJoin(true)}>Join Room</Btn><Btn onClick={() => setShowCreate(true)}>+ Create Room</Btn></>}
       />
       <div style={{ display: "flex", flex: 1, overflow: "hidden", padding: "20px 32px", gap: 24 }}>
         <div style={{ width: 320, display: "flex", flexDirection: "column", gap: 12, overflowY: "auto" }}>
           <div style={{ fontSize: 11, fontWeight: 900, color: "#444", textTransform: "uppercase", letterSpacing: 1 }}>Your Circles</div>
           {myRooms.map(room => (
-            <div key={room.id} onClick={() => setActiveRoomId(room.id)} 
+            <div key={room.id} onClick={() => setActiveRoomId(room.id)}
               style={{ padding: 16, background: activeRoomId === room.id ? 'var(--accent-bg)' : "var(--surface-1)", border: activeRoomId === room.id ? "1.5px solid #3b82f6" : "1px solid var(--border-subtle)", borderRadius: 14, cursor: "pointer", transition: "all 0.2s" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: activeRoomId === room.id ? "#3b82f6" : "#fff" }}>{room.name}</div>
                 <div style={{ background: "rgba(245, 158, 11, 0.2)", color: "#f59e0b", padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 900 }}>{room.restoreState ? <LuSkull style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : ` ${room.streak || 0}`}</div>
               </div>
-              <div 
+              <div
                 onClick={(e) => {
                   e.stopPropagation();
                   navigator.clipboard.writeText(room.id);
@@ -4409,7 +4413,7 @@ function FriendCircles({ user }) {
                 style={{ fontSize: 10, color: "#475569", marginTop: 6, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
                 title="Click to copy full ID"
               >
-                <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ID: {room.id.slice(0,8)}... • {room.members.length} members
+                <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> ID: {room.id.slice(0, 8)}... • {room.members.length} members
               </div>
             </div>
           ))}
@@ -4419,13 +4423,13 @@ function FriendCircles({ user }) {
         </div>
       </div>
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Room">
-        <Field label="Room Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
-        <Field label="Password (optional)"><Inp type="password" value={form.password} onChange={v => setForm({...form, password: v})} /></Field>
+        <Field label="Room Name"><Inp value={form.name} onChange={v => setForm({ ...form, name: v })} /></Field>
+        <Field label="Password (optional)"><Inp type="password" value={form.password} onChange={v => setForm({ ...form, password: v })} /></Field>
         <Btn onClick={createRoom} style={{ width: "100%" }}>Launch Room</Btn>
       </Modal>
       <Modal open={showJoin} onClose={() => setShowJoin(false)} title="Join Room">
-        <Field label="Room ID"><Inp value={joinForm.id} onChange={v => setJoinForm({...joinForm, id: v})} /></Field>
-        <Field label="Password"><Inp type="password" value={joinForm.password} onChange={v => setJoinForm({...joinForm, password: v})} /></Field>
+        <Field label="Room ID"><Inp value={joinForm.id} onChange={v => setJoinForm({ ...joinForm, id: v })} /></Field>
+        <Field label="Password"><Inp type="password" value={joinForm.password} onChange={v => setJoinForm({ ...joinForm, password: v })} /></Field>
         {joinErr && <div style={{ color: "#ef4444", fontSize: 12, marginBottom: 10 }}>{joinErr}</div>}
         <Btn onClick={joinRoom} style={{ width: "100%" }}>Join Room</Btn>
       </Modal>
@@ -4435,7 +4439,7 @@ function FriendCircles({ user }) {
 
 function RoomView({ room, user, allRooms, setAllRooms }) {
   const SHOW_SIMULATOR = false;
-  const [tab, setTab] = useState("tasks"); 
+  const [tab, setTab] = useState("tasks");
   const [msg, setMsg] = useState("");
   const [editingMsgId, setEditingMsgId] = useState(null);
   const [showAddTask, setShowAddTask] = useState(false);
@@ -4487,7 +4491,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       if (r.lastCheckDate !== d) {
         // Evaluate if yesterday was successful
         const hasTasks = r.tasks && r.tasks.length > 0;
-        const yesterdaySuccess = hasTasks && r.tasks.every(t => 
+        const yesterdaySuccess = hasTasks && r.tasks.every(t =>
           r.members.every(m => t.logs?.[yDate]?.[m.id] === true)
         );
 
@@ -4495,7 +4499,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
           // If yesterday was NOT successful, and streak > 0, the streak breaks!
           if (r.streak > 0) {
             // Find who failed to complete tasks yesterday
-            const failedIds = r.members.filter(m => 
+            const failedIds = r.members.filter(m =>
               r.tasks.some(t => t.logs?.[yDate]?.[m.id] !== true)
             ).map(m => m.id);
 
@@ -4534,7 +4538,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
     };
 
     runCycleCheck();
-    const interval = setInterval(runCycleCheck, 15000); 
+    const interval = setInterval(runCycleCheck, 15000);
     return () => clearInterval(interval);
   }, [room, allRooms]);
 
@@ -4542,13 +4546,13 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
     const d = today();
     let r = { ...updatedRoom };
     const hasTasks = r.tasks && r.tasks.length > 0;
-    const everyoneFinishedToday = hasTasks && r.tasks.every(t => 
+    const everyoneFinishedToday = hasTasks && r.tasks.every(t =>
       r.members.every(m => t.logs?.[d]?.[m.id] === true)
     );
     if (everyoneFinishedToday && r.lastStreakUpdate !== d) {
       r.streak = (r.streak || 0) + 1;
       r.lastStreakUpdate = d;
-    } 
+    }
     setAllRooms(prev => prev.map(item => item.id === room.id ? r : item));
   };
 
@@ -4560,7 +4564,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
     }
 
     const options = {
-      key: "rzp_test_SebP7w5lLEyj7I", 
+      key: "rzp_test_SebP7w5lLEyj7I",
       amount: price * 100, // Price in paise
       currency: "INR",
       name: "ApexLink Squad",
@@ -4625,7 +4629,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       rec.continuous = true;
       rec.interimResults = true;
       rec.lang = 'en-US';
-      
+
       let finalTranscript = "";
       rec.onresult = (event) => {
         let interimTranscript = "";
@@ -4642,8 +4646,8 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       rec.onend = () => {
         setRecordingMode(null);
       };
-      rec.onerror = () => {};
-      
+      rec.onerror = () => { };
+
       recognitionRef.current = rec;
       rec.start();
       setRecordingMode('transcribe');
@@ -4657,7 +4661,7 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
     } else if (recordingMode === 'transcribe') {
       if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch(e){}
+        try { recognitionRef.current.stop(); } catch (e) { }
       }
     }
   };
@@ -4665,9 +4669,9 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
   const sendAudio = () => {
     if (!audioBlob) return;
     const reader = new FileReader();
-    reader.onload = () => { 
-      sendMsg("", 'audio/webm', `Voice_Note_${Date.now()}.webm`, reader.result); 
-      setAudioBlob(null); 
+    reader.onload = () => {
+      sendMsg("", 'audio/webm', `Voice_Note_${Date.now()}.webm`, reader.result);
+      setAudioBlob(null);
     };
     reader.readAsDataURL(audioBlob);
   };
@@ -4676,17 +4680,17 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
   const sendMsg = (text = null, fType = null, fName = null, fileData = null) => {
     const finalMsg = text !== null ? text : msg;
     if (!finalMsg.trim() && !fileData) return;
-    
+
     if (editingMsgId) {
-      const updatedMessages = (room.messages || []).map(m => 
+      const updatedMessages = (room.messages || []).map(m =>
         m.id === editingMsgId ? { ...m, text: finalMsg, isEdited: true, editTime: new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' }) } : m
       );
       sync({ ...room, messages: updatedMessages });
       setEditingMsgId(null);
     } else {
-      const m = { 
-        id: uid(), userId: user.id, userName: user.name, text: finalMsg, 
-        file: fileData, fType, fName, 
+      const m = {
+        id: uid(), userId: user.id, userName: user.name, text: finalMsg,
+        file: fileData, fType, fName,
         time: new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' }),
         status: 'sent'
       };
@@ -4745,15 +4749,15 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
         <div style={{ fontWeight: 800, display: "flex", alignItems: "center", gap: 12 }}>
           <span>{room.name}</span>
           <span style={{ color: "#f59e0b" }}>{room.restoreState ? <LuSkull style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : ` ${room.streak || 0}`}</span>
-          <span 
+          <span
             onClick={() => {
               navigator.clipboard.writeText(room.id);
               alert("Squad ID copied to clipboard!");
             }}
-            style={{ 
-              fontSize: 12, background: 'var(--accent-bg)', border: "1px solid var(--accent-bg)", 
-              borderRadius: 8, padding: "3px 10px", color: "#60a5fa", cursor: "pointer", fontWeight: 700, 
-              display: "flex", alignItems: "center", gap: 4 
+            style={{
+              fontSize: 12, background: 'var(--accent-bg)', border: "1px solid var(--accent-bg)",
+              borderRadius: 8, padding: "3px 10px", color: "#60a5fa", cursor: "pointer", fontWeight: 700,
+              display: "flex", alignItems: "center", gap: 4
             }}
             title="Click to copy Room ID"
           >
@@ -4769,15 +4773,15 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
 
       <div style={{ flex: 1, overflowY: "auto", padding: "20px" }}>
         {room.restoreState && restorePrice > 0 && (
-          <div style={{ 
-            marginBottom: 20, 
-            padding: "20px", 
-            background: "rgba(239, 68, 68, 0.08)", 
-            border: "1px solid rgba(239, 68, 68, 0.3)", 
-            borderRadius: 16, 
-            display: "flex", 
-            flexDirection: "column", 
-            gap: 12 
+          <div style={{
+            marginBottom: 20,
+            padding: "20px",
+            background: "rgba(239, 68, 68, 0.08)",
+            border: "1px solid rgba(239, 68, 68, 0.3)",
+            borderRadius: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 12
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -4809,11 +4813,11 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
                   const name = m ? m.name : "Unknown";
                   const paid = room.restoreState.payments?.[id] === true;
                   return (
-                    <div key={id} style={{ 
-                      padding: "4px 10px", 
-                      borderRadius: 8, 
-                      fontSize: 11, 
-                      fontWeight: 700, 
+                    <div key={id} style={{
+                      padding: "4px 10px",
+                      borderRadius: 8,
+                      fontSize: 11,
+                      fontWeight: 700,
                       background: paid ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.15)",
                       color: paid ? "#4ade80" : "#f87171",
                       border: `1.5px solid ${paid ? "rgba(34, 197, 94, 0.3)" : "rgba(239, 68, 68, 0.3)"}`
@@ -4847,33 +4851,33 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
         )}
 
         {tab === "tasks" && (
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#444' }}>SQUAD OBJECTIVES</div>
-                <Btn onClick={() => setShowAddTask(true)} small>+ New Task</Btn>
-              </div>
-              {(room.tasks || []).map(t => (
-                <div key={t.id} style={{ padding: 18, background: "var(--surface-1)", borderRadius: 16, border: "1px solid var(--surface-2)", marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                      <div style={{ fontWeight: 700, color: '#fff' }}>{t.title}</div>
-                      <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
-                        {room.members.map(m => {
-                          const isDone = t.logs?.[today()]?.[m.id];
-                          return <div key={m.id} style={{ width: 30, height: 30, borderRadius: 'var(--radius-full)', background: isDone ? "rgba(34, 197, 94, 0.2)" : "#111", border: `1px solid ${isDone ? "#22c55e" : "#333"}`, color: isDone ? "#22c55e" : "#666", display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800 }}>{m.name[0].toUpperCase()}</div>;
-                        })}
-                      </div>
-                  </div>
-                  <button onClick={() => {
-                    const d = today();
-                    const current = t.logs?.[d]?.[user.id] || false;
-                    const updatedTasks = room.tasks.map(task => task.id === t.id ? { ...task, logs: { ...task.logs, [d]: { ...task.logs?.[d], [user.id]: !current } } } : task);
-                    sync({ ...room, tasks: updatedTasks });
-                  }} style={{ padding: "10px 20px", borderRadius: 10, background: t.logs?.[today()]?.[user.id] ? "#22c55e" : "#1e293b", color: "#fff", border: "none", fontWeight: 800, cursor: 'pointer' }}>
-                    {t.logs?.[today()]?.[user.id] ? "DONE" : "MARK DONE"}
-                  </button>
-                </div>
-              ))}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: '#444' }}>SQUAD OBJECTIVES</div>
+              <Btn onClick={() => setShowAddTask(true)} small>+ New Task</Btn>
             </div>
+            {(room.tasks || []).map(t => (
+              <div key={t.id} style={{ padding: 18, background: "var(--surface-1)", borderRadius: 16, border: "1px solid var(--surface-2)", marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontWeight: 700, color: '#fff' }}>{t.title}</div>
+                  <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                    {room.members.map(m => {
+                      const isDone = t.logs?.[today()]?.[m.id];
+                      return <div key={m.id} style={{ width: 30, height: 30, borderRadius: 'var(--radius-full)', background: isDone ? "rgba(34, 197, 94, 0.2)" : "#111", border: `1px solid ${isDone ? "#22c55e" : "#333"}`, color: isDone ? "#22c55e" : "#666", display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800 }}>{m.name[0].toUpperCase()}</div>;
+                    })}
+                  </div>
+                </div>
+                <button onClick={() => {
+                  const d = today();
+                  const current = t.logs?.[d]?.[user.id] || false;
+                  const updatedTasks = room.tasks.map(task => task.id === t.id ? { ...task, logs: { ...task.logs, [d]: { ...task.logs?.[d], [user.id]: !current } } } : task);
+                  sync({ ...room, tasks: updatedTasks });
+                }} style={{ padding: "10px 20px", borderRadius: 10, background: t.logs?.[today()]?.[user.id] ? "#22c55e" : "#1e293b", color: "#fff", border: "none", fontWeight: 800, cursor: 'pointer' }}>
+                  {t.logs?.[today()]?.[user.id] ? "DONE" : "MARK DONE"}
+                </button>
+              </div>
+            ))}
+          </div>
         )}
 
         {tab === "chat" && (
@@ -4882,17 +4886,17 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
             {(room.messages || []).map(m => {
               const isMe = m.userId === user.id;
               return (
-                <div 
-                  key={m.id} 
-                  onContextMenu={(e) => handleInteraction(e, m)} 
+                <div
+                  key={m.id}
+                  onContextMenu={(e) => handleInteraction(e, m)}
                   style={{ alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "85%", minWidth: "90px", position: "relative", animation: "msgReveal 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}
                 >
-                  <div style={{ 
-                    padding: "10px 14px", 
+                  <div style={{
+                    padding: "10px 14px",
                     paddingBottom: "22px",
-                    background: isMe ? "linear-gradient(135deg, #2563eb, #1d4ed8)" : "#1e293b", 
-                    borderRadius: isMe ? "18px 18px 2px 18px" : "18px 18px 18px 2px", 
-                    color: "#f1f5f9", 
+                    background: isMe ? "linear-gradient(135deg, #2563eb, #1d4ed8)" : "#1e293b",
+                    borderRadius: isMe ? "18px 18px 2px 18px" : "18px 18px 18px 2px",
+                    color: "#f1f5f9",
                     boxShadow: 'var(--shadow-sm)',
                     position: "relative",
                     border: isMe ? "1px solid var(--surface-3)" : "1px solid var(--surface-2)"
@@ -4934,69 +4938,69 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
         <div style={{ padding: "12px 24px", background: "#0f172a", borderTop: "1px solid var(--surface-2)", flexShrink: 0 }}>
           <div style={{ display: "flex", gap: 12, alignItems: "flex-end", maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ flex: 1, background: "#1e293b", borderRadius: 24, padding: "8px 18px", display: "flex", alignItems: "center", gap: 14, minHeight: 48, border: "1px solid var(--surface-2)" }}>
-               <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
-               <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-               <textarea
-                 ref={roomChatTextareaRef}
-                 value={msg}
-                 onChange={e => setMsg(e.target.value)}
-                 onKeyDown={e => {
-                   if (e.key === "Enter" && !e.shiftKey) {
-                     e.preventDefault();
-                     sendMsg();
-                   }
-                 }}
-                 placeholder={editingMsgId ? "Revise message..." : "Type a message"}
-                 rows={1}
-                 style={{
-                   flex: 1,
-                   background: "none",
-                   border: "none",
-                   color: "#f8fafc",
-                   outline: "none",
-                   fontSize: 15,
-                   padding: "4px 0",
-                   resize: "none",
-                   maxHeight: 120,
-                   fontFamily: "inherit",
-                   boxSizing: "border-box",
-                   height: "auto"
-                 }}
-               />
-               {/* Direct Audio Mic */}
-               <button 
-                 onClick={recordingMode === 'audio' ? stopRecording : startRecording} 
-                 disabled={recordingMode === 'transcribe'}
-                 style={{ 
-                   background: "none", border: "none", 
-                   color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "var(--border-strong)" : "#64748b"), 
-                   cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer", 
-                   fontSize: 20, padding: 0 
-                 }}
-                 title="Direct Voice Comment"
-               >
-                 {recordingMode === 'audio' ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
-               </button>
+              <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
+              <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
+              <textarea
+                ref={roomChatTextareaRef}
+                value={msg}
+                onChange={e => setMsg(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMsg();
+                  }
+                }}
+                placeholder={editingMsgId ? "Revise message..." : "Type a message"}
+                rows={1}
+                style={{
+                  flex: 1,
+                  background: "none",
+                  border: "none",
+                  color: "#f8fafc",
+                  outline: "none",
+                  fontSize: 15,
+                  padding: "4px 0",
+                  resize: "none",
+                  maxHeight: 120,
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                  height: "auto"
+                }}
+              />
+              {/* Direct Audio Mic */}
+              <button
+                onClick={recordingMode === 'audio' ? stopRecording : startRecording}
+                disabled={recordingMode === 'transcribe'}
+                style={{
+                  background: "none", border: "none",
+                  color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "var(--border-strong)" : "#64748b"),
+                  cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer",
+                  fontSize: 20, padding: 0
+                }}
+                title="Direct Voice Comment"
+              >
+                {recordingMode === 'audio' ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
+              </button>
 
-               {/* Transcription Dictation Button */}
-               <button 
-                 onClick={recordingMode === 'transcribe' ? stopRecording : startTranscribing} 
-                 disabled={recordingMode === 'audio'}
-                 style={{ 
-                   background: "none", border: "none", 
-                   color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "var(--border-strong)" : "#64748b"), 
-                   cursor: recordingMode === 'audio' ? "not-allowed" : "pointer", 
-                   fontSize: 20, padding: 0 
-                 }}
-                 title="Voice to Text Dictation"
-               >
-                 {recordingMode === 'transcribe' ? <LuOctagon style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
-               </button>
+              {/* Transcription Dictation Button */}
+              <button
+                onClick={recordingMode === 'transcribe' ? stopRecording : startTranscribing}
+                disabled={recordingMode === 'audio'}
+                style={{
+                  background: "none", border: "none",
+                  color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "var(--border-strong)" : "#64748b"),
+                  cursor: recordingMode === 'audio' ? "not-allowed" : "pointer",
+                  fontSize: 20, padding: 0
+                }}
+                title="Voice to Text Dictation"
+              >
+                {recordingMode === 'transcribe' ? <LuOctagon style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
+              </button>
             </div>
-            <button 
-              onClick={() => sendMsg()} 
-              style={{ 
-                width: 48, height: 48, borderRadius: 'var(--radius-full)', background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none", 
+            <button
+              onClick={() => sendMsg()}
+              style={{
+                width: 48, height: 48, borderRadius: 'var(--radius-full)', background: "linear-gradient(135deg, #3b82f6, #2563eb)", border: "none",
                 display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
                 boxShadow: 'var(--shadow-sm)', flexShrink: 0, transition: "0.2s"
               }}
@@ -5036,20 +5040,20 @@ function RoomView({ room, user, allRooms, setAllRooms }) {
       )}
 
       <Modal open={showAddTask} onClose={() => setShowAddTask(false)} title="New Objective">
-        <Field label="Task Title"><Inp value={taskForm.title} onChange={v => setTaskForm({...taskForm, title: v})} /></Field>
-        <Btn onClick={() => { if(!taskForm.title) return; sync({ ...room, tasks: [...(room.tasks || []), { id: uid(), ...taskForm, logs: {} }] }); setShowAddTask(false); }} style={{ width: "100%" }}>Launch</Btn>
+        <Field label="Task Title"><Inp value={taskForm.title} onChange={v => setTaskForm({ ...taskForm, title: v })} /></Field>
+        <Btn onClick={() => { if (!taskForm.title) return; sync({ ...room, tasks: [...(room.tasks || []), { id: uid(), ...taskForm, logs: {} }] }); setShowAddTask(false); }} style={{ width: "100%" }}>Launch</Btn>
       </Modal>
 
       {/* 🛠️ DEVELOPER SIMULATION CONSOLE */}
       {SHOW_SIMULATOR && (
-        <div style={{ 
-          padding: "12px 20px", 
-          background: "var(--surface-1)", 
-          borderTop: "1.5px dashed var(--border-subtle)", 
-          display: "flex", 
-          justifyContent: "space-between", 
+        <div style={{
+          padding: "12px 20px",
+          background: "var(--surface-1)",
+          borderTop: "1.5px dashed var(--border-subtle)",
+          display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
-          flexShrink: 0 
+          flexShrink: 0
         }}>
           <div style={{ fontSize: 12, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
             <span><LuTestTube style={{ display: 'inline-block', verticalAlign: 'middle' }} /> <strong>Simulated Date:</strong> {today()}</span>
@@ -5088,64 +5092,64 @@ const EH_KEY = "apx_eh_v1";
 function useEH() { return useShared(EH_KEY, { workspaces: [], members: [], joinRequests: [], tasks: [], comments: [], logs: [] }); }
 
 const EH_PRIMARY = "#00B8D9";
-const EH_BG      = "#0a0c0e";
-const EH_PANEL   = "#111418";
-const EH_BORDER  = "#1f2226";
+const EH_BG = "#0a0c0e";
+const EH_PANEL = "#111418";
+const EH_BORDER = "#1f2226";
 
 const EH_STATUS = {
-  Backlog:     { label: "Backlog",     color: "#94a3b8", bg: "rgba(148,163,184,0.1)", icon: <LuInbox style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 15 },
-  Todo:        { label: "To Do",       color: "#34b7f1", bg: "rgba(52,183,241,0.1)",  icon: <LuCircle style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 10 },
-  InProgress:  { label: "In Progress", color: "#f59e0b", bg: "rgba(245,158,11,0.1)",  icon: <LuCircle style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 5  },
-  Review:      { label: "Review",      color: "#8b5cf6", bg: "rgba(139,92,246,0.1)",  icon: <LuEye style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 8  },
-  Done:        { label: "Done",        color: "#22c55e", bg: "rgba(34,197,94,0.1)",   icon: <LuCircleCheckBig style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 99 },
+  Backlog: { label: "Backlog", color: "#94a3b8", bg: "rgba(148,163,184,0.1)", icon: <LuInbox style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 15 },
+  Todo: { label: "To Do", color: "#34b7f1", bg: "rgba(52,183,241,0.1)", icon: <LuCircle style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 10 },
+  InProgress: { label: "In Progress", color: "#f59e0b", bg: "rgba(245,158,11,0.1)", icon: <LuCircle style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 5 },
+  Review: { label: "Review", color: "#8b5cf6", bg: "rgba(139,92,246,0.1)", icon: <LuEye style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 8 },
+  Done: { label: "Done", color: "#22c55e", bg: "rgba(34,197,94,0.1)", icon: <LuCircleCheckBig style={{ display: 'inline-block', verticalAlign: 'middle' }} />, wip: 99 },
 };
 
-const EH_PRIORITY = { 
-  High:   { label: "High",   color: "#ef4444", icon: "▲" },
+const EH_PRIORITY = {
+  High: { label: "High", color: "#ef4444", icon: "▲" },
   Medium: { label: "Medium", color: "#f59e0b", icon: "▬" },
-  Low:    { label: "Low",    color: "#22c55e", icon: "▼" }
+  Low: { label: "Low", color: "#22c55e", icon: "▼" }
 };
 
 function EHLabel({ children }) {
   return <div style={{ fontSize: 9, fontWeight: 900, color: "#475569", letterSpacing: 1.5, marginBottom: 8, fontFamily: "monospace" }}>{typeof children === 'string' ? children.toUpperCase() : children}</div>;
 }
-const EH_ROLE_C   = { Admin: "#00B8D9", Manager: "#3b82f6", Member: "#6c63ff", Observer: "#94a3b8" };
+const EH_ROLE_C = { Admin: "#00B8D9", Manager: "#3b82f6", Member: "#6c63ff", Observer: "#94a3b8" };
 
 function EHTag({ label, color, bg }) {
-  return <span style={{ fontSize: 10, fontWeight: 800, color: color, background: bg || color+"15", padding: "1px 8px", borderRadius: 4, letterSpacing: 0.5, border: `1px solid ${color}33`, whiteSpace: "nowrap" }}>{label.toUpperCase()}</span>;
+  return <span style={{ fontSize: 10, fontWeight: 800, color: color, background: bg || color + "15", padding: "1px 8px", borderRadius: 4, letterSpacing: 0.5, border: `1px solid ${color}33`, whiteSpace: "nowrap" }}>{label.toUpperCase()}</span>;
 }
 
 // ── Small helpers ─────────────────────────────────────────────────────────────
 function EHAvatar({ name = "?", size = 28 }) {
-  const palette = ["#6c63ff","#3b82f6","#22c55e","#f59e0b","#00B8D9","#8b5cf6"];
-  const c = palette[(name.charCodeAt(0)||0) % palette.length];
+  const palette = ["#6c63ff", "#3b82f6", "#22c55e", "#f59e0b", "#00B8D9", "#8b5cf6"];
+  const c = palette[(name.charCodeAt(0) || 0) % palette.length];
   return (
-    <div style={{ width:size, height:size, borderRadius:6, background:`linear-gradient(135deg,${c},${c}99)`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:900, fontSize:size*0.4, color:"#fff", border:"1px solid var(--surface-3)" }}>
+    <div style={{ width: size, height: size, borderRadius: 6, background: `linear-gradient(135deg,${c},${c}99)`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: size * 0.4, color: "#fff", border: "1px solid var(--surface-3)" }}>
       {String(name)[0]?.toUpperCase()}
     </div>
   );
 }
 
 function EHBadge({ label, color }) {
-  return <span style={{ fontSize:11, fontWeight:700, color, background:color+"22", padding:"2px 9px", borderRadius:20 }}>{label}</span>;
+  return <span style={{ fontSize: 11, fontWeight: 700, color, background: color + "22", padding: "2px 9px", borderRadius: 20 }}>{label}</span>;
 }
 
 function EHPieChart({ slices, size = 130 }) {
-  const total = slices.reduce((s,x) => s + x.value, 0) || 1;
-  let a = -Math.PI/2;
-  const cx = size/2, cy = size/2, r = size*0.4, ir = size*0.23;
+  const total = slices.reduce((s, x) => s + x.value, 0) || 1;
+  let a = -Math.PI / 2;
+  const cx = size / 2, cy = size / 2, r = size * 0.4, ir = size * 0.23;
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       {slices.map((sl, i) => {
-        const sweep = (sl.value/total)*2*Math.PI;
-        const x1=cx+r*Math.cos(a), y1=cy+r*Math.sin(a);
+        const sweep = (sl.value / total) * 2 * Math.PI;
+        const x1 = cx + r * Math.cos(a), y1 = cy + r * Math.sin(a);
         a += sweep;
-        const x2=cx+r*Math.cos(a), y2=cy+r*Math.sin(a);
-        const ix1=cx+ir*Math.cos(a-sweep), iy1=cy+ir*Math.sin(a-sweep);
-        const ix2=cx+ir*Math.cos(a), iy2=cy+ir*Math.sin(a);
-        const lg = sweep>Math.PI?1:0;
-        const d=`M${ix1} ${iy1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${ix2} ${iy2} A${ir} ${ir} 0 ${lg} 0 ${ix1} ${iy1}Z`;
-        return sl.value>0 ? <path key={i} d={d} fill={sl.color} opacity="0.92" /> : null;
+        const x2 = cx + r * Math.cos(a), y2 = cy + r * Math.sin(a);
+        const ix1 = cx + ir * Math.cos(a - sweep), iy1 = cy + ir * Math.sin(a - sweep);
+        const ix2 = cx + ir * Math.cos(a), iy2 = cy + ir * Math.sin(a);
+        const lg = sweep > Math.PI ? 1 : 0;
+        const d = `M${ix1} ${iy1} L${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${ix2} ${iy2} A${ir} ${ir} 0 ${lg} 0 ${ix1} ${iy1}Z`;
+        return sl.value > 0 ? <path key={i} d={d} fill={sl.color} opacity="0.92" /> : null;
       })}
     </svg>
   );
@@ -5153,18 +5157,18 @@ function EHPieChart({ slices, size = 130 }) {
 
 
 
-function EHDonut({ pct=0, size=100, color="#00B8D9", label }) {
-  const r=size*0.38, cx=size/2, cy=size/2, circ=2*Math.PI*r;
+function EHDonut({ pct = 0, size = 100, color = "#00B8D9", label }) {
+  const r = size * 0.38, cx = size / 2, cy = size / 2, circ = 2 * Math.PI * r;
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       <defs>
-        <filter id="glow"><feGaussianBlur stdDeviation="2" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="glow"><feGaussianBlur stdDeviation="2" result="coloredBlur" /><feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
       </defs>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--surface-1)" strokeWidth={size*0.08}/>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={size*0.08}
-        strokeDasharray={`${(pct/100)*circ} ${circ}`} strokeDashoffset={circ/4} strokeLinecap="round" filter="url(#glow)"/>
-      <text x={cx} y={cy-4} textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize={size*0.22} fontWeight="900" style={{ fontFamily: 'Orbitron' }}>{pct}%</text>
-      {label && <text x={cx} y={cy+size*0.18} textAnchor="middle" fill="#555" fontSize={size*0.1} fontWeight={800}>{label.toUpperCase()}</text>}
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--surface-1)" strokeWidth={size * 0.08} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={size * 0.08}
+        strokeDasharray={`${(pct / 100) * circ} ${circ}`} strokeDashoffset={circ / 4} strokeLinecap="round" filter="url(#glow)" />
+      <text x={cx} y={cy - 4} textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize={size * 0.22} fontWeight="900" style={{ fontFamily: 'Orbitron' }}>{pct}%</text>
+      {label && <text x={cx} y={cy + size * 0.18} textAnchor="middle" fill="#555" fontSize={size * 0.1} fontWeight={800}>{label.toUpperCase()}</text>}
     </svg>
   );
 }
@@ -5204,7 +5208,7 @@ function EHIntelligence({ user, ws, eh, setEH, members }) {
               {entry.file && (
                 <div style={{ marginTop: 12 }}>
                   {entry.fType?.startsWith("image/") ? <img src={entry.file} style={{ maxWidth: 400, borderRadius: 12, border: `1px solid ${EH_BORDER}` }} /> :
-                   <a href={entry.file} download={entry.fName} style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 16px", background: "var(--surface-1)", borderRadius: 10, color: EH_PRIMARY, textDecoration: "none", fontSize: 12, fontWeight: 800, border: `1px solid ${EH_PRIMARY}33` }}>ðŸ“„ {entry.fName}</a>}
+                    <a href={entry.file} download={entry.fName} style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 16px", background: "var(--surface-1)", borderRadius: 10, color: EH_PRIMARY, textDecoration: "none", fontSize: 12, fontWeight: 800, border: `1px solid ${EH_PRIMARY}33` }}>ðŸ“„ {entry.fName}</a>}
                 </div>
               )}
             </div>
@@ -5215,7 +5219,7 @@ function EHIntelligence({ user, ws, eh, setEH, members }) {
         <div style={{ background: "#111418", border: `1px solid ${EH_BORDER}`, borderRadius: 16, padding: "8px 16px", display: "flex", alignItems: "center", gap: 15 }}>
           <button onClick={() => document.getElementById("eh-intel-file").click()} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#444" }}>ðŸ“Ž</button>
           <input type="file" id="eh-intel-file" onChange={handleFile} style={{ display: "none" }} />
-          <input value={msg} onChange={e=>setMsg(e.target.value)} onKeyDown={e=>e.key==="Enter"&&transmit()} placeholder="AUGMENT INTELLIGENCE..." style={{ flex: 1, background: "none", border: "none", color: "#fff", fontSize: 13, padding: "12px 0", outline: "none" }} />
+          <input value={msg} onChange={e => setMsg(e.target.value)} onKeyDown={e => e.key === "Enter" && transmit()} placeholder="AUGMENT INTELLIGENCE..." style={{ flex: 1, background: "none", border: "none", color: "#fff", fontSize: 13, padding: "12px 0", outline: "none" }} />
           <button onClick={transmit} style={{ background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, padding: "6px 16px", borderRadius: 8, cursor: "pointer" }}>TRANSMIT</button>
         </div>
       </div>
@@ -5229,113 +5233,113 @@ function CorporateWork({ user }) {         // keep fn name so App router works
   const [activeWsId, setActiveWsId] = useState(null);
 
   // Filter workspaces and remove duplicates by ID
-const myWorkspacesRaw = (eh.workspaces||[]).filter(w =>
-  w.createdBy === user.id ||
-  (eh.members||[]).some(m => m.workspaceId===w.id && m.userId===user.id && m.status==="Approved")
-);
+  const myWorkspacesRaw = (eh.workspaces || []).filter(w =>
+    w.createdBy === user.id ||
+    (eh.members || []).some(m => m.workspaceId === w.id && m.userId === user.id && m.status === "Approved")
+  );
 
-// 🛡️ FIX: Force unique workspaces only
-const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).values());
+  // 🛡️ FIX: Force unique workspaces only
+  const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).values());
 
   const openWs = (id) => { setActiveWsId(id); setView("workspace"); };
 
-  if (view==="create") return <EHCreateWorkspace user={user} eh={eh} setEH={setEH} onDone={id=>{setActiveWsId(id);setView("workspace");}} onCancel={()=>setView("dash")} />;
-  if (view==="join")   return <EHJoinWorkspace   user={user} eh={eh} setEH={setEH} onDone={()=>setView("dash")} onCancel={()=>setView("dash")} />;
-  if (view==="workspace" && activeWsId) {
-    const ws = (eh.workspaces||[]).find(w=>w.id===activeWsId);
+  if (view === "create") return <EHCreateWorkspace user={user} eh={eh} setEH={setEH} onDone={id => { setActiveWsId(id); setView("workspace"); }} onCancel={() => setView("dash")} />;
+  if (view === "join") return <EHJoinWorkspace user={user} eh={eh} setEH={setEH} onDone={() => setView("dash")} onCancel={() => setView("dash")} />;
+  if (view === "workspace" && activeWsId) {
+    const ws = (eh.workspaces || []).find(w => w.id === activeWsId);
     if (!ws) { setView("dash"); return null; }
-    return <EHWorkspaceView user={user} ws={ws} eh={eh} setEH={setEH} onBack={()=>setView("dash")} />;
+    return <EHWorkspaceView user={user} ws={ws} eh={eh} setEH={setEH} onBack={() => setView("dash")} />;
   }
 
   // ── Dashboard ──────────────────────────────────────────────────────────────
-  const pendingReqs = (eh.joinRequests||[]).filter(r =>
-    myWorkspaces.some(w => w.id===r.workspaceId && w.createdBy===user.id) && r.status==="Pending"
+  const pendingReqs = (eh.joinRequests || []).filter(r =>
+    myWorkspaces.some(w => w.id === r.workspaceId && w.createdBy === user.id) && r.status === "Pending"
   ).length;
 
   return (
     <div>
       <PageHeader title="Execution Hub" subtitle="Manage your workspaces and team execution"
         actions={
-          <div style={{ display:"flex", gap:10 }}>
-            <button onClick={()=>setView("join")} style={{ padding:"9px 18px", background:"var(--border-subtle)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, color:"#e2e8f0", fontWeight:600, fontSize:13, cursor:"pointer" }}>Join Workspace</button>
-            <button onClick={()=>setView("create")} style={{ padding:"9px 20px", background:"linear-gradient(135deg,#3b82f6,#6c63ff)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, fontSize:13, cursor:"pointer" }}>+ New Workspace</button>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button onClick={() => setView("join")} style={{ padding: "9px 18px", background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#e2e8f0", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Join Workspace</button>
+            <button onClick={() => setView("create")} style={{ padding: "9px 20px", background: "linear-gradient(135deg,#3b82f6,#6c63ff)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>+ New Workspace</button>
           </div>
         }
       />
-      <div style={{ padding:"24px 32px" }}>
-        {pendingReqs>0 && (
-          <div style={{ background:"rgba(245,158,11,0.1)", border:"1px solid rgba(245,158,11,0.25)", borderRadius:10, padding:"10px 16px", marginBottom:20, display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ fontSize:16 }}><LuBell style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
-            <span style={{ color:"#f59e0b", fontSize:13, fontWeight:600 }}>{pendingReqs} pending join request{pendingReqs>1?"s":""} — open a workspace to review them.</span>
+      <div style={{ padding: "24px 32px" }}>
+        {pendingReqs > 0 && (
+          <div style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.25)", borderRadius: 10, padding: "10px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 16 }}><LuBell style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
+            <span style={{ color: "#f59e0b", fontSize: 13, fontWeight: 600 }}>{pendingReqs} pending join request{pendingReqs > 1 ? "s" : ""} — open a workspace to review them.</span>
           </div>
         )}
-        {myWorkspaces.length===0 ? (
-          <div style={{ textAlign:"center", padding:"60px 0", color:"#555" }}>
-            <div style={{ fontSize:52, marginBottom:14 }}><LuRocket style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
-            <div style={{ fontSize:17, color:"#888", marginBottom:20 }}>No workspaces yet.</div>
-            <div style={{ display:"flex", gap:12, justifyContent:"center" }}>
-              <button onClick={()=>setView("create")} style={{ padding:"10px 24px", background:"#3b82f6", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Create Workspace</button>
-              <button onClick={()=>setView("join")} style={{ padding:"10px 24px", background:"var(--border-subtle)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, color:"#e2e8f0", fontWeight:600, cursor:"pointer" }}>Join Workspace</button>
+        {myWorkspaces.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#555" }}>
+            <div style={{ fontSize: 52, marginBottom: 14 }}><LuRocket style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
+            <div style={{ fontSize: 17, color: "#888", marginBottom: 20 }}>No workspaces yet.</div>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              <button onClick={() => setView("create")} style={{ padding: "10px 24px", background: "#3b82f6", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>Create Workspace</button>
+              <button onClick={() => setView("join")} style={{ padding: "10px 24px", background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#e2e8f0", fontWeight: 600, cursor: "pointer" }}>Join Workspace</button>
             </div>
           </div>
         ) : (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 16 }}>
             {myWorkspaces.map(ws => {
-              const wsTasks   = (eh.tasks||[]).filter(t=>t.workspaceId===ws.id);
-              const wsMembers = (eh.members||[]).filter(m=>m.workspaceId===ws.id&&m.status==="Approved");
-              const done      = wsTasks.filter(t=>t.status==="Done").length;
-              const pct       = wsTasks.length ? Math.round((done/wsTasks.length)*100) : 0;
-              const myRole    = ws.createdBy===user.id?"Admin":(wsMembers.find(m=>m.userId===user.id)?.role||"Member");
+              const wsTasks = (eh.tasks || []).filter(t => t.workspaceId === ws.id);
+              const wsMembers = (eh.members || []).filter(m => m.workspaceId === ws.id && m.status === "Approved");
+              const done = wsTasks.filter(t => t.status === "Done").length;
+              const pct = wsTasks.length ? Math.round((done / wsTasks.length) * 100) : 0;
+              const myRole = ws.createdBy === user.id ? "Admin" : (wsMembers.find(m => m.userId === user.id)?.role || "Member");
               return (
-                <div 
-                  key={ws.id} 
-                  onClick={()=>openWs(ws.id)} 
-                  style={{ 
-                    background:"var(--surface-1)", 
+                <div
+                  key={ws.id}
+                  onClick={() => openWs(ws.id)}
+                  style={{
+                    background: "var(--surface-1)",
                     backdropFilter: "blur(16px)",
-                    border:"1px solid var(--surface-2)", 
-                    borderRadius:16, 
-                    padding:"22px", 
-                    cursor:"pointer", 
-                    transition:"all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                    border: "1px solid var(--surface-2)",
+                    borderRadius: 16,
+                    padding: "22px",
+                    cursor: "pointer",
+                    transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
                     boxShadow: 'var(--shadow-sm)'
                   }}
-                  onMouseEnter={e=>{
+                  onMouseEnter={e => {
                     e.currentTarget.style.borderColor = "rgba(0,184,217,0.4)";
                     e.currentTarget.style.transform = "translateY(-6px)";
                     e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,184,217,0.15)";
                   }}
-                  onMouseLeave={e=>{
+                  onMouseLeave={e => {
                     e.currentTarget.style.borderColor = "var(--surface-2)";
                     e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.2)";
                   }}
                 >
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
-                    <div style={{ fontWeight:800, fontSize:15, color:"#f1f5f9" }}>{ws.name}</div>
-                    <EHBadge label={myRole} color={EH_ROLE_C[myRole]||"#6c63ff"} />
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: "#f1f5f9" }}>{ws.name}</div>
+                    <EHBadge label={myRole} color={EH_ROLE_C[myRole] || "#6c63ff"} />
                   </div>
-                  {ws.description && <div style={{ fontSize:12, color:"#64748b", marginBottom:10, lineHeight:1.5 }}>{ws.description}</div>}
-                  <div style={{ height:4, background:"var(--border-subtle)", borderRadius:2, overflow:"hidden", marginBottom:10 }}>
-                    <div style={{ height:"100%", width:`${pct}%`, background:pct>=80?"#22c55e":pct>=40?"#f59e0b":"#3b82f6", borderRadius:2, transition:"width 0.4s" }} />
+                  {ws.description && <div style={{ fontSize: 12, color: "#64748b", marginBottom: 10, lineHeight: 1.5 }}>{ws.description}</div>}
+                  <div style={{ height: 4, background: "var(--border-subtle)", borderRadius: 2, overflow: "hidden", marginBottom: 10 }}>
+                    <div style={{ height: "100%", width: `${pct}%`, background: pct >= 80 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#3b82f6", borderRadius: 2, transition: "width 0.4s" }} />
                   </div>
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:16, borderTop:"1px solid var(--surface-1)", paddingTop:12 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-                      <span style={{ fontSize:12, color:"#64748b", fontWeight:700 }}><LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {wsTasks.length} tasks</span>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, borderTop: "1px solid var(--surface-1)", paddingTop: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                      <span style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}><LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} /> {wsTasks.length} tasks</span>
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        {[ws.createdByName, ...wsMembers.map(m=>m.name)].slice(0, 4).map((name, idx) => (
+                        {[ws.createdByName, ...wsMembers.map(m => m.name)].slice(0, 4).map((name, idx) => (
                           <div key={idx} style={{ marginLeft: idx === 0 ? 0 : -8, border: "2px solid var(--bg-base)", borderRadius: 'var(--radius-full)', overflow: "hidden" }} title={name}>
                             <EHAvatar name={name} size={22} />
                           </div>
                         ))}
-                        {[ws.createdByName, ...wsMembers.map(m=>m.name)].length > 4 && (
+                        {[ws.createdByName, ...wsMembers.map(m => m.name)].length > 4 && (
                           <span style={{ fontSize: 10, color: "#64748b", marginLeft: 6, fontWeight: 800 }}>
-                            +{[ws.createdByName, ...wsMembers.map(m=>m.name)].length - 4}
+                            +{[ws.createdByName, ...wsMembers.map(m => m.name)].length - 4}
                           </span>
                         )}
                       </div>
                     </div>
-                    <span style={{ fontWeight:800, fontSize:13, color:pct>=80?"#22c55e":pct>=40?"#f59e0b":"#3b82f6" }}>{pct}%</span>
+                    <span style={{ fontWeight: 800, fontSize: 13, color: pct >= 80 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#3b82f6" }}>{pct}%</span>
                   </div>
                 </div>
               );
@@ -5349,62 +5353,62 @@ const myWorkspaces = Array.from(new Map(myWorkspacesRaw.map(w => [w.id, w])).val
 
 // ═══ CREATE WORKSPACE ════════════════════════════════════════════════════════
 function EHCreateWorkspace({ user, eh, setEH, onDone, onCancel }) {
-  const [form, setForm] = useState({ name:"", description:"", startDate:today(), endDate:"" });
+  const [form, setForm] = useState({ name: "", description: "", startDate: today(), endDate: "" });
   const [err, setErr] = useState("");
 
   const create = () => {
     if (!form.name.trim()) return setErr("Workspace name is required.");
-    if (!form.endDate)     return setErr("End date is required.");
+    if (!form.endDate) return setErr("End date is required.");
     if (new Date(form.endDate) < new Date(form.startDate)) {
       return setErr("End date cannot be earlier than the start date.");
     }
     setErr("");
-  
-  const wsId = uid();
-  const accessCode = Math.random().toString(36).slice(2,8).toUpperCase();
-  
-  const ws = { ...form, id:wsId, accessCode, createdBy:user.id, createdByName:user.name, createdAt:new Date().toISOString() };
-  const adminMember = { id:uid(), workspaceId:wsId, userId:user.id, name:user.name, email:user.email||"", role:"Admin", status:"Approved", timestamp:new Date().toISOString() };
-  const log = { id:uid(), workspaceId:wsId, userId:user.id, action:"Workspace created", timestamp:new Date().toISOString() };
-  
-  setEH(prev => {
-    // 🛡️ FIX: Check if workspace ID already exists before adding
-    const isDup = (prev.workspaces || []).some(w => w.id === wsId);
-    if (isDup) return prev;
 
-    return { 
-      ...prev, 
-      workspaces: [...(prev.workspaces || []), ws], 
-      members: [...(prev.members || []), adminMember], 
-      logs: [...(prev.logs || []), log] 
-    };
-  });
-  
-  onDone(wsId);
-};
+    const wsId = uid();
+    const accessCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+
+    const ws = { ...form, id: wsId, accessCode, createdBy: user.id, createdByName: user.name, createdAt: new Date().toISOString() };
+    const adminMember = { id: uid(), workspaceId: wsId, userId: user.id, name: user.name, email: user.email || "", role: "Admin", status: "Approved", timestamp: new Date().toISOString() };
+    const log = { id: uid(), workspaceId: wsId, userId: user.id, action: "Workspace created", timestamp: new Date().toISOString() };
+
+    setEH(prev => {
+      // 🛡️ FIX: Check if workspace ID already exists before adding
+      const isDup = (prev.workspaces || []).some(w => w.id === wsId);
+      if (isDup) return prev;
+
+      return {
+        ...prev,
+        workspaces: [...(prev.workspaces || []), ws],
+        members: [...(prev.members || []), adminMember],
+        logs: [...(prev.logs || []), log]
+      };
+    });
+
+    onDone(wsId);
+  };
 
   return (
     <div>
       <PageHeader title="Create Workspace" subtitle="Set up your Execution Hub workspace" actions={<Btn variant="secondary" onClick={onCancel}>← Cancel</Btn>} />
-      <div style={{ padding:"28px 32px", maxWidth:560 }}>
+      <div style={{ padding: "28px 32px", maxWidth: 560 }}>
         <Card>
-          <div style={{ fontWeight:700, fontSize:15, color:"#f1f5f9", marginBottom:18 }}>Workspace Details</div>
-          {err && <div style={{ background:"rgba(239,68,68,0.1)", border:"1px solid #ef444433", borderRadius:8, padding:"8px 12px", color:"#f87171", fontSize:13, marginBottom:14 }}>{err}</div>}
-          <Field label="Workspace Name *"><Inp value={form.name} onChange={v=>setForm({...form,name:v})} placeholder="e.g. Website Redesign" /></Field>
+          <div style={{ fontWeight: 700, fontSize: 15, color: "#f1f5f9", marginBottom: 18 }}>Workspace Details</div>
+          {err && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid #ef444433", borderRadius: 8, padding: "8px 12px", color: "#f87171", fontSize: 13, marginBottom: 14 }}>{err}</div>}
+          <Field label="Workspace Name *"><Inp value={form.name} onChange={v => setForm({ ...form, name: v })} placeholder="e.g. Website Redesign" /></Field>
           <Field label="Description">
-            <textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="What is this workspace for?" rows={3}
-              style={{ width:"100%", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:8, padding:"9px 12px", color:"#fff", fontSize:14, resize:"vertical", boxSizing:"border-box", outline:"none", fontFamily:"inherit" }} />
+            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="What is this workspace for?" rows={3}
+              style={{ width: "100%", background: "var(--surface-2)", border: "1px solid var(--surface-3)", borderRadius: 8, padding: "9px 12px", color: "#fff", fontSize: 14, resize: "vertical", boxSizing: "border-box", outline: "none", fontFamily: "inherit" }} />
           </Field>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-            <Field label="Start Date"><Inp type="date" value={form.startDate} onChange={v=>setForm({...form,startDate:v})} /></Field>
-            <Field label="End Date *"><Inp type="date" value={form.endDate} onChange={v=>setForm({...form,endDate:v})} /></Field>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <Field label="Start Date"><Inp type="date" value={form.startDate} onChange={v => setForm({ ...form, startDate: v })} /></Field>
+            <Field label="End Date *"><Inp type="date" value={form.endDate} onChange={v => setForm({ ...form, endDate: v })} /></Field>
           </div>
-          <div style={{ background:'var(--accent-bg)', border:"1px solid var(--accent-bg)", borderRadius:8, padding:"10px 14px", marginBottom:16, fontSize:13, color:"#94a3b8" }}>
-            <LuLightbulb style={{ display: 'inline-block', verticalAlign: 'middle' }} /> After creating, you'll get a <strong style={{color:"#3b82f6"}}>Workspace ID</strong> + <strong style={{color:"#3b82f6"}}>Access Code</strong> to invite members.
+          <div style={{ background: 'var(--accent-bg)', border: "1px solid var(--accent-bg)", borderRadius: 8, padding: "10px 14px", marginBottom: 16, fontSize: 13, color: "#94a3b8" }}>
+            <LuLightbulb style={{ display: 'inline-block', verticalAlign: 'middle' }} /> After creating, you'll get a <strong style={{ color: "#3b82f6" }}>Workspace ID</strong> + <strong style={{ color: "#3b82f6" }}>Access Code</strong> to invite members.
           </div>
-          <div style={{ display:"flex", gap:10 }}>
-            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
-            <button onClick={create} style={{ flex:2, padding:"11px 0", background:"linear-gradient(135deg,#3b82f6,#6c63ff)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Create Workspace</button>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button onClick={onCancel} style={{ flex: 1, padding: "11px 0", background: "var(--surface-2)", border: "1px solid var(--surface-3)", borderRadius: 10, color: "#ccc", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+            <button onClick={create} style={{ flex: 2, padding: "11px 0", background: "linear-gradient(135deg,#3b82f6,#6c63ff)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>Create Workspace</button>
           </div>
         </Card>
       </div>
@@ -5474,22 +5478,22 @@ function EHJoinWorkspace({ user, eh, setEH, onDone, onCancel }) {
   return (
     <div>
       <PageHeader title="Join Workspace" subtitle="Access an existing Execution Hub workspace" actions={<Btn variant="secondary" onClick={onCancel}>← Cancel</Btn>} />
-      <div style={{ padding:"28px 32px", maxWidth:560 }}>
+      <div style={{ padding: "28px 32px", maxWidth: 560 }}>
         <Card>
-          <div style={{ fontWeight:700, fontSize:15, color:"#f1f5f9", marginBottom:18 }}>Join Workspace Details</div>
-          {err && <div style={{ background:"rgba(239,68,68,0.1)", border:"1px solid #ef444433", borderRadius:8, padding:"8px 12px", color:"#f87171", fontSize:13, marginBottom:14 }}>{err}</div>}
-          {success && <div style={{ background:"rgba(34,197,94,0.1)", border:"1px solid #22c55e33", borderRadius:8, padding:"8px 12px", color:"#4ade80", fontSize:13, marginBottom:14 }}>{success}</div>}
-          
+          <div style={{ fontWeight: 700, fontSize: 15, color: "#f1f5f9", marginBottom: 18 }}>Join Workspace Details</div>
+          {err && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid #ef444433", borderRadius: 8, padding: "8px 12px", color: "#f87171", fontSize: 13, marginBottom: 14 }}>{err}</div>}
+          {success && <div style={{ background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e33", borderRadius: 8, padding: "8px 12px", color: "#4ade80", fontSize: 13, marginBottom: 14 }}>{success}</div>}
+
           <Field label="Workspace ID *">
-            <Inp value={form.id} onChange={v=>setForm({...form,id:v})} placeholder="e.g. k8s9p2w1" />
+            <Inp value={form.id} onChange={v => setForm({ ...form, id: v })} placeholder="e.g. k8s9p2w1" />
           </Field>
           <Field label="Access Code *">
-            <Inp value={form.accessCode} onChange={v=>setForm({...form,accessCode:v})} placeholder="e.g. A3FG79" />
+            <Inp value={form.accessCode} onChange={v => setForm({ ...form, accessCode: v })} placeholder="e.g. A3FG79" />
           </Field>
 
-          <div style={{ display:"flex", gap:10, marginTop:20 }}>
-            <button onClick={onCancel} style={{ flex:1, padding:"11px 0", background:"var(--surface-2)", border:"1px solid var(--surface-3)", borderRadius:10, color:"#ccc", fontWeight:600, cursor:"pointer" }}>Cancel</button>
-            <button onClick={join} style={{ flex:2, padding:"11px 0", background:"linear-gradient(135deg,#00B8D9,#008AA1)", border:"none", borderRadius:10, color:"#fff", fontWeight:700, cursor:"pointer" }}>Submit Request</button>
+          <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+            <button onClick={onCancel} style={{ flex: 1, padding: "11px 0", background: "var(--surface-2)", border: "1px solid var(--surface-3)", borderRadius: 10, color: "#ccc", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+            <button onClick={join} style={{ flex: 2, padding: "11px 0", background: "linear-gradient(135deg,#00B8D9,#008AA1)", border: "none", borderRadius: 10, color: "#fff", fontWeight: 700, cursor: "pointer" }}>Submit Request</button>
           </div>
         </Card>
       </div>
@@ -5505,7 +5509,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedText, setCopiedText] = useState("");
 
-  const tasks   = (eh.tasks||[]).filter(t=>t.workspaceId===ws.id);
+  const tasks = (eh.tasks || []).filter(t => t.workspaceId === ws.id);
   const members = (() => {
     const unique = [];
     const seen = new Set();
@@ -5518,35 +5522,35 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
     });
     return unique;
   })();
-  const myRole  = ws.createdBy===user.id?"Admin":(members.find(m=>m.userId===user.id)?.role||"Member");
-  const isAdmin = myRole==="Admin"||myRole==="Manager";
+  const myRole = ws.createdBy === user.id ? "Admin" : (members.find(m => m.userId === user.id)?.role || "Member");
+  const isAdmin = myRole === "Admin" || myRole === "Manager";
 
   const addLog = (action) => {
-    const e = { id:uid(), workspaceId:ws.id, userId:user.id, userName:user.name, action, timestamp:new Date().toISOString() };
-    setEH(prev=>({...prev,logs:[...(prev.logs||[]),e]}));
+    const e = { id: uid(), workspaceId: ws.id, userId: user.id, userName: user.name, action, timestamp: new Date().toISOString() };
+    setEH(prev => ({ ...prev, logs: [...(prev.logs || []), e] }));
   };
 
-  const liveTask = selectedTask ? (eh.tasks||[]).find(t=>t.id===selectedTask.id) : null;
-  const WORKSPACE_TABS = [["pipeline","Board"],["timeline","Roadmap"],["chat","Control"],["team","Team"],["insights","Reports"]];
+  const liveTask = selectedTask ? (eh.tasks || []).find(t => t.id === selectedTask.id) : null;
+  const WORKSPACE_TABS = [["pipeline", "Board"], ["timeline", "Roadmap"], ["chat", "Control"], ["team", "Team"], ["insights", "Reports"]];
 
   return (
-    <div style={{ display:"flex", background: 'var(--bg-base)', height:"100vh", color: "#f1f5f9", overflow: "hidden", fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ display: "flex", background: 'var(--bg-base)', height: "100vh", color: "#f1f5f9", overflow: "hidden", fontFamily: "'Inter', sans-serif" }}>
 
       {/* Main High-Definition Workspace */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
-        
+
         {/* Superior Top Header */}
         <div style={{ padding: "16px 40px", borderBottom: `1px solid ${EH_BORDER}`, background: "rgba(8,9,10,0.85)", backdropFilter: "blur(20px)", zIndex: 10 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 10, color: "#475569", marginBottom: 8, fontWeight: 800, letterSpacing: 1 }}>
-            <span onClick={onBack} style={{ cursor: "pointer", color: EH_PRIMARY }}>APEX</span> <span>∕</span> 
-            <span>CHAMBERS</span> <span>∕</span> 
+            <span onClick={onBack} style={{ cursor: "pointer", color: EH_PRIMARY }}>APEX</span> <span>∕</span>
+            <span>CHAMBERS</span> <span>∕</span>
             <span style={{ color: "#fff" }}>{ws.name.toUpperCase()}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               <h1 style={{ margin: 0, fontSize: 28, fontWeight: 900, fontFamily: 'Orbitron', letterSpacing: -1, color: "#fff", textShadow: `0 0 20px ${EH_PRIMARY}33`, display: "flex", alignItems: "center", gap: 12 }}>
                 {ws.name}
-                <button 
+                <button
                   onClick={() => {
                     navigator.clipboard.writeText(ws.name);
                     setCopiedText("name");
@@ -5573,7 +5577,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                 </button>
               </h1>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <div 
+                <div
                   onClick={() => {
                     navigator.clipboard.writeText(ws.id);
                     setCopiedText("id");
@@ -5600,7 +5604,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
                   <span>ID: {ws.id}</span>
                   <span>{copiedText === "id" ? "✓" : <LuClipboard style={{ display: 'inline-block', verticalAlign: 'middle' }} />}</span>
                 </div>
-                <div 
+                <div
                   onClick={() => {
                     navigator.clipboard.writeText(ws.accessCode);
                     setCopiedText("code");
@@ -5634,7 +5638,7 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <div style={{ position: "relative" }}>
-                <input id="eh-search" value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} placeholder="SEARCH SYSTEM..." style={{ background: "#111316", border: `1px solid ${EH_BORDER}`, borderRadius: 8, padding: "10px 16px", width: 260, fontSize: 11, fontWeight: 800, color: "#fff", outline: "none", letterSpacing: 1 }} />
+                <input id="eh-search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="SEARCH SYSTEM..." style={{ background: "#111316", border: `1px solid ${EH_BORDER}`, borderRadius: 8, padding: "10px 16px", width: 260, fontSize: 11, fontWeight: 800, color: "#fff", outline: "none", letterSpacing: 1 }} />
               </div>
               <button style={{ padding: "10px 24px", background: EH_PRIMARY, border: "none", borderRadius: 8, color: "#000", fontWeight: 900, fontSize: 12, cursor: "pointer", boxShadow: `0 10px 20px ${EH_PRIMARY}33` }}>INITIALIZE</button>
             </div>
@@ -5642,24 +5646,24 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
         </div>
 
         {/* Horizontal Navigation Tabs */}
-        <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          gap: 6, 
-          padding: "0 40px", 
-          background: 'var(--bg-base)', 
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "0 40px",
+          background: 'var(--bg-base)',
           borderBottom: `1px solid ${EH_BORDER}`,
           flexShrink: 0
         }}>
           {WORKSPACE_TABS.map(([id, lbl]) => (
-            <div key={id} onClick={() => setTab(id)} style={{ 
-              display: "flex", alignItems: "center", gap: 10, padding: "14px 20px", 
+            <div key={id} onClick={() => setTab(id)} style={{
+              display: "flex", alignItems: "center", gap: 10, padding: "14px 20px",
               cursor: "pointer", borderBottom: tab === id ? `3px solid ${EH_PRIMARY}` : "3px solid transparent",
               color: tab === id ? EH_PRIMARY : "#94a3b8", transition: "0.2s",
               fontWeight: 800, fontSize: 12, letterSpacing: 1
             }}
-            onMouseEnter={e => { if (tab !== id) e.currentTarget.style.color = "#fff"; }}
-            onMouseLeave={e => { if (tab !== id) e.currentTarget.style.color = "#94a3b8"; }}
+              onMouseEnter={e => { if (tab !== id) e.currentTarget.style.color = "#fff"; }}
+              onMouseLeave={e => { if (tab !== id) e.currentTarget.style.color = "#94a3b8"; }}
             >
               <span style={{ fontSize: 18 }}>{id === "pipeline" ? <LuAtom style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : id === "timeline" ? "⎙" : id === "chat" ? "" : id === "team" ? "⧉" : "⌬"}</span>
               <span>{lbl.toUpperCase()}</span>
@@ -5669,21 +5673,21 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
 
         {/* Tab Body with depth */}
         <div style={{ flex: 1, overflow: "hidden", position: "relative", background: "radial-gradient(circle at 50% 50%, var(--bg-base) 0%, var(--bg-base) 100%)" }}>
-          {tab==="pipeline"  && <EHPipeline  user={user} ws={ws} tasks={tasks.filter(t=>t.title.toLowerCase().includes(searchQuery.toLowerCase()))} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} onSelectTask={setSelectedTask} selectedTaskId={liveTask?.id} />}
-          {tab==="timeline"  && <EHTimeline  tasks={tasks} ws={ws} members={members} />}
-          {tab==="chat"      && <EHChat user={user} ws={ws} eh={eh} setEH={setEH} addLog={addLog} />}
-          {tab==="team"      && <EHTeam      user={user} ws={ws} eh={eh} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} />}
-          {tab==="insights"  && <EHInsights  tasks={tasks} members={members} ws={ws} eh={eh} />}
+          {tab === "pipeline" && <EHPipeline user={user} ws={ws} tasks={tasks.filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()))} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} onSelectTask={setSelectedTask} selectedTaskId={liveTask?.id} />}
+          {tab === "timeline" && <EHTimeline tasks={tasks} ws={ws} members={members} />}
+          {tab === "chat" && <EHChat user={user} ws={ws} eh={eh} setEH={setEH} addLog={addLog} />}
+          {tab === "team" && <EHTeam user={user} ws={ws} eh={eh} members={members} isAdmin={isAdmin} setEH={setEH} addLog={addLog} />}
+          {tab === "insights" && <EHInsights tasks={tasks} members={members} ws={ws} eh={eh} />}
         </div>
       </div>
 
       {/* 3. Right Intelligence Drawer */}
-      <div style={{ 
-        position: "fixed", top: 0, right: liveTask ? 0 : -520, width: 520, height: "100vh", 
-        background: 'var(--bg-base)', borderLeft: `1px solid ${EH_BORDER}`, zIndex: 1000, 
+      <div style={{
+        position: "fixed", top: 0, right: liveTask ? 0 : -520, width: 520, height: "100vh",
+        background: 'var(--bg-base)', borderLeft: `1px solid ${EH_BORDER}`, zIndex: 1000,
         transition: "right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)", boxShadow: "-40px 0 100px rgba(0,0,0,0.8)"
       }}>
-        {liveTask && <EHTaskDetail task={liveTask} members={members} user={user} isAdmin={isAdmin} setEH={setEH} addLog={addLog} eh={eh} onClose={()=>setSelectedTask(null)} />}
+        {liveTask && <EHTaskDetail task={liveTask} members={members} user={user} isAdmin={isAdmin} setEH={setEH} addLog={addLog} eh={eh} onClose={() => setSelectedTask(null)} />}
       </div>
     </div>
   );
@@ -5692,22 +5696,22 @@ function EHWorkspaceView({ user, ws, eh, setEH, onBack }) {
 // ═══ PIPELINE VIEW ═══════════════════════════════════════════════════════════
 function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelectTask, selectedTaskId }) {
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task" });
+  const [form, setForm] = useState({ title: "", description: "", assignedTo: "", priority: "Medium", deadline: "", type: "Task" });
 
   const createTask = () => {
     if (!form.title.trim()) return;
-    
+
     const maxNum = tasks.reduce((max, task) => {
       const parts = (task.key || "").split("-");
       const num = parseInt(parts[1], 10);
       return (!isNaN(num) && num > max) ? num : max;
     }, 100);
-    const nextKey = `${ws.name.slice(0,2).toUpperCase()}-${maxNum + 1}`;
-    
-    const t = { id:uid(), workspaceId:ws.id, ...form, status:"Backlog", createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), key: nextKey };
-    setEH(prev=>({...prev,tasks:[...(prev.tasks||[]),t]}));
+    const nextKey = `${ws.name.slice(0, 2).toUpperCase()}-${maxNum + 1}`;
+
+    const t = { id: uid(), workspaceId: ws.id, ...form, status: "Backlog", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), key: nextKey };
+    setEH(prev => ({ ...prev, tasks: [...(prev.tasks || []), t] }));
     addLog(`Initialized Issue: ${form.title}`);
-    setForm({ title:"", description:"", assignedTo:"", priority:"Medium", deadline:"", type: "Task" });
+    setForm({ title: "", description: "", assignedTo: "", priority: "Medium", deadline: "", type: "Task" });
     setShowCreate(false);
   };
 
@@ -5715,7 +5719,7 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
     e.preventDefault();
     const taskId = e.dataTransfer.getData("text/plain");
     if (!taskId) return;
-    
+
     setEH(prev => {
       const updatedTasks = (prev.tasks || []).map(t => {
         if (t.id === taskId) {
@@ -5738,11 +5742,11 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
         const isOverWIP = colTasks.length > meta.wip;
 
         return (
-          <div 
-            key={statusKey} 
+          <div
+            key={statusKey}
             onDragOver={e => e.preventDefault()}
             onDrop={e => handleDrop(e, statusKey)}
-            style={{ 
+            style={{
               width: 320, minWidth: 320, background: "var(--surface-1)", borderRadius: 16, display: "flex", flexDirection: "column",
               border: `1px solid ${isOverWIP ? "#ef4444" : EH_BORDER}`, transition: "0.3s",
               boxShadow: 'var(--shadow-lg)'
@@ -5751,52 +5755,52 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
             <div style={{ padding: "18px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${EH_BORDER}`, background: "var(--surface-1)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 13, fontWeight: 900, color: meta.color, letterSpacing: 1.5, fontFamily: 'Orbitron' }}>{meta.label.toUpperCase()}</span>
-                <span style={{ fontSize: 11, background: meta.color+"22", padding: "1px 8px", borderRadius: 4, color: meta.color, fontWeight: 900 }}>{colTasks.length}</span>
+                <span style={{ fontSize: 11, background: meta.color + "22", padding: "1px 8px", borderRadius: 4, color: meta.color, fontWeight: 900 }}>{colTasks.length}</span>
               </div>
               {meta.wip < 99 && <span style={{ fontSize: 10, fontWeight: 800, color: isOverWIP ? "#ef4444" : "#444" }}>LIMIT: {meta.wip}</span>}
             </div>
             <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: 14 }}>
               {colTasks.map(t => (
-                <EHCard 
-                  key={t.id} 
-                  task={t} 
-                  members={members} 
-                  onSelect={() => onSelectTask(t)} 
-                  active={selectedTaskId === t.id} 
+                <EHCard
+                  key={t.id}
+                  task={t}
+                  members={members}
+                  onSelect={() => onSelectTask(t)}
+                  active={selectedTaskId === t.id}
                   onDragStart={e => e.dataTransfer.setData("text/plain", t.id)}
                 />
               ))}
               {isAdmin && statusKey === "Backlog" && (
-                 <button onClick={() => setShowCreate(true)} style={{ background: "var(--surface-1)", border: `1px dashed ${EH_BORDER}`, color: "#475569", padding: "14px", borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 900, letterSpacing: 1, transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.borderColor=EH_PRIMARY}>+ CREATE ISSUE</button>
+                <button onClick={() => setShowCreate(true)} style={{ background: "var(--surface-1)", border: `1px dashed ${EH_BORDER}`, color: "#475569", padding: "14px", borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 900, letterSpacing: 1, transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = EH_PRIMARY}>+ CREATE ISSUE</button>
               )}
             </div>
           </div>
         );
       })}
 
-      <Modal open={showCreate} onClose={()=>setShowCreate(false)} title="Mission Initialization" width={520} style={{ fontFamily: 'Orbitron' }}>
+      <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Mission Initialization" width={520} style={{ fontFamily: 'Orbitron' }}>
         <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 16, marginBottom: 20 }}>
-          <Sel value={form.type} onChange={v=>setForm({...form,type:v})}>
+          <Sel value={form.type} onChange={v => setForm({ ...form, type: v })}>
             <option>Task</option><option>Story</option><option>Bug</option><option>Epic</option>
           </Sel>
-          <Inp value={form.title} onChange={v=>setForm({...form,title:v})} placeholder="Primary Directive..." style={{ fontSize: 18, fontWeight: 900 }} />
+          <Inp value={form.title} onChange={v => setForm({ ...form, title: v })} placeholder="Primary Directive..." style={{ fontSize: 18, fontWeight: 900 }} />
         </div>
-        <textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} placeholder="Technical specs and operational details..." rows={5}
-          style={{ width:"100%", background:"rgba(0,0,0,0.3)", border:`1px solid ${EH_BORDER}`, borderRadius:12, padding:"16px", color:"#fff", fontSize:14, resize:"vertical", outline:"none", fontFamily:"inherit" }} />
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginTop: 20 }}>
-          <Sel value={form.assignedTo} onChange={v=>setForm({...form,assignedTo:v})}>
+        <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Technical specs and operational details..." rows={5}
+          style={{ width: "100%", background: "rgba(0,0,0,0.3)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "16px", color: "#fff", fontSize: 14, resize: "vertical", outline: "none", fontFamily: "inherit" }} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginTop: 20 }}>
+          <Sel value={form.assignedTo} onChange={v => setForm({ ...form, assignedTo: v })}>
             <option value="">Unassigned</option>
-            {members.map(m=><option key={m.id} value={m.userId}>{m.name}</option>)}
+            {members.map(m => <option key={m.id} value={m.userId}>{m.name}</option>)}
           </Sel>
-          <Sel value={form.priority} onChange={v=>setForm({...form,priority:v})}>
-            {Object.keys(EH_PRIORITY).map(p=><option key={p}>{p}</option>)}
+          <Sel value={form.priority} onChange={v => setForm({ ...form, priority: v })}>
+            {Object.keys(EH_PRIORITY).map(p => <option key={p}>{p}</option>)}
           </Sel>
-          <div style={{ position:"relative" }}>
-             <Inp type="date" value={form.deadline} onChange={v=>setForm({...form,deadline:v})} />
-             <div style={{ position:"absolute", top:-7, left:12, background:'var(--bg-base)', fontSize:9, fontWeight:900, color:"#94a3b8", padding:"0 4px", letterSpacing:1 }}>DEADLINE</div>
+          <div style={{ position: "relative" }}>
+            <Inp type="date" value={form.deadline} onChange={v => setForm({ ...form, deadline: v })} />
+            <div style={{ position: "absolute", top: -7, left: 12, background: 'var(--bg-base)', fontSize: 9, fontWeight: 900, color: "#94a3b8", padding: "0 4px", letterSpacing: 1 }}>DEADLINE</div>
           </div>
         </div>
-        <button onClick={createTask} style={{ width:"100%", marginTop:24, background: EH_PRIMARY, border: "none", color: "#000", padding: "14px", borderRadius: 12, fontWeight: 900, fontSize: 14, cursor: "pointer", boxShadow: `0 10px 30px ${EH_PRIMARY}33` }}>INITIALIZE MISSION</button>
+        <button onClick={createTask} style={{ width: "100%", marginTop: 24, background: EH_PRIMARY, border: "none", color: "#000", padding: "14px", borderRadius: 12, fontWeight: 900, fontSize: 14, cursor: "pointer", boxShadow: `0 10px 30px ${EH_PRIMARY}33` }}>INITIALIZE MISSION</button>
       </Modal>
     </div>
   );
@@ -5804,34 +5808,34 @@ function EHPipeline({ user, ws, tasks, members, isAdmin, setEH, addLog, onSelect
 
 function EHCard({ task, members, onSelect, active, onDragStart }) {
   const p = EH_PRIORITY[task.priority] || EH_PRIORITY.Medium;
-  const assignee = members.find(m=>m.userId===task.assignedTo);
+  const assignee = members.find(m => m.userId === task.assignedTo);
 
   return (
-    <div 
+    <div
       draggable
       onDragStart={onDragStart}
       onClick={onSelect}
-      style={{ 
+      style={{
         padding: "16px", background: active ? "linear-gradient(135deg, #1c2126, #111316)" : 'var(--bg-base)', border: `1px solid ${active ? EH_PRIMARY : EH_BORDER}`,
-        borderRadius: 14, cursor: "pointer", transition: "all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)", 
+        borderRadius: 14, cursor: "pointer", transition: "all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)",
         boxShadow: active ? `0 10px 40px ${EH_PRIMARY}22` : "none",
         transform: active ? "scale(1.02) translateX(4px)" : "none"
       }}
-      onMouseEnter={e => { if(!active) { e.currentTarget.style.borderColor = "#3bacd6"; e.currentTarget.style.transform = "translateY(-4px)"; } }}
-      onMouseLeave={e => { if(!active) { e.currentTarget.style.borderColor = EH_BORDER; e.currentTarget.style.transform = "none"; } }}
+      onMouseEnter={e => { if (!active) { e.currentTarget.style.borderColor = "#3bacd6"; e.currentTarget.style.transform = "translateY(-4px)"; } }}
+      onMouseLeave={e => { if (!active) { e.currentTarget.style.borderColor = EH_BORDER; e.currentTarget.style.transform = "none"; } }}
     >
-      <div style={{ display:"flex", justifyContent: "space-between", marginBottom:12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
         <div style={{ display: "flex", gap: 8 }}>
           <span style={{ fontSize: 10, fontWeight: 900, color: "#475569", fontFamily: "monospace", letterSpacing: 1 }}>{task.key || "UN-???"}</span>
           <EHTag label={task.type || "Task"} color={task.type === "Bug" ? "#ef4444" : task.type === "Story" ? "#34b7f1" : "#475569"} />
         </div>
         <span style={{ color: p.color, fontSize: 13, fontWeight: 900 }}>{p.icon}</span>
       </div>
-      <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", marginBottom:14, lineHeight: 1.4, lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+      <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", marginBottom: 14, lineHeight: 1.4, lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
         {task.title}
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", borderTop: `1px solid var(--surface-1)`, paddingTop: 10 }}>
-        <EHAvatar name={assignee?.name||"?"} size={26} />
+        <EHAvatar name={assignee?.name || "?"} size={26} />
       </div>
     </div>
   );
@@ -5878,7 +5882,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       rec.continuous = true;
       rec.interimResults = true;
       rec.lang = 'en-US';
-      
+
       let finalTranscript = "";
       rec.onresult = (event) => {
         let interimTranscript = "";
@@ -5895,8 +5899,8 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       rec.onend = () => {
         setRecordingMode(null);
       };
-      rec.onerror = () => {};
-      
+      rec.onerror = () => { };
+
       recognitionRef.current = rec;
       rec.start();
       setRecordingMode('transcribe');
@@ -5910,7 +5914,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
     } else if (recordingMode === 'transcribe') {
       if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch(e){}
+        try { recognitionRef.current.stop(); } catch (e) { }
       }
     }
   };
@@ -5928,7 +5932,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   };
 
   const [editing, setEditing] = useState(false);
-  const [editDesc, setEditDesc] = useState(task.description||"");
+  const [editDesc, setEditDesc] = useState(task.description || "");
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const [file, setFile] = useState(null);
@@ -5944,9 +5948,9 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
     }
   }, [comment]);
 
-  const comments = (eh.comments||[]).filter(c=>c.taskId===task.id);
-  const meta = EH_STATUS[task.status]||EH_STATUS.Backlog;
-  const assignee = members.find(m=>m.userId===task.assignedTo);
+  const comments = (eh.comments || []).filter(c => c.taskId === task.id);
+  const meta = EH_STATUS[task.status] || EH_STATUS.Backlog;
+  const assignee = members.find(m => m.userId === task.assignedTo);
   const p = EH_PRIORITY[task.priority] || EH_PRIORITY.Medium;
 
   useEffect(() => {
@@ -5998,15 +6002,15 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   };
 
   const updateStatus = (status) => {
-    setEH(prev=>({...prev,tasks:prev.tasks.map(t=>t.id===task.id?{...t,status,updatedAt:new Date().toISOString()}:t)}));
+    setEH(prev => ({ ...prev, tasks: prev.tasks.map(t => t.id === task.id ? { ...t, status, updatedAt: new Date().toISOString() } : t) }));
     addLog(`Task status  ${status}`);
   };
   const saveDesc = () => {
-    setEH(prev=>({...prev,tasks:prev.tasks.map(t=>t.id===task.id?{...t,description:editDesc}:t)}));
+    setEH(prev => ({ ...prev, tasks: prev.tasks.map(t => t.id === task.id ? { ...t, description: editDesc } : t) }));
     setEditing(false);
   };
   const updateField = (field, value) => {
-    setEH(prev=>({...prev,tasks:prev.tasks.map(t=>t.id===task.id?{...t,[field]:value,updatedAt:new Date().toISOString()}:t)}));
+    setEH(prev => ({ ...prev, tasks: prev.tasks.map(t => t.id === task.id ? { ...t, [field]: value, updatedAt: new Date().toISOString() } : t) }));
     addLog(`Task ${field} updated`);
   };
 
@@ -6021,7 +6025,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
     const s = { maxWidth: "100%", borderRadius: 12, marginTop: 10, border: "1px solid var(--surface-3)", display: "block" };
     if (c.fType?.startsWith("image/")) return (
       <div style={{ marginTop: 12, position: "relative", overflow: "hidden", borderRadius: 12, border: "1px solid var(--border-subtle)", boxShadow: 'var(--shadow-lg)' }}>
-        <img src={c.file} style={{ ...s, cursor: "zoom-in", transition: "transform 0.3s ease" }} alt={c.fName} onClick={() => window.setGlobalLightboxImg?.(c.file)} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.03)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1.0)"} />
+        <img src={c.file} style={{ ...s, cursor: "zoom-in", transition: "transform 0.3s ease" }} alt={c.fName} onClick={() => window.setGlobalLightboxImg?.(c.file)} onMouseEnter={e => e.currentTarget.style.transform = "scale(1.03)"} onMouseLeave={e => e.currentTarget.style.transform = "scale(1.0)"} />
       </div>
     );
     if (c.fType?.startsWith("video/")) return <video src={c.file} controls style={s} />;
@@ -6032,24 +6036,24 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
       </div>
     );
     return (
-      <a href={c.file} download={c.fName} style={{ 
-        display: "flex", 
-        alignItems: "center", 
-        gap: 12, 
-        background: isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)", 
+      <a href={c.file} download={c.fName} style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        background: isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)",
         border: isMe ? "1px solid rgba(0,0,0,0.08)" : `1px solid ${EH_BORDER}`,
-        padding: "12px 16px", 
-        borderRadius: 12, 
-        color: isMe ? "#050505" : "#00B8D9", 
-        marginTop: 12, 
-        textDecoration: "none", 
-        fontSize: 13, 
+        padding: "12px 16px",
+        borderRadius: 12,
+        color: isMe ? "#050505" : "#00B8D9",
+        marginTop: 12,
+        textDecoration: "none",
+        fontSize: 13,
         fontWeight: 800,
         boxShadow: "inset 0 1px 0 var(--surface-2)",
-        transition: "0.2s" 
+        transition: "0.2s"
       }}
-      onMouseEnter={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.18)" : "var(--surface-2)"; }}
-      onMouseLeave={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)"; }}
+        onMouseEnter={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.18)" : "var(--surface-2)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = isMe ? "rgba(0,0,0,0.12)" : "var(--surface-1)"; }}
       >
         <div style={{ width: 36, height: 36, borderRadius: 8, background: isMe ? "rgba(0,0,0,0.15)" : "rgba(0,184,217,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 18 }}><LuFile style={{ display: 'inline-block', verticalAlign: 'middle' }} /></div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -6062,22 +6066,22 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
   };
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", height:"100%", background: EH_PANEL }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: EH_PANEL }}>
       <div style={{ padding: "24px 30px", borderBottom: `1px solid ${EH_BORDER}`, background: "var(--surface-1)", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <div style={{ display: "flex", gap: 10 }}>
-                <span style={{ fontSize: 10, fontWeight: 900, color: "#444", fontFamily: "monospace", letterSpacing: 2 }}>{task.key || "EH-???"}</span>
-                <EHTag label={task.type?.toUpperCase() || "TASK"} color={EH_PRIMARY} />
-            </div>
-            <button onClick={onClose} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 24, padding: 0 }}>✕</button>
+          <div style={{ display: "flex", gap: 10 }}>
+            <span style={{ fontSize: 10, fontWeight: 900, color: "#444", fontFamily: "monospace", letterSpacing: 2 }}>{task.key || "EH-???"}</span>
+            <EHTag label={task.type?.toUpperCase() || "TASK"} color={EH_PRIMARY} />
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 24, padding: 0 }}>✕</button>
         </div>
         <h1 style={{ margin: 0, fontSize: 20, fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 16 }}>{task.title}</h1>
-        
+
         {/* Glowing Tab Header */}
         <div style={{ display: "flex", gap: 10, borderBottom: `1px solid ${EH_BORDER}`, margin: "0 -30px -25px", padding: "0 30px" }}>
           {[["chat", "Discussion"], ["details", "Details"]].map(([id, label]) => (
-            <div 
-              key={id} 
+            <div
+              key={id}
               onClick={() => setDrawerTab(id)}
               style={{
                 padding: "12px 16px",
@@ -6109,7 +6113,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
 
         return (
           <div style={{ flex: 1, overflowY: "auto", padding: "30px", display: "flex", flexDirection: "column", gap: 24 }}>
-            
+
             {/* Horizontal Data Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div style={{ background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: "12px 16px" }}>
@@ -6126,29 +6130,29 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
 
             {/* Main Cyber Attributes Dashboard */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20, background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 16, padding: 20 }}>
-              
+
               {/* ASSIGNEE CONTAINER */}
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>ASSIGNEE</span>
                 <div style={{ position: "relative" }}>
-                  <div 
-                    onClick={() => { setShowAssigneeDropdown(!showAssigneeDropdown); setShowStatusDropdown(false); setShowPriorityDropdown(false); }} 
+                  <div
+                    onClick={() => { setShowAssigneeDropdown(!showAssigneeDropdown); setShowStatusDropdown(false); setShowPriorityDropdown(false); }}
                     style={{ display: "flex", alignItems: "center", gap: 10, background: "var(--surface-1)", padding: "10px 14px", borderRadius: 10, border: `1px solid ${EH_BORDER}`, cursor: "pointer", transition: "0.2s" }}
                   >
-                    <EHAvatar name={assignee?.name||"?"} size={24} />
+                    <EHAvatar name={assignee?.name || "?"} size={24} />
                     <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", flex: 1 }}>{assignee?.name || "UNASSIGNED"}</span>
                     <span style={{ fontSize: 10, color: "#475569" }}>▼</span>
                   </div>
                   {showAssigneeDropdown && (
                     <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: 'var(--bg-base)', border: `1px solid ${EH_BORDER}`, borderRadius: 12, padding: 6, zIndex: 1000, boxShadow: 'var(--shadow-lg)', maxHeight: 180, overflowY: "auto" }}>
-                      <div 
+                      <div
                         onClick={() => { updateField("assignedTo", null); setShowAssigneeDropdown(false); }}
                         style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#ef4444", fontWeight: 700 }}
                       >
                         <LuCircleX style={{ display: 'inline-block', verticalAlign: 'middle' }} /> UNASSIGN TASK
                       </div>
                       {members.map(m => (
-                        <div 
+                        <div
                           key={m.userId}
                           onClick={() => { updateField("assignedTo", m.userId); setShowAssigneeDropdown(false); }}
                           style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#e2e8f0", transition: "0.2s", background: task.assignedTo === m.userId ? "var(--surface-2)" : "transparent" }}
@@ -6164,12 +6168,12 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
 
               {/* Grid block for status and priority */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                
+
                 {/* STATUS PICKER */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>STATUS</span>
                   <div style={{ position: "relative" }}>
-                    <div 
+                    <div
                       onClick={() => { setShowStatusDropdown(!showStatusDropdown); setShowAssigneeDropdown(false); setShowPriorityDropdown(false); }}
                       style={{ display: "flex", alignItems: "center", gap: 8, background: `${meta.color}15`, border: `1.5px solid ${meta.color}`, borderRadius: 10, padding: "10px 14px", cursor: "pointer", transition: "all 0.2s", justifyContent: "space-between" }}
                     >
@@ -6181,7 +6185,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                         {Object.keys(EH_STATUS).map(s => {
                           const m = EH_STATUS[s];
                           return (
-                            <div 
+                            <div
                               key={s}
                               onClick={() => { updateStatus(s); setShowStatusDropdown(false); }}
                               style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 800, color: m.color, transition: "0.2s", background: task.status === s ? `${m.color}15` : "transparent" }}
@@ -6199,7 +6203,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>PRIORITY</span>
                   <div style={{ position: "relative" }}>
-                    <div 
+                    <div
                       onClick={() => { setShowPriorityDropdown(!showPriorityDropdown); setShowAssigneeDropdown(false); setShowStatusDropdown(false); }}
                       style={{ display: "flex", alignItems: "center", gap: 8, background: `${p.color}15`, border: `1.5px solid ${p.color}`, borderRadius: 10, padding: "10px 14px", cursor: "pointer", transition: "all 0.2s", justifyContent: "space-between" }}
                     >
@@ -6211,7 +6215,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                         {Object.keys(EH_PRIORITY).map(key => {
                           const pr = EH_PRIORITY[key];
                           return (
-                            <div 
+                            <div
                               key={key}
                               onClick={() => { updateField("priority", key); setShowPriorityDropdown(false); }}
                               style={{ padding: "8px 12px", borderRadius: 8, display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 11, fontWeight: 800, color: pr.color, transition: "0.2s", background: task.priority === key ? `${pr.color}15` : "transparent" }}
@@ -6232,11 +6236,11 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
               <div style={{ display: "flex", flexDirection: "column", gap: 6, borderTop: `1px solid var(--surface-1)`, paddingTop: 16 }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: "#64748b", letterSpacing: 1 }}>DEADLINE LIMIT</span>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <input 
-                    type="date" 
-                    value={task.deadline || ""} 
-                    onChange={e => updateField("deadline", e.target.value)} 
-                    style={{ background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 10, color: "#fff", fontWeight: 700, fontSize: 12, padding: "10px 14px", outline: "none", fontFamily: "monospace" }} 
+                  <input
+                    type="date"
+                    value={task.deadline || ""}
+                    onChange={e => updateField("deadline", e.target.value)}
+                    style={{ background: "var(--surface-1)", border: `1px solid ${EH_BORDER}`, borderRadius: 10, color: "#fff", fontWeight: 700, fontSize: 12, padding: "10px 14px", outline: "none", fontFamily: "monospace" }}
                   />
                   <span style={{ fontSize: 12, color: dlStats.color, fontWeight: 800, letterSpacing: 0.5 }}>{dlStats.label}</span>
                 </div>
@@ -6251,17 +6255,17 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                 {!editing && <button onClick={() => setEditing(true)} style={{ background: "none", border: "none", color: EH_PRIMARY, fontSize: 11, fontWeight: 900, cursor: "pointer", letterSpacing: 0.5 }}>EDIT</button>}
               </div>
               {editing ? (
-                <textarea 
-                  value={editDesc} 
-                  onChange={e => setEditDesc(e.target.value)} 
-                  onBlur={saveDesc} 
-                  autoFocus 
-                  rows={6} 
-                  style={{ width: "100%", background: "#0c0e10", border: "none", padding: "18px", color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box" }} 
+                <textarea
+                  value={editDesc}
+                  onChange={e => setEditDesc(e.target.value)}
+                  onBlur={saveDesc}
+                  autoFocus
+                  rows={6}
+                  style={{ width: "100%", background: "#0c0e10", border: "none", padding: "18px", color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit", lineHeight: 1.6, boxSizing: "border-box" }}
                 />
               ) : (
-                <div 
-                  onClick={() => setEditing(true)} 
+                <div
+                  onClick={() => setEditing(true)}
                   style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, padding: "18px", cursor: "text", minHeight: 120, wordBreak: "break-word" }}
                 >
                   {task.description || <span style={{ color: "#475569", fontStyle: "italic" }}>No description recorded. Click to write details.</span>}
@@ -6284,84 +6288,85 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             .cyber-input:focus-within { border-color: ${EH_PRIMARY}aa !important; box-shadow: var(--shadow-glow); }
           `}</style>
           {/* WhatsApp-Style Chat body */}
-          <div 
-            className="cyber-chat-pane" 
-            style={{ 
-              flex: 1, 
-              overflowY: "auto", 
-              padding: "30px", 
-              display: "flex", 
-              flexDirection: "column", 
-              gap: 20, 
+          <div
+            className="cyber-chat-pane"
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "30px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
               background: "radial-gradient(circle at top right, rgba(0, 184, 217, 0.04), transparent 45%), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.04), transparent 45%), #090b0d",
               position: "relative"
             }}
           >
-              {comments.map((c, idx) => {
-                  const isMe = c.userId === user.id;
-                  return (
-                  <div 
-                    key={c.id} 
-                    onContextMenu={(e) => handleCommentInteraction(e, c)}
-                    style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "80%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}
-                  >
-                      <EHAvatar name={c.userName} size={32} />
-                      <div className="cyber-bubble" style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1, position: "relative" }}>
-                          <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6, flexDirection: isMe ? "row-reverse" : "row" }}>
-                              <span style={{ fontSize: 10, fontWeight: 900, color: isMe ? EH_PRIMARY : "#64748b", letterSpacing: 1.5 }}>{c.userName.toUpperCase()}</span>
-                              <span style={{ fontSize: 8, color: "#475569", fontFamily: "monospace", fontWeight: 700 }}>{new Date(c.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                          </div>
-                          
-                          {/* Quick Options Overlay Menu */}
-                          {isMe && (
-                            <div className="bubble-actions-trigger" style={{
-                              position: "absolute",
-                              top: 24,
-                              [isMe ? "left" : "right"]: -36,
-                              display: "flex",
-                              gap: 2,
-                              opacity: 0,
-                              transform: "scale(0.85)",
-                              transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-                              background: "#0c0e10",
-                              border: `1px solid ${EH_BORDER}`,
-                              borderRadius: 20,
-                              padding: "2px 6px",
-                              zIndex: 10,
-                              boxShadow: 'var(--shadow-lg)'
-                            }}>
-                              <button onClick={(e) => { e.stopPropagation(); startEditComment(c); }} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Edit">✎</button>
-                              <button onClick={(e) => { e.stopPropagation(); deleteComment(c.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Delete"><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
-                            </div>
-                          )}
+            {comments.map((c, idx) => {
+              const isMe = c.userId === user.id;
+              return (
+                <div
+                  key={c.id}
+                  onContextMenu={(e) => handleCommentInteraction(e, c)}
+                  style={{ display: "flex", gap: 14, alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "80%", flexDirection: isMe ? "row-reverse" : "row", animation: "msgSlide 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}
+                >
+                  <EHAvatar name={c.userName} size={32} />
+                  <div className="cyber-bubble" style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", flex: 1, position: "relative" }}>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6, flexDirection: isMe ? "row-reverse" : "row" }}>
+                      <span style={{ fontSize: 10, fontWeight: 900, color: isMe ? EH_PRIMARY : "#64748b", letterSpacing: 1.5 }}>{c.userName.toUpperCase()}</span>
+                      <span style={{ fontSize: 8, color: "#475569", fontFamily: "monospace", fontWeight: 700 }}>{new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
 
-                          <div style={{ 
-                              fontSize: 13, 
-                              color: isMe ? "#050505" : "#e2e8f0", 
-                              lineHeight: 1.6, 
-                              background: isMe ? `linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)` : "var(--surface-1)", 
-                              padding: "14px 18px", 
-                              borderRadius: isMe ? "18px 4px 18px 18px" : "4px 18px 18px 18px", 
-                              border: isMe ? "none" : `1px solid var(--surface-2)`,
-                              boxShadow: isMe ? `0 8px 24px rgba(0, 242, 254, 0.15)` : "0 8px 32px rgba(0,0,0,0.25)",
-                              wordBreak: "break-word",
-                              paddingBottom: c.isEdited ? "22px" : "14px",
-                              position: "relative",
-                              fontWeight: isMe ? 800 : 500
-                          }}>
-                              <div>{c.comment}</div>
-                              {renderFile(c, isMe)}
-                              {c.isEdited && (
-                                <span style={{ fontSize: 8, color: isMe ? "rgba(5,5,5,0.5)" : "var(--text-muted)", position: "absolute", bottom: 4, right: 8, fontWeight: 900, letterSpacing: 0.5, textTransform: "uppercase" }}>Edited</span>
-                              )}
-                          </div>
+                    {/* Quick Options Overlay Menu */}
+                    {isMe && (
+                      <div className="bubble-actions-trigger" style={{
+                        position: "absolute",
+                        top: 24,
+                        [isMe ? "left" : "right"]: -36,
+                        display: "flex",
+                        gap: 2,
+                        opacity: 0,
+                        transform: "scale(0.85)",
+                        transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                        background: "#0c0e10",
+                        border: `1px solid ${EH_BORDER}`,
+                        borderRadius: 20,
+                        padding: "2px 6px",
+                        zIndex: 10,
+                        boxShadow: 'var(--shadow-lg)'
+                      }}>
+                        <button onClick={(e) => { e.stopPropagation(); startEditComment(c); }} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Edit">✎</button>
+                        <button onClick={(e) => { e.stopPropagation(); deleteComment(c.id); }} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 10, padding: "4px" }} title="Delete"><LuTrash2 style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
                       </div>
+                    )}
+
+                    <div style={{
+                      fontSize: 13,
+                      color: isMe ? "#050505" : "#e2e8f0",
+                      lineHeight: 1.6,
+                      background: isMe ? `linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)` : "var(--surface-1)",
+                      padding: "14px 18px",
+                      borderRadius: isMe ? "18px 4px 18px 18px" : "4px 18px 18px 18px",
+                      border: isMe ? "none" : `1px solid var(--surface-2)`,
+                      boxShadow: isMe ? `0 8px 24px rgba(0, 242, 254, 0.15)` : "0 8px 32px rgba(0,0,0,0.25)",
+                      wordBreak: "break-word",
+                      paddingBottom: c.isEdited ? "22px" : "14px",
+                      position: "relative",
+                      fontWeight: isMe ? 800 : 500
+                    }}>
+                      <div>{c.comment}</div>
+                      {renderFile(c, isMe)}
+                      {c.isEdited && (
+                        <span style={{ fontSize: 8, color: isMe ? "rgba(5,5,5,0.5)" : "var(--text-muted)", position: "absolute", bottom: 4, right: 8, fontWeight: 900, letterSpacing: 0.5, textTransform: "uppercase" }}>Edited</span>
+                      )}
+                    </div>
                   </div>
-              )})}
-              <div ref={chatEndRef} />
-              {comments.length === 0 && <div style={{ margin: "auto", color: "#555", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>NO MISSION LOGS RECORDED.</div>}
+                </div>
+              )
+            })}
+            <div ref={chatEndRef} />
+            {comments.length === 0 && <div style={{ margin: "auto", color: "#555", fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>NO MISSION LOGS RECORDED.</div>}
           </div>
-          
+
           {/* Footer attachments and input */}
           <div style={{ padding: "20px 30px", borderTop: `1px solid ${EH_BORDER}`, flexShrink: 0, background: "rgba(17, 20, 24, 0.4)", backdropFilter: "blur(20px)" }}>
             {file && (
@@ -6371,7 +6376,7 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
                 <button onClick={() => setFile(null)} style={{ background: "none", border: "none", color: "#ef4444", fontWeight: 800, cursor: "pointer", fontSize: 11, letterSpacing: 1 }}>DISCARD</button>
               </div>
             )}
-            
+
             {audioBlob && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12, background: 'rgba(0,184,217,0.1)', padding: "12px 18px", borderRadius: 12, border: `1px solid rgba(0,184,217,0.2)`, animation: "msgSlide 0.25s ease-out" }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -6384,72 +6389,72 @@ function EHTaskDetail({ task, members, user, isAdmin, setEH, addLog, eh, onClose
             )}
 
             <div className="cyber-input" style={{ display: "flex", gap: 12, background: "#06080a", border: `1px solid var(--surface-2)`, borderRadius: 18, padding: "8px 12px", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.6)", transition: "all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)" }}>
-                <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e=>e.currentTarget.style.color=EH_PRIMARY} onMouseLeave={e=>e.currentTarget.style.color="#475569"}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
-                <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
-                <textarea
-                  ref={commentTextareaRef}
-                  value={comment}
-                  onChange={e => setComment(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      sendComment();
-                    }
-                  }}
-                  placeholder={editingCommentId ? "Revise transmission report..." : "Transmit intelligence report..."}
-                  rows={1}
-                  style={{
-                    flex: 1,
-                    background: "transparent",
-                    border: "none",
-                    color: "#fff",
-                    fontSize: 13,
-                    outline: "none",
-                    padding: "8px",
-                    fontWeight: 500,
-                    resize: "none",
-                    maxHeight: 120,
-                    fontFamily: "inherit",
-                    boxSizing: "border-box",
-                    height: "auto"
-                  }}
-                />
-                
-                {/* Direct Audio Mic */}
-                <button 
-                  onClick={recordingMode === 'audio' ? stopRecording : startAudioRecording} 
-                  disabled={recordingMode === 'transcribe'}
-                  style={{ 
-                    background: "none", border: "none", 
-                    color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "var(--border-strong)" : "#475569"), 
-                    cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer", 
-                    fontSize: 18, transition: "0.2s" 
-                  }} 
-                  title="Direct Voice Comment"
-                  onMouseEnter={e=>{ if (recordingMode !== 'transcribe') e.currentTarget.style.color=recordingMode==='audio'?"#ef4444":EH_PRIMARY; }} 
-                  onMouseLeave={e=>{ if (recordingMode !== 'transcribe') e.currentTarget.style.color=recordingMode==='audio'?"#ef4444":"#475569"; }}
-                >
-                  {recordingMode === 'audio' ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
-                </button>
+              <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#475569", transition: "0.2s" }} onMouseEnter={e => e.currentTarget.style.color = EH_PRIMARY} onMouseLeave={e => e.currentTarget.style.color = "#475569"}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
+              <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
+              <textarea
+                ref={commentTextareaRef}
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendComment();
+                  }
+                }}
+                placeholder={editingCommentId ? "Revise transmission report..." : "Transmit intelligence report..."}
+                rows={1}
+                style={{
+                  flex: 1,
+                  background: "transparent",
+                  border: "none",
+                  color: "#fff",
+                  fontSize: 13,
+                  outline: "none",
+                  padding: "8px",
+                  fontWeight: 500,
+                  resize: "none",
+                  maxHeight: 120,
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                  height: "auto"
+                }}
+              />
 
-                {/* Transcription Button */}
-                <button 
-                  onClick={recordingMode === 'transcribe' ? stopRecording : startTranscribing} 
-                  disabled={recordingMode === 'audio'}
-                  style={{ 
-                    background: "none", border: "none", 
-                    color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "var(--border-strong)" : "#475569"), 
-                    cursor: recordingMode === 'audio' ? "not-allowed" : "pointer", 
-                    fontSize: 18, transition: "0.2s", paddingRight: 6 
-                  }} 
-                  title="Voice to Text Dictation"
-                  onMouseEnter={e=>{ if (recordingMode !== 'audio') e.currentTarget.style.color=recordingMode==='transcribe'?"#22c55e":EH_PRIMARY; }} 
-                  onMouseLeave={e=>{ if (recordingMode !== 'audio') e.currentTarget.style.color=recordingMode==='transcribe'?"#22c55e":"#475569"; }}
-                >
-                  {recordingMode === 'transcribe' ? <LuOctagon style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
-                </button>
+              {/* Direct Audio Mic */}
+              <button
+                onClick={recordingMode === 'audio' ? stopRecording : startAudioRecording}
+                disabled={recordingMode === 'transcribe'}
+                style={{
+                  background: "none", border: "none",
+                  color: recordingMode === 'audio' ? "#ef4444" : (recordingMode === 'transcribe' ? "var(--border-strong)" : "#475569"),
+                  cursor: recordingMode === 'transcribe' ? "not-allowed" : "pointer",
+                  fontSize: 18, transition: "0.2s"
+                }}
+                title="Direct Voice Comment"
+                onMouseEnter={e => { if (recordingMode !== 'transcribe') e.currentTarget.style.color = recordingMode === 'audio' ? "#ef4444" : EH_PRIMARY; }}
+                onMouseLeave={e => { if (recordingMode !== 'transcribe') e.currentTarget.style.color = recordingMode === 'audio' ? "#ef4444" : "#475569"; }}
+              >
+                {recordingMode === 'audio' ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
+              </button>
 
-                <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: 'var(--radius-full)', background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow=`0 4px 20px ${EH_PRIMARY}66`;}} onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=`0 4px 15px ${EH_PRIMARY}44`;}}>{editingCommentId ? "✓" : "↵"}</button>
+              {/* Transcription Button */}
+              <button
+                onClick={recordingMode === 'transcribe' ? stopRecording : startTranscribing}
+                disabled={recordingMode === 'audio'}
+                style={{
+                  background: "none", border: "none",
+                  color: recordingMode === 'transcribe' ? "#22c55e" : (recordingMode === 'audio' ? "var(--border-strong)" : "#475569"),
+                  cursor: recordingMode === 'audio' ? "not-allowed" : "pointer",
+                  fontSize: 18, transition: "0.2s", paddingRight: 6
+                }}
+                title="Voice to Text Dictation"
+                onMouseEnter={e => { if (recordingMode !== 'audio') e.currentTarget.style.color = recordingMode === 'transcribe' ? "#22c55e" : EH_PRIMARY; }}
+                onMouseLeave={e => { if (recordingMode !== 'audio') e.currentTarget.style.color = recordingMode === 'transcribe' ? "#22c55e" : "#475569"; }}
+              >
+                {recordingMode === 'transcribe' ? <LuOctagon style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuFileText style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
+              </button>
+
+              <button onClick={sendComment} style={{ width: 36, height: 36, borderRadius: 'var(--radius-full)', background: EH_PRIMARY, border: "none", color: "#000", fontWeight: 900, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 15px ${EH_PRIMARY}44`, transition: "0.2s" }} onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = `0 4px 20px ${EH_PRIMARY}66`; }} onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 4px 15px ${EH_PRIMARY}44`; }}>{editingCommentId ? "✓" : "↵"}</button>
             </div>
           </div>
         </div>
@@ -6512,9 +6517,9 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
   const sendAudio = () => {
     if (!audioBlob) return;
     const reader = new FileReader();
-    reader.onload = () => { 
-      send("", 'audio/webm', `Voice_Note_${Date.now()}.webm`, reader.result); 
-      setAudioBlob(null); 
+    reader.onload = () => {
+      send("", 'audio/webm', `Voice_Note_${Date.now()}.webm`, reader.result);
+      setAudioBlob(null);
     };
     reader.readAsDataURL(audioBlob);
   };
@@ -6522,27 +6527,27 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
   const send = (text = null, fType = null, fName = null, fData = null) => {
     const finalMsg = text !== null ? text : msg;
     if (!finalMsg.trim() && !fData) return;
-    
+
     if (editingMsgId) {
-      const updatedChat = (eh.chat || []).map(m => 
+      const updatedChat = (eh.chat || []).map(m =>
         m.id === editingMsgId ? { ...m, text: finalMsg, isEdited: true, editTime: new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' }) } : m
       );
       setEH(prev => ({ ...prev, chat: updatedChat }));
       setEditingMsgId(null);
     } else {
-      const c = { id:uid(), workspaceId:ws.id, userId:user.id, userName:user.name, text:finalMsg, file:fData, fType, fName, time:new Date().toLocaleTimeString("en-IN",{hour:'2-digit',minute:'2-digit'}), timestamp:new Date().toISOString() };
-      setEH(prev=>({...prev, chat:[...(prev.chat||[]),c]}));
+      const c = { id: uid(), workspaceId: ws.id, userId: user.id, userName: user.name, text: finalMsg, file: fData, fType, fName, time: new Date().toLocaleTimeString("en-IN", { hour: '2-digit', minute: '2-digit' }), timestamp: new Date().toISOString() };
+      setEH(prev => ({ ...prev, chat: [...(prev.chat || []), c] }));
     }
     setMsg("");
-    setTimeout(()=>bottomRef.current?.scrollIntoView({ behavior:"smooth" }),100);
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
-  const deleteMsg = (id) => { 
-    setEH(prev => ({ ...prev, chat: prev.chat.filter(m => m.id !== id) })); 
-    setContextMenu(null); 
+  const deleteMsg = (id) => {
+    setEH(prev => ({ ...prev, chat: prev.chat.filter(m => m.id !== id) }));
+    setContextMenu(null);
   };
   const startEdit = (m) => { setEditingMsgId(m.id); setMsg(m.text); setContextMenu(null); };
-  
+
   const handleInteraction = (e, m) => {
     if (m.userId !== user.id) return;
     e.preventDefault();
@@ -6585,19 +6590,19 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
         <div style={{ alignSelf: "center", fontSize: 10, fontWeight: 900, color: "#475569", letterSpacing: 2, marginBottom: 20, background: "var(--surface-1)", padding: "4px 12px", borderRadius: 4 }}>MISSION CHANNEL ENCRYPTED // END-TO-END</div>
         {roomMsgs.map((m, idx) => {
           const isMe = m.userId === user.id;
-          const isSameUser = idx > 0 && roomMsgs[idx-1].userId === m.userId;
+          const isSameUser = idx > 0 && roomMsgs[idx - 1].userId === m.userId;
           return (
-            <div 
-              key={m.id} 
+            <div
+              key={m.id}
               onContextMenu={(e) => handleInteraction(e, m)}
               style={{ alignSelf: isMe ? "flex-end" : "flex-start", maxWidth: "80%", marginBottom: isSameUser ? -12 : 0, animation: "msgSlide 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)" }}
             >
               {!isSameUser && !isMe && <div style={{ fontSize: 11, fontWeight: 900, color: EH_PRIMARY, marginBottom: 4, letterSpacing: 0.5 }}>{m.userName.toUpperCase()}</div>}
-              <div style={{ 
+              <div style={{
                 padding: "12px 16px", paddingBottom: "20px", borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                background: isMe ? "linear-gradient(135deg, #00B8D9, #008AA1)" : "#16191c", 
+                background: isMe ? "linear-gradient(135deg, #00B8D9, #008AA1)" : "#16191c",
                 border: `1px solid ${isMe ? "var(--surface-3)" : EH_BORDER}`,
-                color: isMe ? "#000" : "#d1d5db", 
+                color: isMe ? "#000" : "#d1d5db",
                 boxShadow: 'var(--shadow-lg)',
                 position: "relative",
                 cursor: isMe ? "context-menu" : "default"
@@ -6630,7 +6635,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
 
       <div style={{ padding: "16px 40px", background: "rgba(8,9,10,0.8)", borderTop: `1px solid ${EH_BORDER}`, backdropFilter: "blur(20px)" }}>
         <div style={{ display: "flex", gap: 12, background: "#111316", padding: "8px 16px", borderRadius: 18, border: `1px solid var(--surface-2)`, alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.3)" }}>
-          <button onClick={()=>fileInputRef.current.click()} style={{ background:"none", border:"none", color:"#475569", cursor:"pointer", fontSize:20 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
+          <button onClick={() => fileInputRef.current.click()} style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 20 }}><LuPaperclip style={{ display: 'inline-block', verticalAlign: 'middle' }} /></button>
           <input type="file" ref={fileInputRef} onChange={handleFile} style={{ display: "none" }} />
           <textarea
             ref={chatTextareaRef}
@@ -6664,7 +6669,7 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
           <button onClick={recording ? stopRecording : startRecording} style={{ background: "none", border: "none", color: recording ? "#ef4444" : "#475569", cursor: "pointer", fontSize: 20 }}>
             {recording ? <LuSquare style={{ display: 'inline-block', verticalAlign: 'middle' }} /> : <LuMic style={{ display: 'inline-block', verticalAlign: 'middle' }} />}
           </button>
-          <button onClick={()=>send(null)} style={{ background: editingMsgId ? "#3b82f6" : EH_PRIMARY, border: "none", width: 40, height: 40, borderRadius: 12, color: "#000", fontWeight: 900, cursor: "pointer", transition: "0.2s", display: "flex", alignItems: "center", justifyContent: "center" }} onMouseEnter={e=>e.currentTarget.style.transform="scale(1.05)"} onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+          <button onClick={() => send(null)} style={{ background: editingMsgId ? "#3b82f6" : EH_PRIMARY, border: "none", width: 40, height: 40, borderRadius: 12, color: "#000", fontWeight: 900, cursor: "pointer", transition: "0.2s", display: "flex", alignItems: "center", justifyContent: "center" }} onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"} onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
             {editingMsgId ? "✓" : "↵"}
           </button>
         </div>
@@ -6691,11 +6696,11 @@ function EHChat({ user, ws, eh, setEH, addLog }) {
 
 // ═══ TIMELINE (GANTT) ════════════════════════════════════════════════════════
 function EHTimeline({ tasks, ws, members }) {
-  const dated = tasks.filter(t=>t.deadline);
-  const start = new Date(ws.startDate||today());
-  const end   = new Date(ws.endDate||new Date(Date.now()+30*86400000));
-  const totalMs = Math.max(end-start, 86400000);
-  const toX = (d) => Math.max(0, Math.min(100, ((new Date(d)-start)/totalMs)*100));
+  const dated = tasks.filter(t => t.deadline);
+  const start = new Date(ws.startDate || today());
+  const end = new Date(ws.endDate || new Date(Date.now() + 30 * 86400000));
+  const totalMs = Math.max(end - start, 86400000);
+  const toX = (d) => Math.max(0, Math.min(100, ((new Date(d) - start) / totalMs) * 100));
 
   return (
     <div style={{ display: "flex", height: "100%", borderTop: `1px solid ${EH_BORDER}` }}>
@@ -6708,14 +6713,14 @@ function EHTimeline({ tasks, ws, members }) {
             <span style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#cbd5e1" }}>{t.title}</span>
           </div>
         ))}
-        {dated.length===0 && <div style={{ padding: 40, textAlign:"center", fontSize:12, color:"#333" }}>NO DIRECTIVES LOGGED</div>}
+        {dated.length === 0 && <div style={{ padding: 40, textAlign: "center", fontSize: 12, color: "#333" }}>NO DIRECTIVES LOGGED</div>}
       </div>
       {/* Timeline Pane */}
       <div style={{ flex: 1, overflowX: "auto", position: "relative" }}>
         <div style={{ display: "flex", height: 50, borderBottom: `1px solid ${EH_BORDER}`, background: "var(--surface-1)" }}>
-          {[0,0.2,0.4,0.6,0.8,1].map(p => {
-             const d = new Date(start.getTime() + p * totalMs);
-             return <div key={p} style={{ flex: 1, borderRight: `1px solid ${EH_BORDER}`, fontSize: 10, color: "#475569", padding: "18px 0", textAlign: "center", fontWeight: 800 }}>{d.toLocaleDateString("en-IN",{month:'short',day:'2-digit'}).toUpperCase()}</div>
+          {[0, 0.2, 0.4, 0.6, 0.8, 1].map(p => {
+            const d = new Date(start.getTime() + p * totalMs);
+            return <div key={p} style={{ flex: 1, borderRight: `1px solid ${EH_BORDER}`, fontSize: 10, color: "#475569", padding: "18px 0", textAlign: "center", fontWeight: 800 }}>{d.toLocaleDateString("en-IN", { month: 'short', day: '2-digit' }).toUpperCase()}</div>
           })}
         </div>
         <div style={{ padding: "20px 0" }}>
@@ -6725,19 +6730,19 @@ function EHTimeline({ tasks, ws, members }) {
             const w = Math.max(2, tx2 - tx1);
             return (
               <div key={t.id} style={{ height: 38, position: "relative" }}>
-                 <div style={{ 
-                   position: "absolute", left: `${tx1}%`, width: `${w}%`, top: 8, height: 22, 
-                   background: `${EH_PRIMARY}22`, border: `1px solid ${EH_PRIMARY}88`, borderRadius: 12,
-                   display: "flex", alignItems: "center", gap: 8, fontSize: 10, padding: "0 12px", color: EH_PRIMARY, fontWeight: 900,
-                   boxShadow: `0 0 20px ${EH_PRIMARY}11`
-                 }}>
-                   <span style={{ opacity: 0.6 }}>{t.key}</span>
-                   <span style={{ whiteSpace: "nowrap", overflow:"hidden" }}>{t.title}</span>
-                 </div>
+                <div style={{
+                  position: "absolute", left: `${tx1}%`, width: `${w}%`, top: 8, height: 22,
+                  background: `${EH_PRIMARY}22`, border: `1px solid ${EH_PRIMARY}88`, borderRadius: 12,
+                  display: "flex", alignItems: "center", gap: 8, fontSize: 10, padding: "0 12px", color: EH_PRIMARY, fontWeight: 900,
+                  boxShadow: `0 0 20px ${EH_PRIMARY}11`
+                }}>
+                  <span style={{ opacity: 0.6 }}>{t.key}</span>
+                  <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>{t.title}</span>
+                </div>
               </div>
             );
           })}
-          {dated.length===0 && <div style={{ textAlign:"center", padding:100, fontSize:12, color:"#444", fontWeight:800 }}>ATTACH DEADLINES TO VISUALIZE TIMELINE</div>}
+          {dated.length === 0 && <div style={{ textAlign: "center", padding: 100, fontSize: 12, color: "#444", fontWeight: 800 }}>ATTACH DEADLINES TO VISUALIZE TIMELINE</div>}
         </div>
       </div>
     </div>
@@ -6761,12 +6766,12 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
     if (!req) return;
     const newMember = { id: uid(), workspaceId: ws.id, userId: req.userId, name: req.userName, email: req.userEmail || "", role: "Member", status: "Approved", joinedAt: new Date().toISOString() };
     const isAlreadyMember = (eh.members || []).some(m => m.userId === req.userId && m.workspaceId === ws.id);
-    
+
     setEH(prev => ({
       ...prev,
-      joinRequests: prev.joinRequests.map(r => 
-        (r.userId === req.userId && r.workspaceId === ws.id && r.status === "Pending") 
-          ? { ...r, status: "Approved" } 
+      joinRequests: prev.joinRequests.map(r =>
+        (r.userId === req.userId && r.workspaceId === ws.id && r.status === "Pending")
+          ? { ...r, status: "Approved" }
           : r
       ),
       members: isAlreadyMember ? (prev.members || []) : [...(prev.members || []), newMember]
@@ -6779,9 +6784,9 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
     if (!req) return;
     setEH(prev => ({
       ...prev,
-      joinRequests: prev.joinRequests.map(r => 
-        (r.userId === req.userId && r.workspaceId === ws.id && r.status === "Pending") 
-          ? { ...r, status: "Rejected" } 
+      joinRequests: prev.joinRequests.map(r =>
+        (r.userId === req.userId && r.workspaceId === ws.id && r.status === "Pending")
+          ? { ...r, status: "Rejected" }
           : r
       )
     }));
@@ -6789,37 +6794,37 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
   };
 
   const removeMember = (memberId, name) => {
-    setEH(prev=>({...prev,members:prev.members.filter(m=>m.id!==memberId)}));
+    setEH(prev => ({ ...prev, members: prev.members.filter(m => m.id !== memberId) }));
     addLog(`Removed member: ${name}`);
   };
 
   const updateRole = (memberId, role) => {
-    setEH(prev=>({...prev,members:prev.members.map(m=>m.id===memberId?{...m,role}:m)}));
+    setEH(prev => ({ ...prev, members: prev.members.map(m => m.id === memberId ? { ...m, role } : m) }));
   };
 
   return (
     <div>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-        <div style={{ fontWeight:700, fontSize:17, color:"#f1f5f9" }}>Team Management</div>
-        <div style={{ fontSize:13, color:"#64748b" }}>{members.length+1} member{members.length!==0?"s":""}</div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+        <div style={{ fontWeight: 700, fontSize: 17, color: "#f1f5f9" }}>Team Management</div>
+        <div style={{ fontSize: 13, color: "#64748b" }}>{members.length + 1} member{members.length !== 0 ? "s" : ""}</div>
       </div>
 
       {/* Pending join requests */}
-      {isAdmin && pendingReqs.length>0 && (
-        <Card style={{ marginBottom:20, border:"1px solid rgba(245,158,11,0.3)" }}>
-          <div style={{ fontWeight:700, fontSize:13, color:"#f59e0b", marginBottom:12, display:"flex", alignItems:"center", gap:6 }}>
+      {isAdmin && pendingReqs.length > 0 && (
+        <Card style={{ marginBottom: 20, border: "1px solid rgba(245,158,11,0.3)" }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: "#f59e0b", marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
             <LuBell style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Pending Requests ({pendingReqs.length})
           </div>
-          {pendingReqs.map(r=>(
-            <div key={r.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 0", borderBottom:"1px solid var(--surface-2)" }}>
+          {pendingReqs.map(r => (
+            <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: "1px solid var(--surface-2)" }}>
               <EHAvatar name={r.userName} size={34} />
-              <div style={{ flex:1 }}>
-                <div style={{ fontWeight:700, fontSize:13, color:"#f1f5f9" }}>{r.userName}</div>
-                <div style={{ fontSize:11, color:"#64748b" }}>Requested {fmtDate(r.requestedAt||r.createdAt||"")}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 13, color: "#f1f5f9" }}>{r.userName}</div>
+                <div style={{ fontSize: 11, color: "#64748b" }}>Requested {fmtDate(r.requestedAt || r.createdAt || "")}</div>
               </div>
-              <div style={{ display:"flex", gap:8 }}>
-                <button onClick={()=>approveReq(r.id,r.userName)} style={{ padding:"5px 14px", background:"rgba(34,197,94,0.12)", border:"1px solid rgba(34,197,94,0.3)", borderRadius:8, color:"#22c55e", fontSize:12, fontWeight:700, cursor:"pointer" }}>Approve</button>
-                <button onClick={()=>rejectReq(r.id,r.userName)}  style={{ padding:"5px 14px", background:"rgba(239,68,68,0.08)",  border:"1px solid rgba(239,68,68,0.2)",   borderRadius:8, color:"#f87171", fontSize:12, fontWeight:700, cursor:"pointer" }}>Reject</button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={() => approveReq(r.id, r.userName)} style={{ padding: "5px 14px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Approve</button>
+                <button onClick={() => rejectReq(r.id, r.userName)} style={{ padding: "5px 14px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#f87171", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Reject</button>
               </div>
             </div>
           ))}
@@ -6828,62 +6833,62 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
 
       {/* Members table */}
       <Card>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
-          <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>Team</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <span style={{ fontWeight: 700, fontSize: 14, color: "#f1f5f9" }}>Team</span>
         </div>
         {/* Table header */}
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"6px 0 10px", borderBottom:"1px solid var(--border-subtle)", fontSize:11, fontWeight:700, color:"#475569", textTransform:"uppercase", letterSpacing:0.5 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 1fr 100px", gap: 8, padding: "6px 0 10px", borderBottom: "1px solid var(--border-subtle)", fontSize: 11, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 0.5 }}>
           <span>Member</span><span>Role</span><span>Status</span><span>Actions</span>
         </div>
         {/* Creator row */}
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"12px 0", alignItems:"center", borderBottom:"1px solid var(--surface-2)" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 1fr 100px", gap: 8, padding: "12px 0", alignItems: "center", borderBottom: "1px solid var(--surface-2)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <EHAvatar name={user.name} size={34} online />
             <div>
-              <div style={{ fontWeight:700, fontSize:13, color:"#f1f5f9" }}>{user.name} (You)</div>
-              <div style={{ fontSize:11, color:"#64748b" }}>{user.email||""}</div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: "#f1f5f9" }}>{user.name} (You)</div>
+              <div style={{ fontSize: 11, color: "#64748b" }}>{user.email || ""}</div>
             </div>
           </div>
           <EHBadge label="Admin" color={EH_ROLE_C.Admin} />
-          <span style={{ fontSize:12, color:"#22c55e" }}>● Active</span>
-          <span style={{ fontSize:11, color:"#555" }}>Creator</span>
+          <span style={{ fontSize: 12, color: "#22c55e" }}>● Active</span>
+          <span style={{ fontSize: 11, color: "#555" }}>Creator</span>
         </div>
-        {members.filter(m=>m.userId!==user.id).map(m=>(
-          <div key={m.id} style={{ display:"grid", gridTemplateColumns:"1fr 100px 1fr 100px", gap:8, padding:"12px 0", alignItems:"center", borderBottom:"1px solid var(--surface-2)" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+        {members.filter(m => m.userId !== user.id).map(m => (
+          <div key={m.id} style={{ display: "grid", gridTemplateColumns: "1fr 100px 1fr 100px", gap: 8, padding: "12px 0", alignItems: "center", borderBottom: "1px solid var(--surface-2)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <EHAvatar name={m.name} size={34} />
               <div>
-                <div style={{ fontWeight:700, fontSize:13, color:"#f1f5f9" }}>{m.name}</div>
-                <div style={{ fontSize:11, color:"#64748b" }}>{m.email||"Team member"}</div>
+                <div style={{ fontWeight: 700, fontSize: 13, color: "#f1f5f9" }}>{m.name}</div>
+                <div style={{ fontSize: 11, color: "#64748b" }}>{m.email || "Team member"}</div>
               </div>
             </div>
             {isAdmin ? (
-              <select value={m.role} onChange={e=>updateRole(m.id,e.target.value)}
-                style={{ background:"#1a1a2e", border:"1px solid var(--surface-3)", borderRadius:8, padding:"4px 8px", color:EH_ROLE_C[m.role]||"#fff", fontSize:11, fontWeight:700 }}>
-                {["Member","Manager","Admin","Observer"].map(r=><option key={r}>{r}</option>)}
+              <select value={m.role} onChange={e => updateRole(m.id, e.target.value)}
+                style={{ background: "#1a1a2e", border: "1px solid var(--surface-3)", borderRadius: 8, padding: "4px 8px", color: EH_ROLE_C[m.role] || "#fff", fontSize: 11, fontWeight: 700 }}>
+                {["Member", "Manager", "Admin", "Observer"].map(r => <option key={r}>{r}</option>)}
               </select>
             ) : (
-              <EHBadge label={m.role} color={EH_ROLE_C[m.role]||"#6c63ff"} />
+              <EHBadge label={m.role} color={EH_ROLE_C[m.role] || "#6c63ff"} />
             )}
-            <span style={{ fontSize:12, color:"#22c55e" }}>● Active</span>
+            <span style={{ fontSize: 12, color: "#22c55e" }}>● Active</span>
             {isAdmin ? (
-              <button onClick={()=>removeMember(m.id,m.name)} style={{ padding:"4px 12px", background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", borderRadius:7, color:"#f87171", fontSize:11, fontWeight:600, cursor:"pointer" }}>Remove</button>
+              <button onClick={() => removeMember(m.id, m.name)} style={{ padding: "4px 12px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 7, color: "#f87171", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>Remove</button>
             ) : <span />}
           </div>
         ))}
-        {members.filter(m=>m.userId!==user.id).length===0 && (
-          <div style={{ textAlign:"center", padding:"20px 0", color:"#3a3a5c", fontSize:13 }}>No other members yet. Share the Workspace ID and Access Code to invite people.</div>
+        {members.filter(m => m.userId !== user.id).length === 0 && (
+          <div style={{ textAlign: "center", padding: "20px 0", color: "#3a3a5c", fontSize: 13 }}>No other members yet. Share the Workspace ID and Access Code to invite people.</div>
         )}
       </Card>
 
       {/* Share info box */}
-      <div style={{ marginTop:16, background:'var(--accent-bg)', border:"1px solid var(--accent-bg)", borderRadius:10, padding:"14px 18px" }}>
-        <div style={{ fontSize:12, fontWeight:700, color:"#3b82f6", marginBottom:8 }}><LuLink style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Invite Members</div>
-        <div style={{ display:"flex", gap:20, fontSize:13 }}>
-          <div><span style={{ color:"#64748b" }}>Workspace ID: </span><span style={{ color:"#f1f5f9", fontWeight:700, letterSpacing:1 }}>{ws.id}</span></div>
-          <div><span style={{ color:"#64748b" }}>Access Code: </span><span style={{ color:"#3b82f6", fontWeight:800, letterSpacing:2 }}>{ws.accessCode}</span></div>
+      <div style={{ marginTop: 16, background: 'var(--accent-bg)', border: "1px solid var(--accent-bg)", borderRadius: 10, padding: "14px 18px" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#3b82f6", marginBottom: 8 }}><LuLink style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Invite Members</div>
+        <div style={{ display: "flex", gap: 20, fontSize: 13 }}>
+          <div><span style={{ color: "#64748b" }}>Workspace ID: </span><span style={{ color: "#f1f5f9", fontWeight: 700, letterSpacing: 1 }}>{ws.id}</span></div>
+          <div><span style={{ color: "#64748b" }}>Access Code: </span><span style={{ color: "#3b82f6", fontWeight: 800, letterSpacing: 2 }}>{ws.accessCode}</span></div>
         </div>
-        <div style={{ fontSize:11, color:"#475569", marginTop:6 }}>Share these credentials with team members so they can join.</div>
+        <div style={{ fontSize: 11, color: "#475569", marginTop: 6 }}>Share these credentials with team members so they can join.</div>
       </div>
     </div>
   );
@@ -6891,120 +6896,120 @@ function EHTeam({ user, ws, eh, members, isAdmin, setEH, addLog }) {
 
 // ═══ INSIGHTS DASHBOARD ══════════════════════════════════════════════════════
 function EHInsights({ tasks, members, ws, eh }) {
-  const total      = tasks.length;
-  const backlog    = tasks.filter(t=>t.status==="Backlog").length;
-  const todo       = tasks.filter(t=>t.status==="Todo").length;
-  const inProgress = tasks.filter(t=>t.status==="InProgress").length;
-  const review     = tasks.filter(t=>t.status==="Review").length;
-  const done       = tasks.filter(t=>t.status==="Done").length;
-  
-  const overdue    = tasks.filter(t=>t.deadline && new Date(t.deadline)<new Date() && t.status!=="Done").length;
-  const pct        = total ? Math.round((done/total)*100) : 0;
-  const reqs       = (eh.joinRequests||[]).filter(r=>r.workspaceId===ws.id);
-  const approved   = reqs.filter(r=>r.status==="Approved").length;
-  const rejected   = reqs.filter(r=>r.status==="Rejected").length;
+  const total = tasks.length;
+  const backlog = tasks.filter(t => t.status === "Backlog").length;
+  const todo = tasks.filter(t => t.status === "Todo").length;
+  const inProgress = tasks.filter(t => t.status === "InProgress").length;
+  const review = tasks.filter(t => t.status === "Review").length;
+  const done = tasks.filter(t => t.status === "Done").length;
 
-  const memberStats = members.map(m=>{
-    const mt = tasks.filter(t=>t.assignedTo===m.userId);
-    const md = mt.filter(t=>t.status==="Done").length;
-    return { ...m, assigned:mt.length, done:md, eff:mt.length?Math.round((md/mt.length)*100):0 };
-  }).sort((a,b)=>b.done-a.done);
+  const overdue = tasks.filter(t => t.deadline && new Date(t.deadline) < new Date() && t.status !== "Done").length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const reqs = (eh.joinRequests || []).filter(r => r.workspaceId === ws.id);
+  const approved = reqs.filter(r => r.status === "Approved").length;
+  const rejected = reqs.filter(r => r.status === "Rejected").length;
 
-  const overallEff = memberStats.length ? Math.round(memberStats.reduce((s,m)=>s+m.eff,0)/memberStats.length) : 0;
+  const memberStats = members.map(m => {
+    const mt = tasks.filter(t => t.assignedTo === m.userId);
+    const md = mt.filter(t => t.status === "Done").length;
+    return { ...m, assigned: mt.length, done: md, eff: mt.length ? Math.round((md / mt.length) * 100) : 0 };
+  }).sort((a, b) => b.done - a.done);
+
+  const overallEff = memberStats.length ? Math.round(memberStats.reduce((s, m) => s + m.eff, 0) / memberStats.length) : 0;
 
   return (
     <div>
-      <div style={{ fontWeight:700, fontSize:17, color:"#f1f5f9", marginBottom:20 }}>Insights</div>
+      <div style={{ fontWeight: 700, fontSize: 17, color: "#f1f5f9", marginBottom: 20 }}>Insights</div>
       {/* Task Overview cards */}
-      <div style={{ marginBottom:8, fontWeight:700, fontSize:13, color:"#94a3b8", textTransform:"uppercase", letterSpacing:0.5 }}>Task Overview</div>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:24 }}>
+      <div style={{ marginBottom: 8, fontWeight: 700, fontSize: 13, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Task Overview</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 24 }}>
         {[
-          ["Total",       total,    "#6c63ff", "Scoring smart"],
-          ["Completed",   done,     "#22c55e", "Autoespace"],
-          ["Approved",    approved, "#3b82f6", "Approved"],
-          ["Completion",  pct+"%",  "#f59e0b", "Completion"],
-        ].map(([l,v,c,sub])=>(
-          <Card key={l} style={{ border:`1px solid ${c}22` }}>
-            <div style={{ fontSize:26, fontWeight:800, color:c, marginBottom:2 }}>{v}</div>
-            <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>{l}</div>
-            <div style={{ height:3, background:"var(--surface-2)", borderRadius:2, overflow:"hidden" }}>
-              <div style={{ height:"100%", width:typeof v === "number" ? `${Math.min(100,(v/Math.max(total,1))*100)}%` : `${pct}%`, background:c, borderRadius:2 }} />
+          ["Total", total, "#6c63ff", "Scoring smart"],
+          ["Completed", done, "#22c55e", "Autoespace"],
+          ["Approved", approved, "#3b82f6", "Approved"],
+          ["Completion", pct + "%", "#f59e0b", "Completion"],
+        ].map(([l, v, c, sub]) => (
+          <Card key={l} style={{ border: `1px solid ${c}22` }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: c, marginBottom: 2 }}>{v}</div>
+            <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>{l}</div>
+            <div style={{ height: 3, background: "var(--surface-2)", borderRadius: 2, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: typeof v === "number" ? `${Math.min(100, (v / Math.max(total, 1)) * 100)}%` : `${pct}%`, background: c, borderRadius: 2 }} />
             </div>
           </Card>
         ))}
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
         {/* Status pie + delayed */}
-        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Card>
-            <div style={{ fontWeight:700, fontSize:14, color:"#f1f5f9", marginBottom:14 }}>Status Distribution</div>
-            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+            <div style={{ fontWeight: 700, fontSize: 14, color: "#f1f5f9", marginBottom: 14 }}>Status Distribution</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <EHPieChart size={120} slices={[
-                { value:backlog,    color:"#94a3b8" },
-                { value:todo,       color:"#34b7f1" },
-                { value:inProgress, color:"#f59e0b" },
-                { value:review,     color:"#8b5cf6" },
-                { value:done,       color:"#22c55e" },
-              ].filter(s=>s.value>0)} />
-              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                { value: backlog, color: "#94a3b8" },
+                { value: todo, color: "#34b7f1" },
+                { value: inProgress, color: "#f59e0b" },
+                { value: review, color: "#8b5cf6" },
+                { value: done, color: "#22c55e" },
+              ].filter(s => s.value > 0)} />
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {[
                   ["#94a3b8", "Backlog", backlog],
                   ["#34b7f1", "To Do", todo],
                   ["#f59e0b", "In Progress", inProgress],
                   ["#8b5cf6", "Review", review],
                   ["#22c55e", "Done", done]
-                ].map(([c,l,v])=>(
-                  <div key={l} style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <div style={{ width:8, height:8, borderRadius:2, background:c, flexShrink:0 }} />
-                    <span style={{ fontSize:12, color:"#94a3b8", minWidth:90 }}>{l}</span>
-                    <span style={{ fontSize:13, fontWeight:700, color:"#f1f5f9" }}>{v}</span>
+                ].map(([c, l, v]) => (
+                  <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 2, background: c, flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: "#94a3b8", minWidth: 90 }}>{l}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#f1f5f9" }}>{v}</span>
                   </div>
                 ))}
               </div>
             </div>
           </Card>
           <Card>
-            <div style={{ fontWeight:700, fontSize:14, color:"#f1f5f9", marginBottom:14 }}>Delayed & Overdue Tasks</div>
-            <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+            <div style={{ fontWeight: 700, fontSize: 14, color: "#f1f5f9", marginBottom: 14 }}>Delayed & Overdue Tasks</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <div>
-                <div style={{ fontSize:40, fontWeight:800, color:"#ef4444" }}>{overdue}</div>
-                <div style={{ fontSize:12, color:"#888", marginTop:2 }}>Overdue Tasks</div>
+                <div style={{ fontSize: 40, fontWeight: 800, color: "#ef4444" }}>{overdue}</div>
+                <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>Overdue Tasks</div>
               </div>
-              <EHDonut pct={total?Math.round(((total-overdue)/total)*100):100} size={90} color="#22c55e" />
+              <EHDonut pct={total ? Math.round(((total - overdue) / total) * 100) : 100} size={90} color="#22c55e" />
             </div>
           </Card>
         </div>
 
         {/* Team productivity */}
         <Card>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
-            <span style={{ fontWeight:700, fontSize:14, color:"#f1f5f9" }}>Team Productivity</span>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+            <span style={{ fontWeight: 700, fontSize: 14, color: "#f1f5f9" }}>Team Productivity</span>
             <EHDonut pct={overallEff} size={70} color="#3b82f6" />
           </div>
-          {memberStats.slice(0,6).map(m=>(
-            <div key={m.id} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+          {memberStats.slice(0, 6).map(m => (
+            <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
               <EHAvatar name={m.name} size={28} />
-              <div style={{ flex:1 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-                  <span style={{ fontSize:12, color:"#e2e8f0", fontWeight:600 }}>{m.name.split(" ")[0]}</span>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#f1f5f9" }}>{m.done}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                  <span style={{ fontSize: 12, color: "#e2e8f0", fontWeight: 600 }}>{m.name.split(" ")[0]}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#f1f5f9" }}>{m.done}</span>
                 </div>
-                <div style={{ height:4, background:"var(--border-subtle)", borderRadius:2, overflow:"hidden" }}>
-                  <div style={{ height:"100%", width:`${m.eff}%`, background:"#3b82f6", borderRadius:2, transition:"width 0.4s" }} />
+                <div style={{ height: 4, background: "var(--border-subtle)", borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${m.eff}%`, background: "#3b82f6", borderRadius: 2, transition: "width 0.4s" }} />
                 </div>
               </div>
             </div>
           ))}
-          {memberStats.length===0 && <div style={{ color:"#555", fontSize:13 }}>Add members to see productivity metrics.</div>}
+          {memberStats.length === 0 && <div style={{ color: "#555", fontSize: 13 }}>Add members to see productivity metrics.</div>}
           {/* Join stats */}
-          <div style={{ marginTop:16, paddingTop:14, borderTop:"1px solid var(--border-subtle)" }}>
-            <div style={{ fontSize:11, fontWeight:700, color:"#555", textTransform:"uppercase", letterSpacing:0.5, marginBottom:8 }}>Join Requests</div>
-            <div style={{ display:"flex", gap:12 }}>
-              {[["Approved",approved,"#22c55e"],["Pending",reqs.filter(r=>r.status==="Pending").length,"#f59e0b"],["Rejected",rejected,"#ef4444"]].map(([l,v,c])=>(
-                <div key={l} style={{ textAlign:"center" }}>
-                  <div style={{ fontSize:20, fontWeight:800, color:c }}>{v}</div>
-                  <div style={{ fontSize:10, color:"#64748b" }}>{l}</div>
+          <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border-subtle)" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Join Requests</div>
+            <div style={{ display: "flex", gap: 12 }}>
+              {[["Approved", approved, "#22c55e"], ["Pending", reqs.filter(r => r.status === "Pending").length, "#f59e0b"], ["Rejected", rejected, "#ef4444"]].map(([l, v, c]) => (
+                <div key={l} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: c }}>{v}</div>
+                  <div style={{ fontSize: 10, color: "#64748b" }}>{l}</div>
                 </div>
               ))}
             </div>
@@ -7032,7 +7037,7 @@ function HabitTracker({ user }) {
     { id: "meditation", icon: <LuActivity style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Meditation", type: "positive", color: "#a78bfa" },
     { id: "mobile", icon: <LuSmartphone style={{ display: 'inline-block', verticalAlign: 'middle' }} />, label: "Avoid Mobile", type: "negative", color: "#ef4444" }
   ]);
-  
+
   const [logs, setLogs] = useLS(`apx_habits_${user.id}`, {});
   const [showAdd, setShowAdd] = useState(false);
   const [newHabit, setNewHabit] = useState({ label: "", icon: <LuTarget style={{ display: 'inline-block', verticalAlign: 'middle' }} />, type: "numeric", unit: "times", target: 10, color: "#6c63ff" });
@@ -7072,14 +7077,14 @@ function HabitTracker({ user }) {
     const offset = Number(localStorage.getItem("apx_date_offset") || 0);
     let checkDate = new Date();
     checkDate.setDate(checkDate.getDate() + offset);
-    
+
     while (true) {
       const dateStr = toLocalDateStr(checkDate);
       const val = logs[dateStr]?.[habitId] ?? 0;
       const h = myHabits.find(x => x.id === habitId);
-      if (h && calculatePct(h, val) === 100) { 
-        streak++; 
-        checkDate.setDate(checkDate.getDate() - 1); 
+      if (h && calculatePct(h, val) === 100) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
       } else {
         break;
       }
@@ -7104,19 +7109,19 @@ function HabitTracker({ user }) {
     const offset = Number(localStorage.getItem("apx_date_offset") || 0);
     const current = new Date();
     current.setDate(current.getDate() + offset);
-    
+
     const year = current.getFullYear();
     const month = current.getMonth();
     const totalDaysInMonth = daysInMonth(year, month);
-    
+
     const getWeekAvg = (startDay, endDay) => {
       let totalScore = 0;
       let count = 0;
       for (let day = startDay; day <= endDay; day++) {
         const dateObj = new Date(year, month, day);
         const dateStr = toLocalDateStr(dateObj);
-        const dailyScore = myHabits.length 
-          ? myHabits.reduce((sum, h) => sum + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length 
+        const dailyScore = myHabits.length
+          ? myHabits.reduce((sum, h) => sum + calculatePct(h, logs[dateStr]?.[h.id] ?? 0), 0) / myHabits.length
           : 0;
         totalScore += dailyScore;
         count++;
@@ -7142,22 +7147,22 @@ function HabitTracker({ user }) {
 
   return (
     <div style={{ padding: "24px 32px", background: 'var(--bg-base)', minHeight: "100vh" }}>
-      <PageHeader title="Warrior Discipline" subtitle="Forge your character through repetition" 
+      <PageHeader title="Warrior Discipline" subtitle="Forge your character through repetition"
         actions={<button onClick={() => setShowAdd(true)} style={{ padding: "12px 24px", background: "linear-gradient(135deg, #6c63ff, #3b82f6)", border: "none", borderRadius: 12, color: "#fff", fontWeight: 800, cursor: "pointer" }}>+ New Habit</button>} />
-      
+
       {/* ─── BAR CHART ANALYTICS ─── */}
       <Card style={{ marginBottom: 32, padding: "24px", background: "rgba(10,10,15,0.8)", border: "1px solid var(--surface-2)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 30 }}>
           <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}><LuChartBar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> DISCIPLINE TRAJECTORY</div>
           <div style={{ display: "flex", gap: 6, background: "rgba(0,0,0,0.4)", padding: 4, borderRadius: 10, border: "1px solid var(--surface-2)" }}>
-            <button 
-              onClick={() => setChartView("day")} 
+            <button
+              onClick={() => setChartView("day")}
               style={{ padding: "6px 12px", background: chartView === "day" ? "linear-gradient(135deg, #6c63ff, #3b82f6)" : "none", border: "none", borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 900, cursor: "pointer", transition: "0.2s", letterSpacing: 0.5 }}
             >
               DAILY (THIS WEEK)
             </button>
-            <button 
-              onClick={() => setChartView("week")} 
+            <button
+              onClick={() => setChartView("week")}
               style={{ padding: "6px 12px", background: chartView === "week" ? "linear-gradient(135deg, #6c63ff, #3b82f6)" : "none", border: "none", borderRadius: 8, color: "#fff", fontSize: 10, fontWeight: 900, cursor: "pointer", transition: "0.2s", letterSpacing: 0.5 }}
             >
               WEEKLY COMPARISON
@@ -7165,7 +7170,7 @@ function HabitTracker({ user }) {
           </div>
         </div>
         <div style={{ display: "flex", height: 200, position: 'relative' }}>
-          
+
           {/* Vertical Y-Axis (0-100%) */}
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", paddingRight: 15, color: "#444", fontSize: 10, fontWeight: 800, textAlign: "right", width: 40, borderRight: '1px solid #222' }}>
             <span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span>
@@ -7182,9 +7187,9 @@ function HabitTracker({ user }) {
                 const dayLabel = dateObj.toLocaleDateString("en-IN", { weekday: 'short' });
                 return (
                   <div key={i} onClick={() => setSelectedDateStr(dateStr)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative', cursor: 'pointer' }}>
-                    <div style={{ 
-                      width: "100%", height: `${Math.max(score, 2)}%`, 
-                      background: score === 100 ? "#22c55e" : `linear-gradient(to top, #6c63ff, #3b82f6)`, 
+                    <div style={{
+                      width: "100%", height: `${Math.max(score, 2)}%`,
+                      background: score === 100 ? "#22c55e" : `linear-gradient(to top, #6c63ff, #3b82f6)`,
                       borderRadius: "4px 4px 0 0", transition: "all 0.3s ease",
                       opacity: isSelected ? 1 : 0.5,
                       boxShadow: isSelected ? `0 0 15px ${score === 100 ? '#22c55e' : '#6c63ff'}` : "none",
@@ -7203,9 +7208,9 @@ function HabitTracker({ user }) {
                 const isCurrent = i === weeklyComparison.length - 1;
                 return (
                   <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end", position: 'relative' }}>
-                    <div style={{ 
-                      width: "100%", height: `${Math.max(item.score, 2)}%`, 
-                      background: item.score === 100 ? "#22c55e" : `linear-gradient(to top, #8b5cf6, #3b82f6)`, 
+                    <div style={{
+                      width: "100%", height: `${Math.max(item.score, 2)}%`,
+                      background: item.score === 100 ? "#22c55e" : `linear-gradient(to top, #8b5cf6, #3b82f6)`,
                       borderRadius: "4px 4px 0 0", transition: "height 0.8s ease",
                       opacity: isCurrent ? 1 : 0.6,
                       boxShadow: isCurrent ? `0 0 15px #8b5cf655` : "none"
@@ -7225,30 +7230,30 @@ function HabitTracker({ user }) {
 
       {/* Active date indicator banner if viewing past days */}
       {selectedDateStr !== today() && (
-        <div style={{ 
-          background: 'var(--accent-bg)', 
-          border: "1px solid var(--accent-bg)", 
-          borderRadius: 12, 
-          padding: "12px 20px", 
-          marginBottom: 20, 
-          display: "flex", 
-          justifyContent: "space-between", 
+        <div style={{
+          background: 'var(--accent-bg)',
+          border: "1px solid var(--accent-bg)",
+          borderRadius: 12,
+          padding: "12px 20px",
+          marginBottom: 20,
+          display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
           fontFamily: "'Inter', sans-serif"
         }}>
           <span style={{ fontSize: 13, color: "#3bacd6", fontWeight: 700 }}>
             <LuCalendar style={{ display: 'inline-block', verticalAlign: 'middle' }} /> Viewing and logging habits for: <strong style={{ color: '#fff' }}>{fmtDate(selectedDateStr)}</strong>
           </span>
-          <button 
-            onClick={() => setSelectedDateStr(today())} 
-            style={{ 
-              background: "#3bacd6", 
-              border: "none", 
-              borderRadius: 8, 
-              color: "#fff", 
-              fontSize: 10, 
-              fontWeight: 900, 
-              padding: "6px 14px", 
+          <button
+            onClick={() => setSelectedDateStr(today())}
+            style={{
+              background: "#3bacd6",
+              border: "none",
+              borderRadius: 8,
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 900,
+              padding: "6px 14px",
               cursor: "pointer",
               letterSpacing: 0.5,
               transition: '0.2s'
@@ -7304,8 +7309,8 @@ function HabitTracker({ user }) {
                     const initials = ["M", "T", "W", "T", "F", "S", "S"][idx];
                     return (
                       <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
-                        <div style={{ 
-                          width: 8, 
+                        <div style={{
+                          width: 8,
                           height: `${Math.max(dayPct * 0.4, 2)}px`, // max height 40px
                           background: dayPct === 100 ? "#22c55e" : h.color,
                           borderRadius: 2,
@@ -7331,16 +7336,16 @@ function HabitTracker({ user }) {
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.9)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10000 }}>
           <div style={{ width: 400, background: "#11111a", border: "1px solid #222", borderRadius: 24, padding: "32px" }}>
             <h2 style={{ marginTop: 0, color: "#fff", fontWeight: 900 }}>Initialize Discipline</h2>
-            
+
             <div style={{ marginBottom: 20 }}>
               <label style={{ fontSize: 11, fontWeight: 800, color: "#64748b", display: "block", marginBottom: 8 }}>NAME</label>
-              <input value={newHabit.label} onChange={e => setNewHabit({...newHabit, label: e.target.value})} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff", boxSizing: "border-box" }} placeholder="e.g. Java Coding" />
+              <input value={newHabit.label} onChange={e => setNewHabit({ ...newHabit, label: e.target.value })} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff", boxSizing: "border-box" }} placeholder="e.g. Java Coding" />
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
               <div>
                 <label style={{ fontSize: 11, fontWeight: 800, color: "#64748b", display: "block", marginBottom: 8 }}>TYPE</label>
-                <select value={newHabit.type} onChange={e => setNewHabit({...newHabit, type: e.target.value})} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff" }}>
+                <select value={newHabit.type} onChange={e => setNewHabit({ ...newHabit, type: e.target.value })} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff" }}>
                   <option value="numeric">Numeric</option>
                   <option value="positive">Positive</option>
                   <option value="negative">Avoidance</option>
@@ -7348,14 +7353,14 @@ function HabitTracker({ user }) {
               </div>
               <div>
                 <label style={{ fontSize: 11, fontWeight: 800, color: "#64748b", display: "block", marginBottom: 8 }}>COLOR</label>
-                <input type="color" value={newHabit.color} onChange={e => setNewHabit({...newHabit, color: e.target.value})} style={{ width: "100%", height: 44, background: "none", border: "none", cursor: "pointer" }} />
+                <input type="color" value={newHabit.color} onChange={e => setNewHabit({ ...newHabit, color: e.target.value })} style={{ width: "100%", height: 44, background: "none", border: "none", cursor: "pointer" }} />
               </div>
             </div>
 
             {newHabit.type === "numeric" && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
-                <input type="number" placeholder="Target" onChange={e => setNewHabit({...newHabit, target: Number(e.target.value)})} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff" }} />
-                <input placeholder="Unit" onChange={e => setNewHabit({...newHabit, unit: e.target.value})} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff" }} />
+                <input type="number" placeholder="Target" onChange={e => setNewHabit({ ...newHabit, target: Number(e.target.value) })} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff" }} />
+                <input placeholder="Unit" onChange={e => setNewHabit({ ...newHabit, unit: e.target.value })} style={{ width: "100%", background: "#000", border: "1px solid #333", padding: 12, borderRadius: 10, color: "#fff" }} />
               </div>
             )}
 
@@ -7373,391 +7378,391 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
   // ─── 1. CORE DATA & STATE ───────────────────────────────────────────
 
   const WARRIOR_QUOTES = [
-  // --- ANCIENT STRATEGY & BURN THE SHIPS (1-40) ---
-  "Pressure is a privilege",
-  "Jack of all is a Master of none",
-  "If you want to take the island, burn the ships.",
-  "The more you sweat in peace, the less you bleed in war.",
-  "Fortune favors the bold.",
-  "He who has a why to live can bear almost any how.",
-  "Know thy self, know thy enemy. A thousand battles, a thousand victories.",
-  "First, learn to become a warrior. Then, learn to become a saint.",
-  "The sword remains in the scabbard until the moment of absolute necessity.",
-  "A warrior does not seek the path of least resistance.",
-  "Steel is forged in the hottest fire.",
-  "Empty your cup so that it may be filled.",
-  "The best defense is a good offense.",
-  "Regard your soldiers as your children, and they will follow you into the deepest valleys.",
-  "Victorious warriors win first and then go to war.",
-  "In the midst of chaos, there is also opportunity.",
-  "The greatest victory is that which requires no battle.",
-  "Do not repeat the tactics which have gained you one victory.",
-  "Strategy without tactics is the slowest route to victory.",
-  "Plan for what is difficult while it is easy.",
-  "He who is prudent and lies in wait for an enemy who is not, will be victorious.",
-  "There is no instance of a nation benefiting from prolonged warfare.",
-  "Conquer yourself rather than the world.",
-  "The purpose of the weapon is the prevention of the weapon.",
-  "A samurai chooses to serve, but a warrior chooses to conquer.",
-  "Yield not to misfortunes, but advance all the more boldly against them.",
-  "The only way to win is to refuse to lose.",
-  "Attack is the secret of defense; defense is the planning of an attack.",
-  "Great results can be achieved with small forces.",
-  "Treat your men as you would your own beloved sons.",
-  "Let your plans be dark and impenetrable as night.",
-  "In war, the way to avoid what is strong is to strike what is weak.",
-  "If the mind is willing, the flesh could go on and on without many things.",
-  "The art of war is of vital importance to the State.",
-  "All warfare is based on deception.",
-  "Move swift as the Wind and closely-formed as the Wood.",
-  "Be subtle to the point of formlessness.",
-  "If you wait by the river long enough, the bodies of your enemies will float by.",
-  "Victory belongs to the most persevering.",
-  "To win one hundred victories in one hundred battles is not the acme of skill.",
-  "The general who advances without coveting fame is a jewel of the kingdom.",
-  "Discipline is the soul of an army.",
+    // --- ANCIENT STRATEGY & BURN THE SHIPS (1-40) ---
+    "Pressure is a privilege",
+    "Jack of all is a Master of none",
+    "If you want to take the island, burn the ships.",
+    "The more you sweat in peace, the less you bleed in war.",
+    "Fortune favors the bold.",
+    "He who has a why to live can bear almost any how.",
+    "Know thy self, know thy enemy. A thousand battles, a thousand victories.",
+    "First, learn to become a warrior. Then, learn to become a saint.",
+    "The sword remains in the scabbard until the moment of absolute necessity.",
+    "A warrior does not seek the path of least resistance.",
+    "Steel is forged in the hottest fire.",
+    "Empty your cup so that it may be filled.",
+    "The best defense is a good offense.",
+    "Regard your soldiers as your children, and they will follow you into the deepest valleys.",
+    "Victorious warriors win first and then go to war.",
+    "In the midst of chaos, there is also opportunity.",
+    "The greatest victory is that which requires no battle.",
+    "Do not repeat the tactics which have gained you one victory.",
+    "Strategy without tactics is the slowest route to victory.",
+    "Plan for what is difficult while it is easy.",
+    "He who is prudent and lies in wait for an enemy who is not, will be victorious.",
+    "There is no instance of a nation benefiting from prolonged warfare.",
+    "Conquer yourself rather than the world.",
+    "The purpose of the weapon is the prevention of the weapon.",
+    "A samurai chooses to serve, but a warrior chooses to conquer.",
+    "Yield not to misfortunes, but advance all the more boldly against them.",
+    "The only way to win is to refuse to lose.",
+    "Attack is the secret of defense; defense is the planning of an attack.",
+    "Great results can be achieved with small forces.",
+    "Treat your men as you would your own beloved sons.",
+    "Let your plans be dark and impenetrable as night.",
+    "In war, the way to avoid what is strong is to strike what is weak.",
+    "If the mind is willing, the flesh could go on and on without many things.",
+    "The art of war is of vital importance to the State.",
+    "All warfare is based on deception.",
+    "Move swift as the Wind and closely-formed as the Wood.",
+    "Be subtle to the point of formlessness.",
+    "If you wait by the river long enough, the bodies of your enemies will float by.",
+    "Victory belongs to the most persevering.",
+    "To win one hundred victories in one hundred battles is not the acme of skill.",
+    "The general who advances without coveting fame is a jewel of the kingdom.",
+    "Discipline is the soul of an army.",
 
-  // --- DISCIPLINE & CONSISTENCY (41-80) ---
-  "Discipline is the bridge between goals and accomplishment.",
-  "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
-  "The pain of discipline is far less than the pain of regret.",
-  "Motivation gets you going, but discipline keeps you growing.",
-  "Freedom is found in the structure of your discipline.",
-  "Small daily improvements over time lead to stunning results.",
-  "The only easy day was yesterday.",
-  "Discipline is doing what needs to be done, even if you don't want to.",
-  "Mastery requires the discipline of a thousand boring days.",
-  "Consistent effort is the only way to build a legacy.",
-  "A disciplined mind leads to happiness.",
-  "Self-discipline is the magic power that makes you virtually unstoppable.",
-  "Suffering is the training ground of the great.",
-  "Discipline is choosing between what you want now and what you want most.",
-  "He who cannot obey himself will be commanded.",
-  "Rules for the world, discipline for the self.",
-  "The foundation of any great life is built with the bricks of discipline.",
-  "Character is the result of two things: mental attitude and the way we spend our time.",
-  "It is not enough to be busy; so are the ants. The question is: what are we busy about?",
-  "Work as if you were to live 100 years. Pray as if you were to die tomorrow.",
-  "Consistency is the true foundation of trust.",
-  "Without discipline, there is no life at all.",
-  "You will never always be motivated, so you must learn to be disciplined.",
-  "Discipline is the refining fire by which talent becomes ability.",
-  "The price of excellence is discipline.",
-  "One day at a time. One task at a time.",
-  "A warrior’s discipline is shown in the smallest actions.",
-  "Fall in love with the process and the results will come.",
-  "Discipline and freedom are not mutually exclusive; they are roommates.",
-  "The power to control yourself is the only power that matters.",
-  "Only the disciplined are truly free.",
-  "Your level of success will rarely exceed your level of self-discipline.",
-  "Great works are performed not by strength but by perseverance.",
-  "Discipline over everything.",
-  "Be the master of your habits, or they will master you.",
-  "Consistency is what transforms average into excellence.",
-  "Do it today, even if it hurts.",
-  "If you lack discipline, you lack power.",
-  "Show up every single day.",
-  "The hard way is the only way.",
+    // --- DISCIPLINE & CONSISTENCY (41-80) ---
+    "Discipline is the bridge between goals and accomplishment.",
+    "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+    "The pain of discipline is far less than the pain of regret.",
+    "Motivation gets you going, but discipline keeps you growing.",
+    "Freedom is found in the structure of your discipline.",
+    "Small daily improvements over time lead to stunning results.",
+    "The only easy day was yesterday.",
+    "Discipline is doing what needs to be done, even if you don't want to.",
+    "Mastery requires the discipline of a thousand boring days.",
+    "Consistent effort is the only way to build a legacy.",
+    "A disciplined mind leads to happiness.",
+    "Self-discipline is the magic power that makes you virtually unstoppable.",
+    "Suffering is the training ground of the great.",
+    "Discipline is choosing between what you want now and what you want most.",
+    "He who cannot obey himself will be commanded.",
+    "Rules for the world, discipline for the self.",
+    "The foundation of any great life is built with the bricks of discipline.",
+    "Character is the result of two things: mental attitude and the way we spend our time.",
+    "It is not enough to be busy; so are the ants. The question is: what are we busy about?",
+    "Work as if you were to live 100 years. Pray as if you were to die tomorrow.",
+    "Consistency is the true foundation of trust.",
+    "Without discipline, there is no life at all.",
+    "You will never always be motivated, so you must learn to be disciplined.",
+    "Discipline is the refining fire by which talent becomes ability.",
+    "The price of excellence is discipline.",
+    "One day at a time. One task at a time.",
+    "A warrior’s discipline is shown in the smallest actions.",
+    "Fall in love with the process and the results will come.",
+    "Discipline and freedom are not mutually exclusive; they are roommates.",
+    "The power to control yourself is the only power that matters.",
+    "Only the disciplined are truly free.",
+    "Your level of success will rarely exceed your level of self-discipline.",
+    "Great works are performed not by strength but by perseverance.",
+    "Discipline over everything.",
+    "Be the master of your habits, or they will master you.",
+    "Consistency is what transforms average into excellence.",
+    "Do it today, even if it hurts.",
+    "If you lack discipline, you lack power.",
+    "Show up every single day.",
+    "The hard way is the only way.",
 
-  // --- PRODUCTIVITY & FOCUS (81-120) ---
-  "The secret of getting ahead is getting started.",
-  "Focus on being productive instead of busy.",
-  "Action is the foundational key to all success.",
-  "Deep work is the superpower of the 21st century.",
-  "Efficiency is doing things right; effectiveness is doing the right things.",
-  "Your output depends on your focus, not your hours.",
-  "Don't count the days, make the days count.",
-  "Concentrate all your thoughts upon the work at hand.",
-  "Multi-tasking is the art of doing many things poorly.",
-  "Single-minded focus is the shortcut to mastery.",
-  "The sun’s rays do not burn until brought to a focus.",
-  "Starve your distractions. Feed your focus.",
-  "Be like a postage stamp—stick to one thing until you get there.",
-  "Silence the noise to hear the truth.",
-  "You cannot build a reputation on what you are going to do.",
-  "Start where you are. Use what you have. Do what you can.",
-  "Execution is everything.",
-  "The goal is not to be better than the other man, but your previous self.",
-  "Don't let the best be the enemy of the good.",
-  "The successful warrior is the average man, with laser-like focus.",
-  "Energy flows where attention goes.",
-  "Amateurs wait for inspiration. Professionals get to work.",
-  "Distraction is the enemy of greatness.",
-  "Do the hard task first thing in the morning.",
-  "One hour of deep focus is worth ten hours of distraction.",
-  "Where focus goes, energy flows.",
-  "Focus is a muscle. Train it.",
-  "Say no to the good so you can say yes to the great.",
-  "Clarity is power.",
-  "Your future is created by what you do today, not tomorrow.",
-  "Simple can be harder than complex.",
-  "Take the risk or lose the chance.",
-  "Productivity is never an accident.",
-  "The essence of strategy is choosing what not to do.",
-  "Less but better.",
-  "Eliminate the non-essential.",
-  "Keep the main thing the main thing.",
-  "A lack of focus is often a lack of courage.",
-  "Finish what you start.",
-  "Action cures fear.",
+    // --- PRODUCTIVITY & FOCUS (81-120) ---
+    "The secret of getting ahead is getting started.",
+    "Focus on being productive instead of busy.",
+    "Action is the foundational key to all success.",
+    "Deep work is the superpower of the 21st century.",
+    "Efficiency is doing things right; effectiveness is doing the right things.",
+    "Your output depends on your focus, not your hours.",
+    "Don't count the days, make the days count.",
+    "Concentrate all your thoughts upon the work at hand.",
+    "Multi-tasking is the art of doing many things poorly.",
+    "Single-minded focus is the shortcut to mastery.",
+    "The sun’s rays do not burn until brought to a focus.",
+    "Starve your distractions. Feed your focus.",
+    "Be like a postage stamp—stick to one thing until you get there.",
+    "Silence the noise to hear the truth.",
+    "You cannot build a reputation on what you are going to do.",
+    "Start where you are. Use what you have. Do what you can.",
+    "Execution is everything.",
+    "The goal is not to be better than the other man, but your previous self.",
+    "Don't let the best be the enemy of the good.",
+    "The successful warrior is the average man, with laser-like focus.",
+    "Energy flows where attention goes.",
+    "Amateurs wait for inspiration. Professionals get to work.",
+    "Distraction is the enemy of greatness.",
+    "Do the hard task first thing in the morning.",
+    "One hour of deep focus is worth ten hours of distraction.",
+    "Where focus goes, energy flows.",
+    "Focus is a muscle. Train it.",
+    "Say no to the good so you can say yes to the great.",
+    "Clarity is power.",
+    "Your future is created by what you do today, not tomorrow.",
+    "Simple can be harder than complex.",
+    "Take the risk or lose the chance.",
+    "Productivity is never an accident.",
+    "The essence of strategy is choosing what not to do.",
+    "Less but better.",
+    "Eliminate the non-essential.",
+    "Keep the main thing the main thing.",
+    "A lack of focus is often a lack of courage.",
+    "Finish what you start.",
+    "Action cures fear.",
 
-  // --- ANTI-PROCRASTINATION (121-160) ---
-  "Procrastination is the thief of time.",
-  "The best time to plant a tree was 20 years ago. The second best time is now.",
-  "Tomorrow is the place where most of your potential goes to die.",
-  "Stop thinking. Start doing.",
-  "The cost of delay is always higher than the cost of action.",
-  "Later is a lie.",
-  "Kill the hesitation. Move.",
-  "Procrastination is the arrogant assumption that God owes you another chance.",
-  "Don't wait. The time will never be just right.",
-  "Begin now.",
-  "One year from now you will wish you had started today.",
-  "A task left for tomorrow is a weight carried today.",
-  "Do it now.",
-  "Hesitation creates gaps through which the enemy enters.",
-  "While we waste our time hesitating and postponing, life is accelerating.",
-  "You don't have to be great to start, but you have to start to be great.",
-  "Overthinking is the suicide of action.",
-  "Stop talking. Start acting.",
-  "Dreams don't work unless you do.",
-  "Procrastination makes easy things hard and hard things harder.",
-  "Just start.",
-  "The hardest part is the first five minutes.",
-  "Action is the antidote to anxiety.",
-  "Do something today that your future self will thank you for.",
-  "If you want to make an easy job seem mighty hard, just keep putting off doing it.",
-  "The way to get started is to quit talking and begin doing.",
-  "A journey of a thousand miles begins with a single step.",
-  "Don't wait for permission to be great.",
-  "Your mind will try to protect you from work. Ignore it.",
-  "Discomfort is the price of admission to a meaningful life.",
-  "If it’s important, you’ll find a way. If not, you’ll find an excuse.",
-  "Never leave that till tomorrow which you can do today.",
-  "Procrastination is like a credit card: it's a lot of fun until you get the bill.",
-  "There is no such thing as a convenient time to work hard.",
-  "Success is buried under the things you are putting off.",
-  "Every delay is a decay.",
-  "Action destroys overthinking.",
-  "Start before you are ready.",
-  "The time is now.",
-  "Don't postpone your life.",
+    // --- ANTI-PROCRASTINATION (121-160) ---
+    "Procrastination is the thief of time.",
+    "The best time to plant a tree was 20 years ago. The second best time is now.",
+    "Tomorrow is the place where most of your potential goes to die.",
+    "Stop thinking. Start doing.",
+    "The cost of delay is always higher than the cost of action.",
+    "Later is a lie.",
+    "Kill the hesitation. Move.",
+    "Procrastination is the arrogant assumption that God owes you another chance.",
+    "Don't wait. The time will never be just right.",
+    "Begin now.",
+    "One year from now you will wish you had started today.",
+    "A task left for tomorrow is a weight carried today.",
+    "Do it now.",
+    "Hesitation creates gaps through which the enemy enters.",
+    "While we waste our time hesitating and postponing, life is accelerating.",
+    "You don't have to be great to start, but you have to start to be great.",
+    "Overthinking is the suicide of action.",
+    "Stop talking. Start acting.",
+    "Dreams don't work unless you do.",
+    "Procrastination makes easy things hard and hard things harder.",
+    "Just start.",
+    "The hardest part is the first five minutes.",
+    "Action is the antidote to anxiety.",
+    "Do something today that your future self will thank you for.",
+    "If you want to make an easy job seem mighty hard, just keep putting off doing it.",
+    "The way to get started is to quit talking and begin doing.",
+    "A journey of a thousand miles begins with a single step.",
+    "Don't wait for permission to be great.",
+    "Your mind will try to protect you from work. Ignore it.",
+    "Discomfort is the price of admission to a meaningful life.",
+    "If it’s important, you’ll find a way. If not, you’ll find an excuse.",
+    "Never leave that till tomorrow which you can do today.",
+    "Procrastination is like a credit card: it's a lot of fun until you get the bill.",
+    "There is no such thing as a convenient time to work hard.",
+    "Success is buried under the things you are putting off.",
+    "Every delay is a decay.",
+    "Action destroys overthinking.",
+    "Start before you are ready.",
+    "The time is now.",
+    "Don't postpone your life.",
 
-  // --- HARD WORK & GRIT (161-200) ---
-  "Hard work beats talent when talent doesn't work hard.",
-  "The only place where success comes before work is in the dictionary.",
-  "There are no shortcuts to any place worth going.",
-  "Great things come from hard work and perseverance. No excuses.",
-  "The hustle is quiet. The results are loud.",
-  "Success is 1% inspiration and 99% perspiration.",
-  "Grind now, shine later.",
-  "Work while they sleep. Learn while they party. Live like they dream.",
-  "A diamond is just a piece of charcoal that handled stress exceptionally well.",
-  "The only limit to our realization of tomorrow will be our doubts of today.",
-  "Success isn't always about greatness. It's about consistency.",
-  "Do not pray for an easy life, pray for the strength to endure a difficult one.",
-  "Grit is that ‘extra something’ that separates the most successful from the rest.",
-  "Fall seven times, stand up eight.",
-  "Endure and persist.",
-  "Hard work is the only way to get where you want to be.",
-  "There is no substitute for hard work.",
-  "Sweat is the cologne of accomplishment.",
-  "I am a great believer in luck, and I find the harder I work the more I have of it.",
-  "Quality is not an act, it is a habit.",
-  "Chop your own wood and it will warm you twice.",
-  "Dreams are free. The hustle is sold separately.",
-  "Don't stop when you're tired. Stop when you're done.",
-  "Pain is temporary. Pride is forever.",
-  "If it was easy, everyone would do it.",
-  "He who sweats more in training bleeds less in war.",
-  "Hard work pays off.",
-  "Hustle until your haters ask if you're hiring.",
-  "Blood, sweat, and respect. First two you give, last one you earn.",
-  "Ambition is the path to success. Persistence is the vehicle you arrive in.",
-  "Make it happen.",
-  "Pressure creates diamonds.",
-  "Keep going.",
-  "Stay hungry.",
-  "Your work is going to fill a large part of your life.",
-  "Excellence is not a skill. It is an attitude.",
-  "The road to success is always under construction.",
-  "Keep grinding.",
-  "Believe you can and you're halfway there.",
-  "Strength does not come from winning.",
+    // --- HARD WORK & GRIT (161-200) ---
+    "Hard work beats talent when talent doesn't work hard.",
+    "The only place where success comes before work is in the dictionary.",
+    "There are no shortcuts to any place worth going.",
+    "Great things come from hard work and perseverance. No excuses.",
+    "The hustle is quiet. The results are loud.",
+    "Success is 1% inspiration and 99% perspiration.",
+    "Grind now, shine later.",
+    "Work while they sleep. Learn while they party. Live like they dream.",
+    "A diamond is just a piece of charcoal that handled stress exceptionally well.",
+    "The only limit to our realization of tomorrow will be our doubts of today.",
+    "Success isn't always about greatness. It's about consistency.",
+    "Do not pray for an easy life, pray for the strength to endure a difficult one.",
+    "Grit is that ‘extra something’ that separates the most successful from the rest.",
+    "Fall seven times, stand up eight.",
+    "Endure and persist.",
+    "Hard work is the only way to get where you want to be.",
+    "There is no substitute for hard work.",
+    "Sweat is the cologne of accomplishment.",
+    "I am a great believer in luck, and I find the harder I work the more I have of it.",
+    "Quality is not an act, it is a habit.",
+    "Chop your own wood and it will warm you twice.",
+    "Dreams are free. The hustle is sold separately.",
+    "Don't stop when you're tired. Stop when you're done.",
+    "Pain is temporary. Pride is forever.",
+    "If it was easy, everyone would do it.",
+    "He who sweats more in training bleeds less in war.",
+    "Hard work pays off.",
+    "Hustle until your haters ask if you're hiring.",
+    "Blood, sweat, and respect. First two you give, last one you earn.",
+    "Ambition is the path to success. Persistence is the vehicle you arrive in.",
+    "Make it happen.",
+    "Pressure creates diamonds.",
+    "Keep going.",
+    "Stay hungry.",
+    "Your work is going to fill a large part of your life.",
+    "Excellence is not a skill. It is an attitude.",
+    "The road to success is always under construction.",
+    "Keep grinding.",
+    "Believe you can and you're halfway there.",
+    "Strength does not come from winning.",
 
-  // --- MINDSET & STOICISM (201-240) ---
-  "You have power over your mind, not outside events.",
-  "The impediment to action advances action. What stands in the way becomes the way.",
-  "He who conquers himself is the mightiest warrior.",
-  "It is not death that a man should fear, but he should fear never beginning to live.",
-  "Your mind is a weapon. Keep it loaded.",
-  "Don't explain your philosophy. Embody it.",
-  "The calm mind is the ultimate weapon.",
-  "Stop complaining and start commanding your own life.",
-  "Pain is inevitable. Suffering is optional.",
-  "The soul becomes dyed with the color of its thoughts.",
-  "A man is but the product of his thoughts. What he thinks, he becomes.",
-  "Wealth consists not in having great possessions, but in having few wants.",
-  "If it is not right, do not do it; if it is not true, do not say it.",
-  "Waste no more time arguing about what a good man should be. Be one.",
-  "Very little is needed to make a happy life.",
-  "Everything we hear is an opinion, not a fact.",
-  "The best revenge is to be unlike him who performed the injury.",
-  "The object of life is not to be on the side of the majority.",
-  "Accept the things to which fate binds you.",
-  "First say to yourself what you would be; and then do what you have to do.",
-  "Control your perceptions.",
-  "Direct your actions properly.",
-  "Willingly accept what's outside your control.",
-  "Think of yourself as dead. You have lived your life. Now, take what's left and live it properly.",
-  "He who is brave is free.",
-  "Difficulty is what wakes up the genius.",
-  "A ship should not ride on a single anchor.",
-  "Learn to be indifferent to what makes no difference.",
-  "External things are not the problem. It’s your assessment of them.",
-  "You are a little soul carrying around a corpse.",
-  "Man is affected not by events, but by the view he takes of them.",
-  "It is the power of the mind to be unconquerable.",
-  "Freedom is the only worthy goal in life.",
-  "Don't demand that things happen as you wish.",
-  "If someone is able to show me that what I think or do is not right, I will happily change.",
-  "Life is short. Do not forget it.",
-  "Look within. Within is the fountain of good.",
-  "Be like the cliff against which the waves continually break.",
-  "Adapt or perish.",
-  "The mind is its own place.",
+    // --- MINDSET & STOICISM (201-240) ---
+    "You have power over your mind, not outside events.",
+    "The impediment to action advances action. What stands in the way becomes the way.",
+    "He who conquers himself is the mightiest warrior.",
+    "It is not death that a man should fear, but he should fear never beginning to live.",
+    "Your mind is a weapon. Keep it loaded.",
+    "Don't explain your philosophy. Embody it.",
+    "The calm mind is the ultimate weapon.",
+    "Stop complaining and start commanding your own life.",
+    "Pain is inevitable. Suffering is optional.",
+    "The soul becomes dyed with the color of its thoughts.",
+    "A man is but the product of his thoughts. What he thinks, he becomes.",
+    "Wealth consists not in having great possessions, but in having few wants.",
+    "If it is not right, do not do it; if it is not true, do not say it.",
+    "Waste no more time arguing about what a good man should be. Be one.",
+    "Very little is needed to make a happy life.",
+    "Everything we hear is an opinion, not a fact.",
+    "The best revenge is to be unlike him who performed the injury.",
+    "The object of life is not to be on the side of the majority.",
+    "Accept the things to which fate binds you.",
+    "First say to yourself what you would be; and then do what you have to do.",
+    "Control your perceptions.",
+    "Direct your actions properly.",
+    "Willingly accept what's outside your control.",
+    "Think of yourself as dead. You have lived your life. Now, take what's left and live it properly.",
+    "He who is brave is free.",
+    "Difficulty is what wakes up the genius.",
+    "A ship should not ride on a single anchor.",
+    "Learn to be indifferent to what makes no difference.",
+    "External things are not the problem. It’s your assessment of them.",
+    "You are a little soul carrying around a corpse.",
+    "Man is affected not by events, but by the view he takes of them.",
+    "It is the power of the mind to be unconquerable.",
+    "Freedom is the only worthy goal in life.",
+    "Don't demand that things happen as you wish.",
+    "If someone is able to show me that what I think or do is not right, I will happily change.",
+    "Life is short. Do not forget it.",
+    "Look within. Within is the fountain of good.",
+    "Be like the cliff against which the waves continually break.",
+    "Adapt or perish.",
+    "The mind is its own place.",
 
-  // --- MOTIVATION & AMBITION (241-280) ---
-  "Success is the courage to continue when others stop.",
-  "Build your own dreams, or someone else will hire you to build theirs.",
-  "The only person you are destined to become is the person you decide to be.",
-  "Don't decrease the goal. Increase the effort.",
-  "Your ambition must be greater than your fear.",
-  "Be so good they can’t ignore you.",
-  "Stay foolish.",
-  "Winning is not a sometime thing; it's an all the time thing.",
-  "You miss 100% of the shots you don’t take.",
-  "Whether you think you can or think you can't, you're right.",
-  "The only way to do great work is to love what you do.",
-  "I have not failed. I've just found 10,000 ways that won't work.",
-  "Your time is limited, don't waste it living someone else's life.",
-  "The best way to predict the future is to create it.",
-  "Everything you've ever wanted is on the other side of fear.",
-  "If you want to live a happy life, tie it to a goal, not to people or things.",
-  "Success is walking from failure to failure with no loss of enthusiasm.",
-  "The future belongs to those who believe in the beauty of their dreams.",
-  "Aim for the moon. If you miss, you may hit a star.",
-  "Whatever you are, be a good one.",
-  "Opportunities don't happen. You create them.",
-  "Great minds discuss ideas; average minds discuss events; small minds discuss people.",
-  "I find that the harder I work, the more luck I seem to have.",
-  "Success is not final, failure is not fatal.",
-  "Do one thing every day that scares you.",
-  "Don't be afraid to give up the good to go for the great.",
-  "If you are going through hell, keep going.",
-  "Hard times never last, but hard people do.",
-  "Limitless.",
-  "Born for greatness.",
-  "Believe in yourself.",
-  "Push yourself.",
-  "Nothing is impossible.",
-  "The word itself says 'I'm possible'.",
-  "Go the extra mile.",
-  "Make it count.",
-  "Focus on the vision.",
-  "Never look back.",
-  "Your potential is endless.",
-  "Rise and grind.",
+    // --- MOTIVATION & AMBITION (241-280) ---
+    "Success is the courage to continue when others stop.",
+    "Build your own dreams, or someone else will hire you to build theirs.",
+    "The only person you are destined to become is the person you decide to be.",
+    "Don't decrease the goal. Increase the effort.",
+    "Your ambition must be greater than your fear.",
+    "Be so good they can’t ignore you.",
+    "Stay foolish.",
+    "Winning is not a sometime thing; it's an all the time thing.",
+    "You miss 100% of the shots you don’t take.",
+    "Whether you think you can or think you can't, you're right.",
+    "The only way to do great work is to love what you do.",
+    "I have not failed. I've just found 10,000 ways that won't work.",
+    "Your time is limited, don't waste it living someone else's life.",
+    "The best way to predict the future is to create it.",
+    "Everything you've ever wanted is on the other side of fear.",
+    "If you want to live a happy life, tie it to a goal, not to people or things.",
+    "Success is walking from failure to failure with no loss of enthusiasm.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+    "Aim for the moon. If you miss, you may hit a star.",
+    "Whatever you are, be a good one.",
+    "Opportunities don't happen. You create them.",
+    "Great minds discuss ideas; average minds discuss events; small minds discuss people.",
+    "I find that the harder I work, the more luck I seem to have.",
+    "Success is not final, failure is not fatal.",
+    "Do one thing every day that scares you.",
+    "Don't be afraid to give up the good to go for the great.",
+    "If you are going through hell, keep going.",
+    "Hard times never last, but hard people do.",
+    "Limitless.",
+    "Born for greatness.",
+    "Believe in yourself.",
+    "Push yourself.",
+    "Nothing is impossible.",
+    "The word itself says 'I'm possible'.",
+    "Go the extra mile.",
+    "Make it count.",
+    "Focus on the vision.",
+    "Never look back.",
+    "Your potential is endless.",
+    "Rise and grind.",
 
-  // --- WISDOM & LIFE LESSONS (281-320) ---
-  "Character is what you do when no one is watching.",
-  "Doubt kills more dreams than failure ever will.",
-  "Life begins at the end of your comfort zone.",
-  "Hard times create strong men. Strong times create weak men.",
-  "You cannot fail if you do not quit.",
-  "Make your life a masterpiece.",
-  "Be the master of your fate, the captain of your soul.",
-  "The legacy you leave is the life you lead.",
-  "Silence is a source of great strength.",
-  "Truth is simple.",
-  "Knowledge is power.",
-  "Wisdom begins in wonder.",
-  "The unexamined life is not worth living.",
-  "He who knows others is wise. He who knows himself is enlightened.",
-  "Knowing is not enough; we must apply.",
-  "Take time to deliberate, but when the time for action has arrived, stop thinking and go in.",
-  "The secret of happiness is freedom.",
-  "Freedom is the will to be responsible to ourselves.",
-  "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
-  "Integrity is doing the right thing, even when no one is watching.",
-  "Kindness is a strength.",
-  "Humility is the foundation of all virtues.",
-  "Patience is bitter, but its fruit is sweet.",
-  "Experience is the teacher of all things.",
-  "An investment in knowledge pays the best interest.",
-  "The only true wisdom is in knowing you know nothing.",
-  "Beware the barrenness of a busy life.",
-  "Life is 10% what happens to us and 90% how we react to it.",
-  "Be kind, for everyone you meet is fighting a hard battle.",
-  "You only live once, but if you do it right, once is enough.",
-  "In three words I can sum up everything I've learned about life: it goes on.",
-  "If you tell the truth, you don't have to remember anything.",
-  "A friend to all is a friend to none.",
-  "Character is destiny.",
-  "Everything has beauty, but not everyone sees it.",
-  "Wisdom is the reward you get for a lifetime of listening.",
-  "Don't judge each day by the harvest you reap but by the seeds that you plant.",
-  "The journey is the reward.",
-  "Live as if you were to die tomorrow.",
-  "Learn as if you were to live forever.",
+    // --- WISDOM & LIFE LESSONS (281-320) ---
+    "Character is what you do when no one is watching.",
+    "Doubt kills more dreams than failure ever will.",
+    "Life begins at the end of your comfort zone.",
+    "Hard times create strong men. Strong times create weak men.",
+    "You cannot fail if you do not quit.",
+    "Make your life a masterpiece.",
+    "Be the master of your fate, the captain of your soul.",
+    "The legacy you leave is the life you lead.",
+    "Silence is a source of great strength.",
+    "Truth is simple.",
+    "Knowledge is power.",
+    "Wisdom begins in wonder.",
+    "The unexamined life is not worth living.",
+    "He who knows others is wise. He who knows himself is enlightened.",
+    "Knowing is not enough; we must apply.",
+    "Take time to deliberate, but when the time for action has arrived, stop thinking and go in.",
+    "The secret of happiness is freedom.",
+    "Freedom is the will to be responsible to ourselves.",
+    "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+    "Integrity is doing the right thing, even when no one is watching.",
+    "Kindness is a strength.",
+    "Humility is the foundation of all virtues.",
+    "Patience is bitter, but its fruit is sweet.",
+    "Experience is the teacher of all things.",
+    "An investment in knowledge pays the best interest.",
+    "The only true wisdom is in knowing you know nothing.",
+    "Beware the barrenness of a busy life.",
+    "Life is 10% what happens to us and 90% how we react to it.",
+    "Be kind, for everyone you meet is fighting a hard battle.",
+    "You only live once, but if you do it right, once is enough.",
+    "In three words I can sum up everything I've learned about life: it goes on.",
+    "If you tell the truth, you don't have to remember anything.",
+    "A friend to all is a friend to none.",
+    "Character is destiny.",
+    "Everything has beauty, but not everyone sees it.",
+    "Wisdom is the reward you get for a lifetime of listening.",
+    "Don't judge each day by the harvest you reap but by the seeds that you plant.",
+    "The journey is the reward.",
+    "Live as if you were to die tomorrow.",
+    "Learn as if you were to live forever.",
 
-  // --- LEADERSHIP & AUTHORITY (321-365) ---
-  "Lead by example, not by command.",
-  "Power is given only to those who are willing to stoop and pick it up.",
-  "A leader is one who knows the way, goes the way, and shows the way.",
-  "He who cannot obey, cannot command.",
-  "True power is restraint.",
-  "Respect is earned. Honesty is appreciated. Trust is gained.",
-  "A king is not born, he is made through battle.",
-  "Protect the vision at all costs.",
-  "A leader is a dealer in hope.",
-  "Innovation distinguishes between a leader and a follower.",
-  "Leadership is influence.",
-  "The function of leadership is to produce more leaders.",
-  "Before you are a leader, success is all about growing yourself.",
-  "When you are a leader, success is all about growing others.",
-  "Earn your leadership every day.",
-  "Great leaders are almost always great simplifiers.",
-  "Leadership is the capacity to translate vision into reality.",
-  "The challenge of leadership is to be strong, but not rude.",
-  "A genuine leader is not a searcher for consensus but a molder of consensus.",
-  "Be a leader with a ladder, not a leader with a boss mentality.",
-  "Don't find fault, find a remedy.",
-  "The speed of the boss is the speed of the team.",
-  "A good leader takes a little more than his share of the blame.",
-  "A good leader takes a little less than his share of the credit.",
-  "To lead people, walk behind them.",
-  "Average leaders raise the bar on themselves.",
-  "Good leaders raise the bar for others.",
-  "Great leaders inspire others to raise their own bar.",
-  "Lead from the front.",
-  "A leader's job is to look into the future and see the organization.",
-  "Management is doing things right; leadership is doing the right things.",
-  "Example is not the main thing in influencing others. It is the only thing.",
-  "Leadership is the art of giving people a platform for spreading ideas that work.",
-  "If your actions inspire others to dream more, you are a leader.",
-  "The best leader is the one who has sense enough to pick good men.",
-  "No man will make a great leader who wants to do it all himself.",
-  "Great leaders can see the glory in the grind.",
-  "Forge the path.",
-  "The lion does not turn around when a small dog barks.",
-  "Strength and Honor.",
-  "Be ruthless with systems, but kind with people.",
-  "Command respect through your work ethic.",
-  "A warrior leads through action.",
-  "Own the outcome.",
-  "Stay the course."
-];
+    // --- LEADERSHIP & AUTHORITY (321-365) ---
+    "Lead by example, not by command.",
+    "Power is given only to those who are willing to stoop and pick it up.",
+    "A leader is one who knows the way, goes the way, and shows the way.",
+    "He who cannot obey, cannot command.",
+    "True power is restraint.",
+    "Respect is earned. Honesty is appreciated. Trust is gained.",
+    "A king is not born, he is made through battle.",
+    "Protect the vision at all costs.",
+    "A leader is a dealer in hope.",
+    "Innovation distinguishes between a leader and a follower.",
+    "Leadership is influence.",
+    "The function of leadership is to produce more leaders.",
+    "Before you are a leader, success is all about growing yourself.",
+    "When you are a leader, success is all about growing others.",
+    "Earn your leadership every day.",
+    "Great leaders are almost always great simplifiers.",
+    "Leadership is the capacity to translate vision into reality.",
+    "The challenge of leadership is to be strong, but not rude.",
+    "A genuine leader is not a searcher for consensus but a molder of consensus.",
+    "Be a leader with a ladder, not a leader with a boss mentality.",
+    "Don't find fault, find a remedy.",
+    "The speed of the boss is the speed of the team.",
+    "A good leader takes a little more than his share of the blame.",
+    "A good leader takes a little less than his share of the credit.",
+    "To lead people, walk behind them.",
+    "Average leaders raise the bar on themselves.",
+    "Good leaders raise the bar for others.",
+    "Great leaders inspire others to raise their own bar.",
+    "Lead from the front.",
+    "A leader's job is to look into the future and see the organization.",
+    "Management is doing things right; leadership is doing the right things.",
+    "Example is not the main thing in influencing others. It is the only thing.",
+    "Leadership is the art of giving people a platform for spreading ideas that work.",
+    "If your actions inspire others to dream more, you are a leader.",
+    "The best leader is the one who has sense enough to pick good men.",
+    "No man will make a great leader who wants to do it all himself.",
+    "Great leaders can see the glory in the grind.",
+    "Forge the path.",
+    "The lion does not turn around when a small dog barks.",
+    "Strength and Honor.",
+    "Be ruthless with systems, but kind with people.",
+    "Command respect through your work ethic.",
+    "A warrior leads through action.",
+    "Own the outcome.",
+    "Stay the course."
+  ];
 
   const [tasks, setTasks] = useLS(`apx_tasks_${user?.id}`, []);
   // ─── NEW WARRIOR STATE DECLARATIONS (10 PRODUCTIVITY FEATURES) ───
@@ -7843,7 +7848,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       grad.addColorStop(0, '#451a03');
       grad.addColorStop(1, '#1a0c02');
     }
-    
+
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 1200, 800);
 
@@ -7882,7 +7887,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
     const drawPromises = slotCoords.map((coord, idx) => {
       return new Promise((resolve) => {
         const slot = creatorSlots[idx] || { type: 'text', content: 'Goal Target' };
-        
+
         ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
         ctx.fillRect(coord.x, coord.y, coord.w, coord.h);
 
@@ -7920,7 +7925,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             if (slot.title) {
               ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
               ctx.fillRect(coord.x, coord.y + coord.h - 45, coord.w, 45);
-              
+
               ctx.fillStyle = '#ffffff';
               ctx.font = 'bold 15px sans-serif';
               ctx.textAlign = 'center';
@@ -7939,11 +7944,11 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
           const text = slot.content || "ENTER AFFIRMATION DIRECTIVE";
           ctx.fillStyle = slot.color || '#ffffff';
-          
+
           let fontName = 'sans-serif';
           if (slot.font === 'serif') fontName = 'Georgia, serif';
           if (slot.font === 'monospace') fontName = 'Courier New, monospace';
-          
+
           ctx.font = `italic ${coord.w < 350 ? '16px' : '22px'} ${fontName}`;
           ctx.textAlign = 'center';
 
@@ -7951,7 +7956,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           let line = '';
           let lines = [];
           const maxWidth = coord.w - 50;
-          
+
           for (let n = 0; n < words.length; n++) {
             let testLine = line + words[n] + ' ';
             let metrics = ctx.measureText(testLine);
@@ -7977,7 +7982,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       const dataURL = canvas.toDataURL('image/jpeg', 0.95);
       setVision({ ...vision, image: dataURL });
       setCreatorActive(false);
-      new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+      new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(() => { });
     });
   };
 
@@ -8022,7 +8027,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
 
   const videoRef = React.useRef(null);
   const audioObjRef = React.useRef(null);
-  
+
   const [vision, setVision] = useLS(`apx_vboard_v3_${user?.id}`, { image: null, isWarriorMode: false, zoom: 1 });
 
   const [activeTask, setActiveTask] = useState(null);
@@ -8090,7 +8095,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       }
       return nextExp;
     });
-    new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(e=>{});
+    new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(e => { });
     setTasks(prev => prev.filter(t => t.id !== tId));
     setActiveTask(null);
   };
@@ -8100,7 +8105,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
     return () => clearInterval(cycle);
   }, []);
 
-  const fmt = (s) => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
   const handleVBRoute = (e) => {
     const file = e.target.files[0];
@@ -8177,7 +8182,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 <div style={{ fontSize: 18, fontWeight: 900, color: EH_PRIMARY }}>{exp} <span style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>/ {level * 1000}</span></div>
               </div>
             </div>
-            
+
             <div style={{ width: '100%', height: 8, background: '#000', borderRadius: 4, overflow: 'hidden', border: '1px solid var(--surface-1)' }}>
               <div style={{ height: '100%', width: `${(exp % 1000) / 10}%`, background: `linear-gradient(90deg, ${EH_PRIMARY}, #8b5cf6)`, boxShadow: `0 0 12px ${EH_PRIMARY}`, borderRadius: 4, transition: 'width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)' }} />
             </div>
@@ -8187,7 +8192,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 <LuCircleX style={{ display: 'inline-block', verticalAlign: 'middle' }} /> FOCUS SHIELD SHATTERED (PENALTY APPLIED - ENGAGE TIMER TO RESTORE SHIELD)
               </div>
             )}
-            
+
             {/* Quick stats indicators */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 8, borderTop: '1px dashed var(--surface-2)', paddingTop: 16 }}>
               <div>
@@ -8254,19 +8259,19 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
               {FOCUS_TRACKS.map(track => {
                 const isActive = playingAudio === track.id;
                 return (
-                  <div 
-                    key={track.id} 
-                    onClick={() => playTrack(track)} 
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between', 
-                      padding: '10px 14px', 
-                      background: isActive ? 'rgba(167, 139, 250, 0.15)' : 'var(--surface-1)', 
-                      border: isActive ? '1px solid #a78bfa' : '1px solid var(--surface-2)', 
-                      borderRadius: 10, 
+                  <div
+                    key={track.id}
+                    onClick={() => playTrack(track)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '10px 14px',
+                      background: isActive ? 'rgba(167, 139, 250, 0.15)' : 'var(--surface-1)',
+                      border: isActive ? '1px solid #a78bfa' : '1px solid var(--surface-2)',
+                      borderRadius: 10,
                       cursor: 'pointer',
-                      transition: 'all 0.2s' 
+                      transition: 'all 0.2s'
                     }}
                   >
                     <span style={{ fontSize: 12, fontWeight: 800, color: isActive ? '#fff' : '#94a3b8' }}>{track.label}</span>
@@ -8278,9 +8283,9 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
           </Card>
 
           {/* Breathing Visualizer */}
-          <Card style={{ 
-            textAlign: 'center', 
-            background: 'radial-gradient(circle, rgba(30, 27, 75, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)', 
+          <Card style={{
+            textAlign: 'center',
+            background: 'radial-gradient(circle, rgba(30, 27, 75, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%)',
             border: '1px solid var(--surface-2)',
             backdropFilter: 'blur(10px)',
             borderRadius: 16,
@@ -8292,11 +8297,11 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             position: 'relative'
           }}>
             <div style={{ fontSize: 10, fontWeight: 900, color: '#3bacd6', marginBottom: 20, letterSpacing: 2 }}>CALM COMPOSE COOL</div>
-            
-            <div style={{ 
-              position: 'relative', 
-              width: 130, 
-              height: 130, 
+
+            <div style={{
+              position: 'relative',
+              width: 130,
+              height: 130,
               borderRadius: 'var(--radius-full)',
               display: 'flex',
               alignItems: 'center',
@@ -8312,25 +8317,25 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 boxShadow: 'var(--shadow-glow)',
                 animation: 'pulse 4s infinite ease-in-out',
                 zIndex: 2,
-                pointerEvents: 'none' 
+                pointerEvents: 'none'
               }} />
 
               {/* 📹 SEAMLESS LOOP FEED */}
-              <video 
+              <video
                 ref={videoRef}
-                autoPlay 
-                loop 
-                muted 
+                autoPlay
+                loop
+                muted
                 playsInline
                 disablePictureInPicture
                 controls={false}
                 controlsList="nodownload nofullscreen noremoteplayback"
                 onContextMenu={(e) => e.preventDefault()}
-                onPause={(e) => e.target.play()} 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  borderRadius: 'var(--radius-full)', 
+                onPause={(e) => e.target.play()}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 'var(--radius-full)',
                   objectFit: 'cover',
                   zIndex: 1,
                   filter: 'contrast(1.2) brightness(1.1) saturate(1.2)',
@@ -8342,7 +8347,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 <source src="/breath-visual.mp4" type="video/mp4" />
               </video>
             </div>
-            
+
             <div style={{ marginTop: 16, fontSize: 12, color: '#3bacd6', fontWeight: 900, letterSpacing: 1.5, textTransform: 'uppercase', animation: 'pulse 2s infinite' }}>{breath}</div>
           </Card>
 
@@ -8371,19 +8376,19 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
                 <div style={{ fontSize: 11, fontWeight: 900, color: '#38bdf8', letterSpacing: 1.5 }}><LuCrosshair style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ 10 COMMANDMENTS</div>
                 <span style={{ fontSize: 11, fontWeight: 800, color: commCompletedCount === 10 ? '#22c55e' : '#64748b' }}>{commCompletedCount}/10</span>
               </div>
-              
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto', maxHeight: 280, paddingRight: 4 }}>
                 {commandments.map(c => (
                   <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <input 
-                      type="checkbox" 
-                      checked={c.completed} 
+                    <input
+                      type="checkbox"
+                      checked={c.completed}
                       onChange={(e) => {
                         const updated = commandments.map(item => item.id === c.id ? { ...item, completed: e.target.checked } : item);
                         setCommandments(updated);
                         if (updated.filter(x => x.completed).length === 10) {
                           setExp(exp => exp + 100);
-                          new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+                          new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(() => { });
                         }
                       }}
                       style={{ cursor: 'pointer', accentColor: '#38bdf8' }}
@@ -8405,34 +8410,34 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             {/* Stoic Obstacles Planner */}
             <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}><LuShield style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ PREMEDITATIO MALORUM</div>
-              
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>TARGET GOAL</label>
-                  <input 
-                    type="text" 
-                    value={stoicPlan.goal} 
+                  <input
+                    type="text"
+                    value={stoicPlan.goal}
                     onChange={(e) => setStoicPlan({ ...stoicPlan, goal: e.target.value, date: new Date().toLocaleDateString() })}
-                    placeholder="What must be conquered today?" 
+                    placeholder="What must be conquered today?"
                     style={{ width: '100%', padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>WORST OBSTACLE / DISTRACTION</label>
-                  <input 
-                    type="text" 
-                    value={stoicPlan.obstacle} 
+                  <input
+                    type="text"
+                    value={stoicPlan.obstacle}
                     onChange={(e) => setStoicPlan({ ...stoicPlan, obstacle: e.target.value })}
-                    placeholder="What might pull you away?" 
+                    placeholder="What might pull you away?"
                     style={{ width: '100%', padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>DISCIPLINED COUNTER-RESPONSE</label>
-                  <textarea 
-                    value={stoicPlan.response} 
+                  <textarea
+                    value={stoicPlan.response}
                     onChange={(e) => setStoicPlan({ ...stoicPlan, response: e.target.value })}
-                    placeholder="How will you bypass this?" 
+                    placeholder="How will you bypass this?"
                     style={{ width: '100%', height: 60, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
                   />
                 </div>
@@ -8442,43 +8447,43 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             {/* Nightly Combat Debrief */}
             <Card style={{ background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#a78bfa', letterSpacing: 1.5 }}><LuBook style={{ display: 'inline-block', verticalAlign: 'middle' }} /> NIGHTLY COMBAT DEBRIEF</div>
-              
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>WHAT DID I CONQUER? (WINS)</label>
-                  <input 
-                    type="text" 
-                    value={debrief.conquest} 
+                  <input
+                    type="text"
+                    value={debrief.conquest}
                     onChange={(e) => setDebrief({ ...debrief, conquest: e.target.value, date: new Date().toLocaleDateString() })}
-                    placeholder="Identify today's wins..." 
+                    placeholder="Identify today's wins..."
                     style={{ width: '100%', padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>WHERE DID I FALL SHORT? (LESSONS)</label>
-                  <input 
-                    type="text" 
-                    value={debrief.defeat} 
+                  <input
+                    type="text"
+                    value={debrief.defeat}
                     onChange={(e) => setDebrief({ ...debrief, defeat: e.target.value })}
-                    placeholder="Identify weaknesses..." 
+                    placeholder="Identify weaknesses..."
                     style={{ width: '100%', padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#64748b', display: 'block', marginBottom: 4 }}>TOMORROW'S PRIMARY DIRECTIVE</label>
-                  <input 
-                    type="text" 
-                    value={debrief.tomorrow} 
+                  <input
+                    type="text"
+                    value={debrief.tomorrow}
                     onChange={(e) => setDebrief({ ...debrief, tomorrow: e.target.value })}
-                    placeholder="The single main target..." 
+                    placeholder="The single main target..."
                     style={{ width: '100%', padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none' }}
                   />
                 </div>
-                
+
                 <button onClick={() => {
                   if (!debrief.conquest || !debrief.tomorrow) return alert("Please fill wins & tomorrow's directive.");
                   setExp(e => e + 50);
-                  new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(()=>{});
+                  new Audio("https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3").play().catch(() => { });
                   alert("COMBAT DEBRIEF SIGNED & LOGGED (+50 EXP)");
                 }} style={{ marginTop: 5, width: '100%', padding: 12, background: 'rgba(167, 139, 250, 0.2)', border: '1px solid #a78bfa', borderRadius: 8, color: '#c084fc', fontWeight: 900, fontSize: 11, cursor: 'pointer', transition: '0.2s' }}>
                   SIGN & CLOSE COMBAT LOG
@@ -8499,41 +8504,41 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
             {/* Interactive Ikigai Finder */}
             <Card style={{ gridColumn: 'span 3', background: 'rgba(10,10,15,0.7)', border: '1px solid var(--surface-2)', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 900, color: '#f59e0b', letterSpacing: 1.5 }}><LuFlower style={{ display: 'inline-block', verticalAlign: 'middle' }} /> INTERACTIVE IKIGAI FINDER</div>
-              
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#f59e0b', display: 'block', marginBottom: 4 }}><LuHeart style={{ display: 'inline-block', verticalAlign: 'middle' }} />️ WHAT YOU LOVE</label>
-                  <textarea 
-                    value={ikigai.love} 
+                  <textarea
+                    value={ikigai.love}
                     onChange={(e) => setIkigai({ ...ikigai, love: e.target.value })}
-                    placeholder="Your passions, hobbies, what makes you feel alive..." 
+                    placeholder="Your passions, hobbies, what makes you feel alive..."
                     style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#10b981', display: 'block', marginBottom: 4 }}><LuDumbbell style={{ display: 'inline-block', verticalAlign: 'middle' }} /> WHAT YOU ARE GOOD AT</label>
-                  <textarea 
-                    value={ikigai.goodAt} 
+                  <textarea
+                    value={ikigai.goodAt}
                     onChange={(e) => setIkigai({ ...ikigai, goodAt: e.target.value })}
-                    placeholder="Your talents, unique skills, execution strengths..." 
+                    placeholder="Your talents, unique skills, execution strengths..."
                     style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#38bdf8', display: 'block', marginBottom: 4 }}><LuCoins style={{ display: 'inline-block', verticalAlign: 'middle' }} /> WHAT YOU CAN GET PAID FOR</label>
-                  <textarea 
-                    value={ikigai.paidFor} 
+                  <textarea
+                    value={ikigai.paidFor}
                     onChange={(e) => setIkigai({ ...ikigai, paidFor: e.target.value })}
-                    placeholder="Skills you possess that hold monetary/market value..." 
+                    placeholder="Skills you possess that hold monetary/market value..."
                     style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: 10, fontWeight: 900, color: '#a78bfa', display: 'block', marginBottom: 4 }}><LuGlobe style={{ display: 'inline-block', verticalAlign: 'middle' }} /> WHAT THE WORLD NEEDS</label>
-                  <textarea 
-                    value={ikigai.worldNeeds} 
+                  <textarea
+                    value={ikigai.worldNeeds}
                     onChange={(e) => setIkigai({ ...ikigai, worldNeeds: e.target.value })}
-                    placeholder="Problems you want to solve, contributions you want to make..." 
+                    placeholder="Problems you want to solve, contributions you want to make..."
                     style={{ width: '100%', height: 70, padding: '10px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: 8, color: '#fff', fontSize: 12, outline: 'none', resize: 'none' }}
                   />
                 </div>
@@ -8566,9 +8571,9 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
         ) : (
           <div style={{ animation: 'fadeIn 0.5s ease', position: 'relative', background: 'rgba(0, 0, 0, 0.4)', borderRadius: 24, padding: 20, backdropFilter: 'blur(10px)', border: '1px solid var(--border)', boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: 15 }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <button onClick={() => setVision({...vision, image: null})} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 13, fontWeight: 800 }}>DELETE BOARD</button>
+              <button onClick={() => setVision({ ...vision, image: null })} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 13, fontWeight: 800 }}>DELETE BOARD</button>
             </div>
-            
+
             <div style={{ flex: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 16 }}>
               <img src={vision.image} alt="Vision Board" style={{ width: '100%', maxHeight: '82vh', objectFit: 'contain' }} />
             </div>
@@ -8577,16 +8582,16 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
       )}
 
       {/* Target Pin Creation Modal */}
-      
+
 
       {showLevelUpAlert && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(5,5,8,0.85)", backdropFilter: "blur(20px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 100000, animation: "fadeIn 0.3s ease" }}>
-          <div style={{ 
-            background: 'radial-gradient(circle, rgba(167, 139, 250, 0.15) 0%, rgba(10,10,15,0.95) 100%)', 
-            border: '2px solid #a78bfa', 
+          <div style={{
+            background: 'radial-gradient(circle, rgba(167, 139, 250, 0.15) 0%, rgba(10,10,15,0.95) 100%)',
+            border: '2px solid #a78bfa',
             boxShadow: 'var(--shadow-glow)',
-            borderRadius: 24, 
-            padding: '40px 60px', 
+            borderRadius: 24,
+            padding: '40px 60px',
             textAlign: 'center',
             maxWidth: 500,
             animation: "msgSlide 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
@@ -8601,7 +8606,7 @@ function Warrior({ user, exp, setExp, pomo, setPomo, stopwatch, setStopwatch, co
     </div>
   );
 }
-  
+
 // ─── SETTINGS ─────────────────────────────────────────────────────────────────
 function Settings({ user, users, setUsers, onLogout }) {
   const [form, setForm] = useState({ name: user.name, email: user.email });
@@ -8628,7 +8633,7 @@ function Settings({ user, users, setUsers, onLogout }) {
   return (
     <div>
       <PageHeader title="Settings" subtitle="System Control Panel & Customization Desk" />
-      
+
       <div style={{ padding: "0 32px 24px 32px" }}>
         {/* Content Area */}
         <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -8656,7 +8661,7 @@ function Settings({ user, users, setUsers, onLogout }) {
                 {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : "AP"}
               </div>
             </div>
-            
+
             <div style={{ flex: 1 }}>
               <span style={{ fontSize: 10, fontWeight: 900, color: 'var(--accent)', letterSpacing: 1.5 }}>ACTIVE PILOT PROFILE</span>
               <h2 style={{ margin: '4px 0 6px 0', fontSize: 24, fontWeight: 900, color: 'var(--text-h)' }}>{user.name}</h2>
@@ -8667,8 +8672,8 @@ function Settings({ user, users, setUsers, onLogout }) {
           {/* Profile details */}
           <Card style={{ padding: '24px 28px' }}>
             <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>ACCOUNT INFORMATION</div>
-            <Field label="Full Name"><Inp value={form.name} onChange={v => setForm({...form, name: v})} /></Field>
-            <Field label="Email"><Inp value={form.email} onChange={() => {}} style={{ opacity: 0.5 }} disabled /></Field>
+            <Field label="Full Name"><Inp value={form.name} onChange={v => setForm({ ...form, name: v })} /></Field>
+            <Field label="Email"><Inp value={form.email} onChange={() => { }} style={{ opacity: 0.5 }} disabled /></Field>
             <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 16, fontWeight: 700 }}>Registered profile email is permanent and cannot be modified.</div>
             <Btn onClick={() => saveProfile({ name: form.name })}>Save Profile</Btn>
           </Card>
@@ -8676,9 +8681,9 @@ function Settings({ user, users, setUsers, onLogout }) {
           {/* Change Password Card */}
           <Card style={{ padding: '24px 28px' }}>
             <div style={{ fontSize: 12, fontWeight: 900, color: '#64748b', marginBottom: 16, letterSpacing: 1 }}>AUTHENTICATION PASSWORD</div>
-            <Field label="Current Password"><Inp type="password" value={pwForm.current} onChange={v => setPwForm({...pwForm, current: v})} /></Field>
-            <Field label="New Password"><Inp type="password" value={pwForm.newPw} onChange={v => setPwForm({...pwForm, newPw: v})} /></Field>
-            <Field label="Confirm New Password"><Inp type="password" value={pwForm.confirm} onChange={v => setPwForm({...pwForm, confirm: v})} /></Field>
+            <Field label="Current Password"><Inp type="password" value={pwForm.current} onChange={v => setPwForm({ ...pwForm, current: v })} /></Field>
+            <Field label="New Password"><Inp type="password" value={pwForm.newPw} onChange={v => setPwForm({ ...pwForm, newPw: v })} /></Field>
+            <Field label="Confirm New Password"><Inp type="password" value={pwForm.confirm} onChange={v => setPwForm({ ...pwForm, confirm: v })} /></Field>
             <Btn onClick={changePassword}>Update Password</Btn>
           </Card>
 
@@ -8752,9 +8757,12 @@ export default function App() {
           localStorage.setItem(`apx_tasks_${currentUser.id}`, JSON.stringify(tasks.map(t => ({
             id: t.id,
             name: t.name,
-            notes: t.notes,
+            notes: typeof t.notes === `string` && t.notes.startsWith(`{`) ? JSON.parse(t.notes) : (t.notes || {}),
             completed: t.completed,
-            deadline: t.deadline
+            deadline: t.deadline,
+            targetMinutes: t.target_minutes || 60,
+            logs: t.logs || {},
+            goals: t.goals || []
           }))));
         }
 
@@ -8897,11 +8905,11 @@ export default function App() {
             setReminders(prev => prev.map(x => x.id === r.id ? { ...x, triggered: true } : x));
             setTriggered(r);
             if (window.activeAlarmAudio) {
-              try { window.activeAlarmAudio.pause(); } catch(e) {}
+              try { window.activeAlarmAudio.pause(); } catch (e) { }
             }
             const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/911/911-preview.mp3');
             audio.loop = true;
-            audio.play().catch(e => {});
+            audio.play().catch(e => { });
             window.activeAlarmAudio = audio;
           }
         }
@@ -8932,23 +8940,23 @@ export default function App() {
     }, 1000);
     return () => clearInterval(interval);
   }, [pomo.active, stopwatch.active, setPomo, setStopwatch, setExp]);
-  
+
   // NEW VIEW ENGINE
   const [view, setView] = useState(currentUser ? "app" : "landing");
   const [authMode, setAuthMode] = useState("login");
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  const handleLogin = (user) => { 
-    setCurrentUser(user); 
-    setView("app"); 
+  const handleLogin = (user) => {
+    setCurrentUser(user);
+    setView("app");
   };
-  
-  const handleLogout = async () => { 
+
+  const handleLogout = async () => {
     await supabase.auth.signOut();
-    setCurrentUser(null); 
+    setCurrentUser(null);
     setIsDataLoaded(false);
-    setView("landing"); 
-    setTab("dashboard"); 
+    setView("landing");
+    setTab("dashboard");
   };
 
   const handleEnterAuth = (mode) => {
@@ -8960,7 +8968,7 @@ export default function App() {
 
   // ROUTING LOGIC
   if (view === "landing") return <LandingPage onEnterAuth={handleEnterAuth} />;
-  
+
   if (view === "auth") return <AuthPage onLogin={handleLogin} users={users} setUsers={setUsers} initialMode={authMode} />;
 
 
@@ -8983,7 +8991,7 @@ export default function App() {
 
   return (
     <>
-      <Layout 
+      <Layout
         user={liveUser} tab={tab} setTab={setTab} onLogout={handleLogout}
         pomo={pomo} setPomo={setPomo} stopwatch={stopwatch} setStopwatch={setStopwatch} counter={counter} setCounter={setCounter}
       >
@@ -8994,7 +9002,7 @@ export default function App() {
       {triggered && (
         <Modal open={true} onClose={() => {
           if (window.activeAlarmAudio) {
-            try { window.activeAlarmAudio.pause(); } catch(e) {}
+            try { window.activeAlarmAudio.pause(); } catch (e) { }
             window.activeAlarmAudio = null;
           }
           setTriggered(null);
@@ -9005,7 +9013,7 @@ export default function App() {
             <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 25, lineHeight: 1.5 }}>{triggered.description || "Mission objective timeline reached!"}</p>
             <Btn onClick={() => {
               if (window.activeAlarmAudio) {
-                try { window.activeAlarmAudio.pause(); } catch(e) {}
+                try { window.activeAlarmAudio.pause(); } catch (e) { }
                 window.activeAlarmAudio = null;
               }
               // Dismiss the reminder (mark as done)
