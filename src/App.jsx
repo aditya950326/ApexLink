@@ -574,9 +574,9 @@ function useLS(key, init) {
             completed: t.completed || false,
             deadline: t.deadline || null
           }));
-          const activeIds = v.map(t => t.id);
+          const activeIds = v.map();
           if (activeIds.length > 0) {
-            await supabase.from('tasks').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
+            await supabase.from('tasks').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
           } else {
             await supabase.from('tasks').delete().eq('user_id', userId).throwOnError();
           }
@@ -597,8 +597,7 @@ function useLS(key, init) {
             is_archived: false
           }));
           const activeIds = v.map(n => String(n.id));
-          if (activeIds.length > 0) {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', activeIds).throwOnError();
           } else {
             await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).throwOnError();
           }
@@ -619,8 +618,7 @@ function useLS(key, init) {
             is_archived: true
           }));
           const activeIds = v.map(n => String(n.id));
-          if (activeIds.length > 0) {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', activeIds).throwOnError();
           } else {
             await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).throwOnError();
           }
@@ -644,9 +642,9 @@ function useLS(key, init) {
             datetime: r.datetime,
             urgency: r.urgency || 'normal'
           }));
-          const activeIds = v.map(r => r.id);
+          const activeIds = v.map();
           if (activeIds.length > 0) {
-            await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
+            await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
           } else {
             await supabase.from('reminders').delete().eq('user_id', userId).throwOnError();
           }
@@ -684,9 +682,9 @@ function useLS(key, init) {
             title: c.title,
             messages: c.messages || []
           }));
-          const activeIds = v.map(c => c.id);
+          const activeIds = v.map();
           if (activeIds.length > 0) {
-            await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
+            await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', activeIds).throwOnError();
           } else {
             await supabase.from('chats').delete().eq('user_id', userId).throwOnError();
           }
@@ -833,9 +831,9 @@ function useShared(key, init) {
           previous_streak: r.previousStreak || 0
         }));
 
-        const activeIds = v.map(r => r.id);
-        if (activeIds.length > 0) {
-          await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
+        const activeIds = v.map();
+          if (activeIds.length > 0) {
+            await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', activeIds).throwOnError();
         } else {
           await supabase.from('rooms').delete().eq('creator_id', userId).throwOnError();
         }
