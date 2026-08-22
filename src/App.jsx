@@ -576,12 +576,12 @@ function useLS(key, init) {
           }));
           const activeIds = v.map(t => t.id);
           if (activeIds.length > 0) {
-            await supabase.from('tasks').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+            await supabase.from('tasks').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
           } else {
-            await supabase.from('tasks').delete().eq('user_id', userId);
+            await supabase.from('tasks').delete().eq('user_id', userId).throwOnError();
           }
           if (rows.length > 0) {
-            await supabase.from('tasks').upsert(rows);
+            await supabase.from('tasks').upsert(rows).throwOnError();
           }
         }
 
@@ -598,12 +598,12 @@ function useLS(key, init) {
           }));
           const activeIds = v.map(n => String(n.id));
           if (activeIds.length > 0) {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
           } else {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false);
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', false).throwOnError();
           }
           if (rows.length > 0) {
-            await supabase.from('notes').upsert(rows);
+            await supabase.from('notes').upsert(rows).throwOnError();
           }
         }
 
@@ -620,18 +620,18 @@ function useLS(key, init) {
           }));
           const activeIds = v.map(n => String(n.id));
           if (activeIds.length > 0) {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
           } else {
-            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true);
+            await supabase.from('notes').delete().eq('user_id', userId).eq('is_archived', true).throwOnError();
           }
           if (rows.length > 0) {
-            await supabase.from('notes').upsert(rows);
+            await supabase.from('notes').upsert(rows).throwOnError();
           }
         }
 
         // Sync Vault Password
         if (key === `apx_vpass_v5_${userId}`) {
-          await supabase.from('profiles').update({ vault_password: v }).eq('id', userId);
+          await supabase.from('profiles').update({ vault_password: v }).eq('id', userId).throwOnError();
         }
 
         // Sync Reminders
@@ -646,12 +646,12 @@ function useLS(key, init) {
           }));
           const activeIds = v.map(r => r.id);
           if (activeIds.length > 0) {
-            await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+            await supabase.from('reminders').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
           } else {
-            await supabase.from('reminders').delete().eq('user_id', userId);
+            await supabase.from('reminders').delete().eq('user_id', userId).throwOnError();
           }
           if (rows.length > 0) {
-            await supabase.from('reminders').upsert(rows);
+            await supabase.from('reminders').upsert(rows).throwOnError();
           }
         }
 
@@ -670,9 +670,9 @@ function useLS(key, init) {
               });
             }
           });
-          await supabase.from('habit_logs').delete().eq('user_id', userId);
+          await supabase.from('habit_logs').delete().eq('user_id', userId).throwOnError();
           if (rows.length > 0) {
-            await supabase.from('habit_logs').upsert(rows);
+            await supabase.from('habit_logs').upsert(rows).throwOnError();
           }
         }
 
@@ -686,12 +686,12 @@ function useLS(key, init) {
           }));
           const activeIds = v.map(c => c.id);
           if (activeIds.length > 0) {
-            await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+            await supabase.from('chats').delete().eq('user_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
           } else {
-            await supabase.from('chats').delete().eq('user_id', userId);
+            await supabase.from('chats').delete().eq('user_id', userId).throwOnError();
           }
           if (rows.length > 0) {
-            await supabase.from('chats').upsert(rows);
+            await supabase.from('chats').upsert(rows).throwOnError();
           }
         }
 
@@ -701,9 +701,9 @@ function useLS(key, init) {
             user_id: userId,
             room_id: roomId
           }));
-          await supabase.from('user_rooms').delete().eq('user_id', userId);
+          await supabase.from('user_rooms').delete().eq('user_id', userId).throwOnError();
           if (rows.length > 0) {
-            await supabase.from('user_rooms').upsert(rows);
+            await supabase.from('user_rooms').upsert(rows).throwOnError();
           }
         }
       } catch (err) {
@@ -835,12 +835,12 @@ function useShared(key, init) {
 
         const activeIds = v.map(r => r.id);
         if (activeIds.length > 0) {
-          await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`);
+          await supabase.from('rooms').delete().eq('creator_id', userId).not('id', 'in', `(${activeIds.map(x => "'" + x + "'").join(',')})`).throwOnError();
         } else {
-          await supabase.from('rooms').delete().eq('creator_id', userId);
+          await supabase.from('rooms').delete().eq('creator_id', userId).throwOnError();
         }
         if (rows.length > 0) {
-          await supabase.from('rooms').upsert(rows);
+          await supabase.from('rooms').upsert(rows).throwOnError();
         }
       } catch (e) {
         console.error("Shared rooms sync failed:", e);
